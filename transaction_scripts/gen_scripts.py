@@ -16,7 +16,7 @@ def compile(script):
     cmds = [
         "cd ../libra",
         f"cargo run -p compiler --  ./language/stdlib/transaction_scripts/{script}.mvir",
-        f"mv ./language/stdlib/transaction_scripts/{script}.mv ../libra-client/transaction_scripts/"
+        f"mv ./language/stdlib/transaction_scripts/{script}.mv ../libra-core/transaction_scripts/"
     ]
     cmd = " && ".join(cmds)
     print(cmd)

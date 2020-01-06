@@ -1,5 +1,27 @@
-from libra.key_factory import new_sha3_256
 import canoser
+import hashlib
+import subprocess
+
+def has_sha3():
+    return 'sha3_256' in hashlib.algorithms_available
+
+def sha3_256_mod():
+    if has_sha3():
+        return hashlib.sha3_256
+    else:
+        try:
+            import sha3
+        except ModuleNotFoundError:
+            cmd = "python3 -m pip install --user pysha3"
+            print("try to install pysha3 with following command:")
+            print(cmd)
+            subprocess.run(cmd.split(), check=True)
+            import sha3
+        return sha3.sha3_256
+
+def new_sha3_256():
+    return sha3_256_mod()()
+
 
 LIBRA_HASH_SUFFIX = b"@@$$LIBRA$$@@";
 

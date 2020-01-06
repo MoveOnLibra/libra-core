@@ -1,5 +1,5 @@
 from nacl.signing import SigningKey
-from libra.key_factory import new_sha3_256
+from libra.hasher import new_sha3_256
 from enum import Enum
 from libra.account_config import AccountConfig
 from libra.account_address import Address

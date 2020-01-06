@@ -26,7 +26,6 @@ install_requires=[
         'pygments',
         'requests',
         "toml",
-        'mnemonic'
     ]
 
 if not 'sha3_256' in hashlib.algorithms_available:
@@ -35,22 +34,16 @@ if not 'sha3_256' in hashlib.algorithms_available:
     install_requires.append("pysha3")
 
 setuptools.setup(
-    name="libra-client",
+    name="libra-core",
     version=version,
     author="yuan xinyu",
-    author_email="yuanxinyu.hangzhou@gmail.com",
-    description="A CLI inteface Libra client and Python API for Libra blockchain.",
+    author_email="yuan_xin_yu@hotmail.com",
+    description="Libra core types and functions for python",
     long_description=long_description,
     long_description_content_type="text/markdown",
-    url="https://github.com/yuan-xy/libra-client.git",
+    url="https://github.com/MoveOnLibra/libra-core.git",
     packages=setuptools.find_packages(),
     include_package_data=True,
-    entry_points={
-        'console_scripts':[
-            'libra = libra.cli.main:main',
-            'libra_shell = libra.shell.libra_shell:main'
-        ]
-    },
     install_requires=install_requires,
     classifiers=[
         "Programming Language :: Python :: 3",

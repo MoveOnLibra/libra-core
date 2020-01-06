@@ -9,10 +9,10 @@ git checkout origin/testnet
 
 #scp xn@an1:~/libra/
 
-rm ../../libra-client/proto/*.proto
-find . -name *.proto | xargs cp -t ../../libra-client/proto/
+rm ../../libra-core/proto/*.proto
+find . -name *.proto | xargs cp -t ../../libra-core/proto/
 #rpl "shared/mempool_status" "mempool_status" proto/mempool.proto
 
 
-cd ../../libra-client/
+cd ../../libra-core/
 ./scripts/generate_protobuf.sh
