@@ -2,12 +2,13 @@ from libra.hasher import (
     HashValue, ACCUMULATOR_PLACEHOLDER_HASH,SPARSE_MERKLE_PLACEHOLDER_HASH,
     bytes_to_bits)
 from libra.validator_verifier import VerifyError
+from canoser import Uint64
 
 # Because leaves can only take half the space in the tree, any numbering of the tree leaves must
 # not take the full width of the total space.  Thus, for a 64-bit ordering, our maximumm proof
 # depth is limited to 63.
 
-#pub type LeafCount = u64;
+LeafCount = Uint64
 MAX_ACCUMULATOR_PROOF_DEPTH = 63
 MAX_ACCUMULATOR_LEAVES = 1 << MAX_ACCUMULATOR_PROOF_DEPTH
 
