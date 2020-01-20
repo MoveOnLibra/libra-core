@@ -1,30 +1,30 @@
 import collections
 import more_itertools
+from libra.ledger_info import LedgerInfo
+from libra.transaction import Version, TransactionInfo
+from libra.proof.definition import TransactionAccumulatorProof
+from libra.proof.anyhow import ensure, bail
 
-
-def bail(hint, *args):
-    errstr = hint.format(*args)
-    raise AssertionError(errstr)
-
-def ensure(exp, hint, *args):
-    if not exp:
-        bail(hint, *args)
 
 # Verifies that a given `transaction_info` exists in the ledger using provided proof.
 def verify_transaction_info(
-        ledger_info,
+    ledger_info: LedgerInfo,
+    transaction_version: Version,
+    transaction_info: TransactionInfo,
+    ledger_info_to_transaction_info_proof: TransactionAccumulatorProof
+):
+    ensure(
+        transaction_version <= ledger_info.version,
+        "Transaction version {} is newer than LedgerInfo version {}.",
         transaction_version,
-        transaction_info,
-        ledger_info_to_transaction_info_proof):
-    assert transaction_version <= ledger_info.version
-    if not isinstance(transaction_info, TransactionInfo):
-        transaction_info = TransactionInfo.from_proto(transaction_info)
-    verify_accumulator_element(
-        TransactionAccumulatorHasher,
+        ledger_info.version,
+    )
+    transaction_info_hash = transaction_info.hash()
+    ledger_info_to_transaction_info_proof.verify(
         ledger_info.transaction_accumulator_hash,
-        transaction_info.hash(),
-        transaction_version,
-        ledger_info_to_transaction_info_proof)
+        transaction_info_hash,
+        transaction_version
+    )
 
 
 

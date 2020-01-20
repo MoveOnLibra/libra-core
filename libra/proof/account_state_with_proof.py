@@ -4,25 +4,32 @@ from libra.proof.mod import ensure, bail, verify_sparse_merkle_element, verify_t
 
 class AccountStateWithProof:
     @classmethod
+    def from_proto(cls, proto):
+        ret = cls()
+        ret.version = proto.version
+        ret.blob = proto.blob
+        ret.proof = proto.proof
+        return ret
+
     def verify(
-            cls,
-            account_state_proof,
+            self,
             ledger_info,
             version,
             address
         ):
         ensure(
-            account_state_proof.version == version,
+            self.version == version,
             "State version ({}) is not expected ({}).",
-            account_state_proof.version,
+            self.version,
             version
         )
+        breakpoint()
         verify_account_state(
             ledger_info,
             version,
             Address.hash(address),
-            account_state_proof.blob,
-            account_state_proof.proof
+            self.blob,
+            self.proof
         )
 
 # Verifies that the state of an account at version `state_version` is correct using the provided

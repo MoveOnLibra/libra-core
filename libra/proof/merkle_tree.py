@@ -4,14 +4,14 @@ from libra.hasher import (
     EventAccumulatorHasher, TestOnlyHasher)
 from libra.contract_event import ContractEvent
 import more_itertools
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from typing import Callable
 
 @dataclass
 class MerkleTreeInternalNode:
-    hasher: Callable[[], object]
-    left_child: HashValue = None
-    right_child: HashValue = None
+    left_child: HashValue
+    right_child: HashValue
+    hasher: Callable[[], object] = field(init=False)
 
 
     def hash(self):
@@ -24,9 +24,15 @@ class MerkleTreeInternalNode:
 class SparseMerkleInternalNode(MerkleTreeInternalNode):
     hasher = SparseMerkleInternalHasher
 
-TransactionAccumulatorInternalNode = MerkleTreeInternalNode(TransactionAccumulatorHasher)
-EventAccumulatorInternalNode = MerkleTreeInternalNode(EventAccumulatorHasher)
-TestAccumulatorInternalNode = MerkleTreeInternalNode(TestOnlyHasher)
+class TransactionAccumulatorInternalNode(MerkleTreeInternalNode):
+    hasher = TransactionAccumulatorHasher
+
+class EventAccumulatorInternalNode(MerkleTreeInternalNode):
+    hasher = EventAccumulatorHasher
+
+class TestAccumulatorInternalNode(MerkleTreeInternalNode):
+    hasher = TestOnlyHasher
+
 
 
 def get_accumulator_root_hash(hasher, element_hashes):

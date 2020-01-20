@@ -63,10 +63,9 @@ def verify_response_item(ledger_info, requested_item, response_item):
     resp_type2 = response_item.WhichOneof('response_items')
     if resp_type != resp_type2:
         raise VerifyError(f"RequestItem/ResponseItem types mismatch:{resp_type} - {resp_type2}.")
-    return
     if resp_type == "get_account_state_response":
         asp = response_item.get_account_state_response.account_state_with_proof
-        AccountStateWithProof.verify(asp, ledger_info, ledger_info.version,
+        AccountStateWithProof.from_proto(asp).verify(ledger_info, ledger_info.version,
             requested_item.get_account_state_request.address)
     elif resp_type == "get_account_transaction_by_sequence_number_response":
         atreq = requested_item.get_account_transaction_by_sequence_number_request
