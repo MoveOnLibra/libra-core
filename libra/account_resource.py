@@ -4,19 +4,6 @@ from libra.hasher import gen_hasher
 from libra.account_config import AccountConfig
 from io import StringIO
 
-class AccountStateBlob:
-    def __init__(self, blob):
-        self.blob = blob
-
-    @classmethod
-    def from_proto(cls, proto):
-        return cls(proto.blob)
-
-    def hash(self):
-        shazer = gen_hasher(b"AccountStateBlob::libra_types::account_resource")
-        shazer.update(self.blob)
-        return shazer.digest()
-
 
 class AccountState(Struct):
     _fields = [

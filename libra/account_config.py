@@ -79,10 +79,20 @@ class AccountConfig:
         }
 
 
-class AccountEvent(Struct):
+class SentPaymentEvent(Struct):
     _fields = [
         ('amount', Uint64),
-        ('account', Address),
+        ('receiver', Address),
         ('metadata', [Uint8])
     ]
+
+
+class ReceivedPaymentEvent(Struct):
+    _fields = [
+        ('amount', Uint64),
+        ('sender', Address),
+        ('metadata', [Uint8])
+    ]
+
+
 

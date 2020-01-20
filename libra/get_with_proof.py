@@ -41,9 +41,7 @@ def verify_update_to_latest_ledger_response(
     if len(response_items) != len(requested_items):
         raise VerifyError(f"{len(response_items)} != {len(requested_items)}")
     for req_item, resp_item in zip(requested_items, response_items):
-        pass
-        #TODO: update proof: no bitmap, tx format change
-        #verify_response_item(ledger_info, req_item, resp_item)
+        verify_response_item(ledger_info, req_item, resp_item)
     if verifier_type.epoch_change_verification_required(ledger_info.epoch):
         epoch_change_li = validator_change_proof.verify(verifier_type)
         if not epoch_change_li.ledger_info.has_next_validator_set():
@@ -65,6 +63,7 @@ def verify_response_item(ledger_info, requested_item, response_item):
     resp_type2 = response_item.WhichOneof('response_items')
     if resp_type != resp_type2:
         raise VerifyError(f"RequestItem/ResponseItem types mismatch:{resp_type} - {resp_type2}.")
+    return
     if resp_type == "get_account_state_response":
         asp = response_item.get_account_state_response.account_state_with_proof
         AccountStateWithProof.verify(asp, ledger_info, ledger_info.version,

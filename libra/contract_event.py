@@ -1,7 +1,7 @@
 from canoser import Struct, Uint64, Uint8, bytes_to_int_list
 from libra.hasher import gen_hasher
 from libra.language_storage import TypeTag
-from libra.account_config import AccountEvent
+from libra.account_config import SentPaymentEvent, ReceivedPaymentEvent
 from libra.event import EventKey
 
 class ContractEvent(Struct):
@@ -20,7 +20,12 @@ class ContractEvent(Struct):
         ret.type_tag = TypeTag.deserialize(event_proto.type_tag)
         ret.event_data = bytes_to_int_list(event_proto.event_data)
         if ret.type_tag.Struct and ret.type_tag.value.is_pay_tag():
-            ret.event_data_decode = AccountEvent.deserialize(event_proto.event_data)
+            if ret.type_tag.value.name == "SentPaymentEvent":
+                ret.event_data_decode = SentPaymentEvent.deserialize(event_proto.event_data)
+            elif ret.type_tag.value.name == "ReceivedPaymentEvent":
+                ret.event_data_decode = ReceivedPaymentEvent.deserialize(event_proto.event_data)
+            else:
+                raise AssertionError(f"Unknown event: {ret.type_tag.value}")
         return ret
 
     @classmethod
