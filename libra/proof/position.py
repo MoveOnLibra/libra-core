@@ -1,7 +1,7 @@
 from __future__ import annotations
 from libra.hasher import HashValue
 from libra.proof.definition import LeafCount, MAX_ACCUMULATOR_LEAVES, MAX_ACCUMULATOR_PROOF_DEPTH
-from libra.proof import ensure
+from libra.proof.mod import ensure
 from canoser import DelegateT, Uint64, Uint32
 from enum import Enum
 from dataclasses import dataclass

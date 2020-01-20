@@ -1,5 +1,5 @@
 from libra.hasher import *
-from libra.proof import ensure, bail, verify_transaction_info
+from libra.proof.mod import ensure, bail, verify_transaction_info
 from libra.transaction import SignedTransaction, TransactionInfo
 from libra.proof.merkle_tree import get_event_root_hash
 

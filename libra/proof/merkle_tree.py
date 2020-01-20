@@ -1,18 +1,32 @@
-from libra.hasher import *
+from libra.hasher import (
+    HashValue,
+    SparseMerkleInternalHasher, TransactionAccumulatorHasher,
+    EventAccumulatorHasher, TestOnlyHasher)
 from libra.contract_event import ContractEvent
 import more_itertools
+from dataclasses import dataclass
+from typing import Callable
 
-
+@dataclass
 class MerkleTreeInternalNode:
-    def __init__(self, left_child, right_child, hasher):
-        self.left_child = left_child
-        self.right_child = right_child
-        self.hasher = hasher
+    hasher: Callable[[], object]
+    left_child: HashValue = None
+    right_child: HashValue = None
+
 
     def hash(self):
-        self.hasher.update(self.left_child)
-        self.hasher.update(self.right_child)
-        return self.hasher.digest()
+        shazer = self.hasher()
+        shazer.update(self.left_child)
+        shazer.update(self.right_child)
+        return shazer.digest()
+
+
+class SparseMerkleInternalNode(MerkleTreeInternalNode):
+    hasher = SparseMerkleInternalHasher
+
+TransactionAccumulatorInternalNode = MerkleTreeInternalNode(TransactionAccumulatorHasher)
+EventAccumulatorInternalNode = MerkleTreeInternalNode(EventAccumulatorHasher)
+TestAccumulatorInternalNode = MerkleTreeInternalNode(TestOnlyHasher)
 
 
 def get_accumulator_root_hash(hasher, element_hashes):
@@ -38,13 +52,14 @@ def get_event_root_hash(events):
     return get_accumulator_root_hash(EventAccumulatorHasher(), event_hashes)
 
 
+
 class SparseMerkleLeafNode:
     def __init__(self, key, value_hash):
         self.key = key
         self.value_hash = value_hash
 
     def hash(self):
-        shazer = gen_hasher(b"SparseMerkleLeaf::libra_types::proof")
+        shazer = gen_hasher(b"SparseMerkleLeafNode::libra_types::proof")
         shazer.update(self.key)
         shazer.update(self.value_hash)
         return shazer.digest()

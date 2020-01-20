@@ -1,5 +1,5 @@
 from libra.account_address import Address
-from libra.proof import ensure, bail, verify_sparse_merkle_element, verify_transaction_info
+from libra.proof.mod import ensure, bail, verify_sparse_merkle_element, verify_transaction_info
 
 
 class AccountStateWithProof:

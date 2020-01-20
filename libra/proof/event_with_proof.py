@@ -1,4 +1,4 @@
-from libra.proof import ensure, bail, verify_accumulator_element, verify_transaction_info
+from libra.proof.mod import ensure, bail, verify_accumulator_element, verify_transaction_info
 from libra.contract_event import ContractEvent
 from libra.hasher import EventAccumulatorHasher
 
