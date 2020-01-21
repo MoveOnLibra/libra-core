@@ -455,15 +455,15 @@ class TransactionProof:
         transaction_version: Version,
     ):
         ensure(
-            transaction_hash == self.transaction_info.transaction_hash,
+            bytes(transaction_hash) == bytes(self.transaction_info.transaction_hash),
             "The hash of transaction does not match the transaction info in proof. \
-             Transaction hash: {:x}. Transaction hash provided by proof: {:x}.",
+             Transaction hash: {}. Transaction hash provided by proof: {}.",
             transaction_hash,
             self.transaction_info.transaction_hash
         )
         if event_root_hash is not None:
             ensure(
-                event_root_hash == self.transaction_info.event_root_hash,
+                bytes(event_root_hash) == bytes(self.transaction_info.event_root_hash),
                 "Event root hash ({}) doesn't match that in the transaction info ({}).",
                 event_root_hash,
                 self.transaction_info.event_root_hash

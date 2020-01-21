@@ -4,7 +4,7 @@ from libra.validator_verifier import VerifyError, ValidatorVerifier
 from libra.validator_change import ValidatorChangeProof
 from libra.hasher import *
 from libra.proof import verify_transaction_list
-from libra.proof.signed_transaction_with_proof import SignedTransactionWithProof
+from libra.proof.transaction_with_proof import TransactionWithProof
 from libra.proof.account_state_with_proof import AccountStateWithProof
 from libra.proof.event_with_proof import EventWithProof
 from libra.transaction import SignedTransaction, TransactionInfo
@@ -75,7 +75,7 @@ def verify_response_item(ledger_info, requested_item, response_item):
             atreq.account,
             atreq.sequence_number,
             atreq.fetch_events,
-            atresp.signed_transaction_with_proof,
+            atresp.transaction_with_proof,
             atresp.proof_of_current_sequence_number
         )
     elif resp_type == "get_events_by_event_access_path_response":
@@ -106,22 +106,21 @@ def verify_get_txn_by_seq_num_resp(
         account,
         sequence_number,
         fetch_events,
-        signed_transaction_with_proof,
+        transaction_with_proof,
         proof_of_current_sequence_number
     ):
-    has_stx = len(signed_transaction_with_proof.__str__()) > 0
+    has_stx = len(transaction_with_proof.__str__()) > 0
     has_cur = len(proof_of_current_sequence_number.__str__()) > 0
     if has_stx and not has_cur:
         ensure(
-            fetch_events == signed_transaction_with_proof.HasField("events"),
+            fetch_events == transaction_with_proof.HasField("events"),
             "Bad GetAccountTxnBySeqNum response. Events requested: {}, events returned: {}.",
             fetch_events,
-            signed_transaction_with_proof.HasField("events")
+            transaction_with_proof.HasField("events")
         )
-        SignedTransactionWithProof.verify(
-            signed_transaction_with_proof,
+        TransactionWithProof.from_proto(transaction_with_proof).verify_user_txn(
             ledger_info,
-            signed_transaction_with_proof.version,
+            transaction_with_proof.version,
             account,
             sequence_number
         )

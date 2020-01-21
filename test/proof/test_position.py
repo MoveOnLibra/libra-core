@@ -10,6 +10,10 @@ def assert_equal(aa, bb):
 def assert_true(aa):
     assert aa == True
 
+def test_position_hash():
+    v = Position.from_inorder_index(9).__hash__()
+    assert v == 9
+
 # Position is marked with in-order-traversal sequence.
 
 # For example
