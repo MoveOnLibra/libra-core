@@ -1,15 +1,26 @@
 from libra.account_address import Address
-from libra.proof.mod import ensure, bail, verify_sparse_merkle_element, verify_transaction_info
+from libra.account_state_blob import AccountStateBlob
+from libra.transaction import Version
+#from libra.proof.mod import verify_transaction_info
+from libra.proof.definition import AccountStateProof
+from libra.proof.anyhow import ensure, bail
+from dataclasses import dataclass, field
+from typing import List, Optional
 
-
+@dataclass
 class AccountStateWithProof:
+    # The transaction version at which this account state is seen.
+    version: Version
+    # Blob value representing the account state. If this field is not set, it
+    # means the account does not exist.
+    blob: Optional[AccountStateBlob]
+    # The proof the client can use to authenticate the value.
+    proof: AccountStateProof
+
     @classmethod
     def from_proto(cls, proto):
-        ret = cls()
-        ret.version = proto.version
-        ret.blob = proto.blob
-        ret.proof = proto.proof
-        return ret
+        proof = AccountStateProof.from_proto(proto.proof)
+        return cls(proto.version, proto.blob, proof)
 
     def verify(
             self,
@@ -23,34 +34,4 @@ class AccountStateWithProof:
             self.version,
             version
         )
-        breakpoint()
-        verify_account_state(
-            ledger_info,
-            version,
-            Address.hash(address),
-            self.blob,
-            self.proof
-        )
-
-# Verifies that the state of an account at version `state_version` is correct using the provided
-# proof.  If `account_state_blob` is present, we expect the account to exist, otherwise we
-# expect the account to not exist.
-def verify_account_state(
-        ledger_info,
-        state_version,
-        account_address_hash,
-        account_state_blob,
-        account_state_proof
-        ):
-    verify_sparse_merkle_element(
-        account_state_proof.transaction_info.state_root_hash,
-        account_address_hash,
-        account_state_blob,
-        account_state_proof.transaction_info_to_account_proof
-    )
-    verify_transaction_info(
-        ledger_info,
-        state_version,
-        account_state_proof.transaction_info,
-        account_state_proof.ledger_info_to_transaction_info_proof)
-
+        self.proof.verify(ledger_info, version, Address.hash(address), self.blob)

@@ -1,6 +1,5 @@
-from canoser import *
+from canoser import Struct, Uint8, Uint64
 from libra.event import EventHandle
-from libra.hasher import gen_hasher
 from libra.account_config import AccountConfig
 from io import StringIO
 

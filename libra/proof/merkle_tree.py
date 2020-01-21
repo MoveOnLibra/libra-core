@@ -1,5 +1,5 @@
 from libra.hasher import (
-    HashValue,
+    HashValue, gen_hasher,
     SparseMerkleInternalHasher, TransactionAccumulatorHasher,
     EventAccumulatorHasher, TestOnlyHasher)
 from libra.contract_event import ContractEvent
@@ -11,27 +11,34 @@ from typing import Callable
 class MerkleTreeInternalNode:
     left_child: HashValue
     right_child: HashValue
-    hasher: Callable[[], object] = field(init=False)
+    hasher: Callable[[], object]# = field(init=False)
 
 
     def hash(self):
         shazer = self.hasher()
-        shazer.update(self.left_child)
-        shazer.update(self.right_child)
+        shazer.update(bytes(self.left_child))
+        shazer.update(bytes(self.right_child))
         return shazer.digest()
 
-
+@dataclass
 class SparseMerkleInternalNode(MerkleTreeInternalNode):
-    hasher = SparseMerkleInternalHasher
+    #hasher = SparseMerkleInternalHasher
+    hasher: Callable[[], object] = field(default=SparseMerkleInternalHasher)
 
+@dataclass
 class TransactionAccumulatorInternalNode(MerkleTreeInternalNode):
-    hasher = TransactionAccumulatorHasher
+    #hasher = TransactionAccumulatorHasher
+    hasher: Callable[[], object] = field(default=TransactionAccumulatorHasher)
 
+@dataclass
 class EventAccumulatorInternalNode(MerkleTreeInternalNode):
-    hasher = EventAccumulatorHasher
+    #hasher = EventAccumulatorHasher
+    hasher: Callable[[], object] = field(default=EventAccumulatorHasher)
 
+@dataclass
 class TestAccumulatorInternalNode(MerkleTreeInternalNode):
-    hasher = TestOnlyHasher
+    #hasher = TestOnlyHasher
+    hasher: Callable[[], object] = field(default=TestOnlyHasher)
 
 
 
@@ -58,14 +65,13 @@ def get_event_root_hash(events):
     return get_accumulator_root_hash(EventAccumulatorHasher(), event_hashes)
 
 
-
+@dataclass
 class SparseMerkleLeafNode:
-    def __init__(self, key, value_hash):
-        self.key = key
-        self.value_hash = value_hash
+    key: HashValue
+    value_hash: HashValue
 
     def hash(self):
         shazer = gen_hasher(b"SparseMerkleLeafNode::libra_types::proof")
-        shazer.update(self.key)
-        shazer.update(self.value_hash)
+        shazer.update(bytes(self.key))
+        shazer.update(bytes(self.value_hash))
         return shazer.digest()

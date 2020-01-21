@@ -2,7 +2,6 @@ import collections
 import more_itertools
 from libra.ledger_info import LedgerInfo
 from libra.transaction import Version, TransactionInfo
-from libra.proof.definition import TransactionAccumulatorProof
 from libra.proof.anyhow import ensure, bail
 
 
@@ -11,7 +10,7 @@ def verify_transaction_info(
     ledger_info: LedgerInfo,
     transaction_version: Version,
     transaction_info: TransactionInfo,
-    ledger_info_to_transaction_info_proof: TransactionAccumulatorProof
+    ledger_info_to_transaction_info_proof#: TransactionAccumulatorProof
 ):
     ensure(
         transaction_version <= ledger_info.version,

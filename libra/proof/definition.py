@@ -2,8 +2,10 @@ from libra.hasher import (
     HashValue, ACCUMULATOR_PLACEHOLDER_HASH,SPARSE_MERKLE_PLACEHOLDER_HASH,
     TransactionAccumulatorHasher, EventAccumulatorHasher, TestOnlyHasher,
     bytes_to_bits, common_prefix_bits_len)
+from libra.proof.merkle_tree import MerkleTreeInternalNode, SparseMerkleLeafNode, SparseMerkleInternalNode
 from libra.validator_verifier import VerifyError
 from libra.proof.anyhow import ensure, bail
+from libra.proof.mod import verify_transaction_info
 from libra.account_state_blob import AccountStateBlob
 from libra.transaction import TransactionInfo, Version
 from libra.ledger_info import LedgerInfo
@@ -59,7 +61,7 @@ class AccumulatorProof:
     # All siblings in this proof, including the default ones. Siblings are ordered from the bottom
     # level to the root level.
     siblings: List[HashValue]
-    hasher: Callable[[], object] = field(init=False)
+    #hasher: Callable[[], object] = field(init=False)
 
 
     # Verifies an element whose hash is `element_hash` and version is `element_version` exists in
@@ -81,13 +83,13 @@ class AccumulatorProof:
         for sibling_hash in self.siblings:
             if index % 2 == 0:
                 # the current node is a left child.
-                hashv = MerkleTreeInternalNode(hashv, sibling_hash, self.hasher).hash()
+                hashv = MerkleTreeInternalNode(hashv, sibling_hash, self.__class__.hasher).hash()
             else:
                 # the current node is a right child.
-                hashv = MerkleTreeInternalNode(sibling_hash, hashv, self.hasher).hash()
+                hashv = MerkleTreeInternalNode(sibling_hash, hashv, self.__class__.hasher).hash()
             index //= 2
         ensure(
-            hashv == expected_root_hash,
+            hashv == bytes(expected_root_hash),
             "Root hashes do not match. Actual root hash: {}. Expected root hash: {}.",
             hashv,
             expected_root_hash
@@ -115,6 +117,7 @@ class TestAccumulatorProof(AccumulatorProof):
 
 # A proof that can be used to authenticate an element in a Sparse Merkle Tree given trusted root
 # hash. For example, `TransactionInfoToAccountProof` can be constructed on top of this structure.
+@dataclass
 class SparseMerkleProof:
     # This proof can be used to authenticate whether a given leaf exists in the tree or not.
     #     - If this is `Some(HashValue, HashValue)`
@@ -279,7 +282,7 @@ class AccumulatorRangeProof:
     # The sliblings on the right of the path from the last leaf to the root. Siblings near the root
     # are at the beginning of the vector.
     right_siblings: List[HashValue]
-    hasher: Callable[[], object] = field(init=False)
+    #hasher: Callable[[], object] = field(init=False)
 
     @classmethod
     def new_empty(cls):
@@ -371,7 +374,7 @@ class AccumulatorRangeProof:
         #     std::mem::swap(&mut current_hashes, &mut parent_hashes);
 
         ensure(
-            current_hashes[0] == expected_root_hash,
+            current_hashes[0] == bytes(expected_root_hash),
             "Root hashes do not match. Actual root hash: {}. Expected root hash: {}.",
             current_hashes[0],
             expected_root_hash,

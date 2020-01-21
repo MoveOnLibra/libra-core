@@ -1,3 +1,4 @@
+from libra.hasher import gen_hasher
 
 class AccountStateBlob:
     def __init__(self, blob):
