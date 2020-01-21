@@ -47,10 +47,13 @@ class NodeDirection(Enum):
     Left = 0
     Right = 1
 
-@dataclass
+@dataclass#(unsafe_hash=True)
 class Position:
     value : Uint64
     # invariant Position.0 < Uint64::max_value() - 1
+
+    def __hash__(self):
+        return self.value.__hash__()
 
     # What level is this node in the tree, 0 if the node is a leaf,
     # 1 if the level is one above a leaf, etc.
