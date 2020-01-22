@@ -90,6 +90,10 @@ class TransactionListWithProof:
         if len(proto.first_transaction_version.__str__()) > 0:
             first_transaction_version = proto.first_transaction_version.value
         else:
-            first_transaction_version = None
+            if len(transactions) > 0:
+                #Maybe bug of protobuf of py
+                first_transaction_version = 0
+            else:
+                first_transaction_version = None
         proof = TransactionListProof.from_proto(proto.proof)
         return cls(transactions, events, first_transaction_version, proof)

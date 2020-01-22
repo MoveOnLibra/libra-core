@@ -1,7 +1,6 @@
 from libra.account_address import Address
 from libra.account_state_blob import AccountStateBlob
 from libra.transaction import Version
-#from libra.proof.mod import verify_transaction_info
 from libra.proof.definition import AccountStateProof
 from libra.proof.anyhow import ensure, bail
 from dataclasses import dataclass, field

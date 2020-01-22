@@ -3,7 +3,6 @@ from libra.crypto_proxies import EpochInfo
 from libra.validator_verifier import VerifyError, ValidatorVerifier
 from libra.validator_change import ValidatorChangeProof
 from libra.hasher import *
-from libra.proof import verify_transaction_list
 from libra.proof.transaction_with_proof import TransactionWithProof
 from libra.proof.transaction_list_with_proof import TransactionListWithProof
 from libra.proof.account_state_with_proof import AccountStateWithProof
