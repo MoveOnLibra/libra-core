@@ -5,6 +5,7 @@ from libra.validator_change import ValidatorChangeProof
 from libra.hasher import *
 from libra.proof import verify_transaction_list
 from libra.proof.transaction_with_proof import TransactionWithProof
+from libra.proof.transaction_list_with_proof import TransactionListWithProof
 from libra.proof.account_state_with_proof import AccountStateWithProof
 from libra.proof.event_with_proof import EventWithProof
 from libra.transaction import SignedTransaction, TransactionInfo
@@ -92,11 +93,11 @@ def verify_response_item(ledger_info, requested_item, response_item):
         )
     elif resp_type == "get_transactions_response":
         req = requested_item.get_transactions_request
-        ver = req.start_version
+        start_version = req.start_version
         limit = req.limit
         fetch_events = req.fetch_events
         txp = response_item.get_transactions_response.txn_list_with_proof
-        verify_get_txns_resp(ledger_info, ver, limit, fetch_events, txp)
+        verify_get_txns_resp(ledger_info, start_version, limit, fetch_events, txp)
     else:
         raise VerifyError(f"unknown response type:{resp_type}")
 
@@ -199,8 +200,7 @@ def gen_events_resp_idxs(seq_num_upper_bound, req_start_seq_num, req_ascending, 
 
 def verify_get_txns_resp(ledger_info, start_version, limit, fetch_events, txn_list_with_proof):
     if limit == 0 or start_version > ledger_info.version:
-        if txn_list_with_proof.SerializeToString() != b'':
-            raise VerifyError(f"transactions should be empty.")
+        TransactionListWithProof.from_proto(txn_list_with_proof).verify(ledger_info, None)
         return
     if fetch_events != txn_list_with_proof.HasField("events_for_versions"):
         raise VerifyError(f"fetch_events: {fetch_events} mismatch with events_for_versions")
@@ -208,10 +208,5 @@ def verify_get_txns_resp(ledger_info, start_version, limit, fetch_events, txn_li
     ret_num = min(limit, ledger_info.version - start_version + 1)
     if num_txns != ret_num:
         raise VerifyError(f"transaction number expected:{ret_num}, returned:{num_txns}.")
-    verify_start_version(txn_list_with_proof, start_version)
-    verify_transaction_list(txn_list_with_proof, ledger_info)
+    TransactionListWithProof.from_proto(txn_list_with_proof).verify(ledger_info, start_version)
 
-def verify_start_version(txn_list_with_proof, start_version):
-    ver = txn_list_with_proof.first_transaction_version.value
-    if ver != start_version:
-        raise VerifyError(f"transaction version mismatch:{start_version}, returned:{ver}.")

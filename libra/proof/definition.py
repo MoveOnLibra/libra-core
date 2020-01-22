@@ -12,7 +12,7 @@ from libra.ledger_info import LedgerInfo
 from canoser import Uint64, Uint8
 from dataclasses import dataclass, field
 from typing import List, Optional, Callable, Tuple
-
+import more_itertools
 
 # Converts sibling nodes from Protobuf format to Rust format, using the fact that empty byte
 # arrays represent placeholder hashes.
@@ -251,9 +251,7 @@ class AccumulatorConsistencyProof:
 
     @classmethod
     def from_proto(cls, proto):
-        ret = cls()
-        ret.subtrees = proto.subtrees
-        return ret
+        return cls(proto.subtrees)
 
 
 # A proof that is similar to `AccumulatorProof`, but can be used to authenticate a range of
@@ -325,67 +323,63 @@ class AccumulatorRangeProof:
             "leaf_hashes is empty while first_leaf_index indicated non-empty list.",
         )
 
-        left_sibling_iter = self.left_siblings.iter()
-        right_sibling_iter = self.right_siblings.iter()
+        left_sibling_iter = 0
+        right_sibling_iter = 0
 
+        from libra.proof.position import Position
         first_pos = Position.from_leaf_index(first_leaf_index)
-        current_hashes = leaf_hashes
+        current_hashes = leaf_hashes.copy()
         parent_hashes = []
 
-        # # Keep reducing the list of hashes by combining all the children pairs, until there is
-        # # only one hash left.
-        # while current_hashes.len() > 1
-        #     || left_sibling_iter.peek().is_some()
-        #     || right_sibling_iter.peek().is_some():
-        #     children_iter = current_hashes.iter()
+        # Keep reducing the list of hashes by combining all the children pairs, until there is
+        # only one hash left.
+        while len(current_hashes) > 1 \
+            or len(self.left_siblings) > left_sibling_iter \
+            or len(self.right_siblings) > right_sibling_iter:
+            children_iter = current_hashes.__iter__()
 
-        #     # If the first position on the current level is a right child, it needs to be combined
-        #     # with a sibling on the left.
-        #     if first_pos.is_right_child():
-        #         left_hash = left_sibling_iter.next().ok_or_else(|| {
-        #             format_err!("First child is a right child, but missing sibling on the left.")
-        #         })
-        #         right_hash = children_iter.next().expect("The first leaf must exist.");
-        #         parent_hashes.push(MerkleTreeInternalNode::<H>::new(left_hash, right_hash).hash());
+            # If the first position on the current level is a right child, it needs to be combined
+            # with a sibling on the left.
+            if first_pos.is_right_child():
+                left_hash = self.left_siblings[left_sibling_iter]
+                left_sibling_iter += 1
+                right_hash = children_iter.__next__()
+                hashv = MerkleTreeInternalNode(left_hash, right_hash, self.__class__.hasher).hash()
+                parent_hashes.append(hashv)
 
 
-        #     # Next we take two children at a time and compute their parents.
-        #     children_iter = children_iter.as_slice().chunks_exact(2);
-        #     while Some(chunk) = children_iter.next() {
-        #         left_hash = chunk[0];
-        #         right_hash = chunk[1];
-        #         parent_hashes.push(MerkleTreeInternalNode::<H>::new(left_hash, right_hash).hash());
-        #     }
+            # Next we take two children at a time and compute their parents.
+            for chunk in more_itertools.chunked(children_iter, 2):
+                if len(chunk) == 2:
+                    left_hash = chunk[0]
+                    right_hash = chunk[1]
+                    hashv = MerkleTreeInternalNode(left_hash, right_hash, self.__class__.hasher).hash()
+                    parent_hashes.append(hashv)
+                else:
+                    # Similarly, if the last position is a left child, it needs to be combined with a
+                    # sibling on the right.
+                    left_hash = chunk[0]
+                    right_hash = self.right_siblings[right_sibling_iter]
+                    right_sibling_iter += 1
+                    hashv = MerkleTreeInternalNode(left_hash, right_hash, self.__class__.hasher).hash()
+                    parent_hashes.append(hashv)
 
-        #     # Similarly, if the last position is a left child, it needs to be combined with a
-        #     # sibling on the right.
-        #     remainder = children_iter.remainder();
-        #     assert!(remainder.len() <= 1);
-        #     if !remainder.is_empty() {
-        #         left_hash = remainder[0];
-        #         right_hash = *right_sibling_iter.next().ok_or_else(|| {
-        #             format_err!("Last child is a left child, but missing sibling on the right.")
-        #         })?;
-        #         parent_hashes.push(MerkleTreeInternalNode::<H>::new(left_hash, right_hash).hash());
-        #     }
-
-        #     first_pos = first_pos.parent();
-        #     current_hashes.clear();
-        #     std::mem::swap(&mut current_hashes, &mut parent_hashes);
+            first_pos = first_pos.parent()
+            current_hashes = parent_hashes
+            parent_hashes = []
 
         ensure(
             current_hashes[0] == bytes(expected_root_hash),
             "Root hashes do not match. Actual root hash: {}. Expected root hash: {}.",
             current_hashes[0],
-            expected_root_hash,
+            expected_root_hash
         )
 
     @classmethod
     def from_proto(cls, proto):
-        ret = cls()
-        ret.left_siblings = from_proto_siblings(proto.left_siblings, ACCUMULATOR_PLACEHOLDER_HASH)
-        ret.right_siblings = from_proto_siblings(proto.right_siblings, ACCUMULATOR_PLACEHOLDER_HASH)
-        return ret
+        left_siblings = from_proto_siblings(proto.left_siblings, ACCUMULATOR_PLACEHOLDER_HASH)
+        right_siblings = from_proto_siblings(proto.right_siblings, ACCUMULATOR_PLACEHOLDER_HASH)
+        return cls(left_siblings, right_siblings)
 
 
 class TransactionAccumulatorRangeProof(AccumulatorRangeProof):
@@ -423,9 +417,8 @@ class SparseMerkleRangeProof:
 
     @classmethod
     def from_proto(cls, proto):
-        ret = cls()
-        ret.right_siblings = from_proto_siblings(proto.right_siblings, SPARSE_MERKLE_PLACEHOLDER_HASH)
-        return ret
+        right_siblings = from_proto_siblings(proto.right_siblings, SPARSE_MERKLE_PLACEHOLDER_HASH)
+        return cls(right_siblings)
 
 
 
@@ -611,13 +604,13 @@ class TransactionListProof:
         zipped = zip(transaction_hashes, self.transaction_infos)
         for txn_hash, txn_info in zipped:
             ensure(
-                txn_hash == txn_info.transaction_hash,
+                bytes(txn_hash) == bytes(txn_info.transaction_hash),
                 "The hash of transaction does not match the transaction info in proof. \
                  Transaction hash: {}. Transaction hash in txn_info: {}.",
                 txn_hash,
                 txn_info.transaction_hash
             )
-        txn_info_hashes = [x.hash() for x in transaction_infos]
+        txn_info_hashes = [x.hash() for x in self.transaction_infos]
         self.ledger_info_to_transaction_infos_proof.verify(
             ledger_info.transaction_accumulator_hash,
             first_transaction_version,
