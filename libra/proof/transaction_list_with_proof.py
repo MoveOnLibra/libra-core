@@ -67,7 +67,7 @@ class TransactionListWithProof:
                 event_hashes = [x.hash() for x in events]
                 event_root_hash = EventAccumulatorHasherInMemoryAccumulator.from_leaves(event_hashes).root_hash
                 ensure(
-                    event_root_hash == txn_info.event_root_hash,
+                    bytes(event_root_hash) == bytes(txn_info.event_root_hash),
                     "Some event root hash calculated doesn't match that carried on the \
                      transaction info.",
                 )
@@ -87,6 +87,9 @@ class TransactionListWithProof:
             events = [[ContractEvent.from_proto(y) for y in x.events] for x in event_lists]
         else:
             events = None
-        first_transaction_version = proto.first_transaction_version.value
+        if len(proto.first_transaction_version.__str__()) > 0:
+            first_transaction_version = proto.first_transaction_version.value
+        else:
+            first_transaction_version = None
         proof = TransactionListProof.from_proto(proto.proof)
         return cls(transactions, events, first_transaction_version, proof)

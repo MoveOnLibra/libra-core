@@ -20,7 +20,11 @@ class AccountStateWithProof:
     @classmethod
     def from_proto(cls, proto):
         proof = AccountStateProof.from_proto(proto.proof)
-        return cls(proto.version, proto.blob, proof)
+        if len(proto.blob.__str__()) > 0:
+            blob = AccountStateBlob.from_proto(proto.blob)
+        else:
+            blob = None
+        return cls(proto.version, blob, proof)
 
     def verify(
             self,

@@ -183,7 +183,7 @@ class SparseMerkleProof:
                     proof_key,
                     element_key
                 )
-                hashv = AccountStateBlob.from_proto(element_blob).hash()
+                hashv = element_blob.hash()
                 ensure(
                     hashv == proof_value_hash,
                     "Value hashes do not match. Value hash in proof: {}. Expected value hash: {}",
@@ -207,7 +207,7 @@ class SparseMerkleProof:
                      the only existing key, if it existed. So this is not a valid non-inclusion proof."
                 )
         else:
-            if len(element_blob.__str__()) > 0:
+            if element_blob is not None:
                 raise VerifyError("Expected inclusion proof. Found non-inclusion proof.")
             else:
                 # This is a non-inclusion proof. The proof intends to show that if a leaf node

@@ -136,7 +136,6 @@ def verify_get_txn_by_seq_num_resp(
             sequence_number,
             sequence_number_in_ledger
         )
-        breakpoint()
         AccountStateWithProof.from_proto(proof_of_current_sequence_number).verify(ledger_info,
             ledger_info.version, account)
     else:
