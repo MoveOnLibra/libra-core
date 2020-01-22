@@ -10,12 +10,13 @@ from libra.proof.account_state_with_proof import AccountStateWithProof
 from libra.proof.event_with_proof import EventWithProof
 from libra.transaction import SignedTransaction, TransactionInfo
 from libra.account_address import Address
+from libra.access_path import AccessPath
 from libra.proof import ensure, bail
 from libra.account_resource import AccountResource
-import canoser
-import typing
+from canoser import Uint64
+from typing import List, Optional
 
-def verify(verifier_type, request, response) -> typing.Optional[EpochInfo]:
+def verify(verifier_type, request, response) -> Optional[EpochInfo]:
     return verify_update_to_latest_ledger_response(
         verifier_type,
         request.client_known_version,
@@ -32,7 +33,7 @@ def verify_update_to_latest_ledger_response(
     response_items,
     ledger_info_with_sigs,
     validator_change_proof
-    ) -> typing.Optional[EpochInfo]:
+    ) -> Optional[EpochInfo]:
     ledger_info = ledger_info_with_sigs.ledger_info
     signatures = ledger_info_with_sigs.signatures
     if ledger_info.version < req_client_known_version:
@@ -82,14 +83,15 @@ def verify_response_item(ledger_info, requested_item, response_item):
     elif resp_type == "get_events_by_event_access_path_response":
         ereq = requested_item.get_events_by_event_access_path_request
         eresp = response_item.get_events_by_event_access_path_response
+
         verify_get_events_by_access_path_resp(
             ledger_info,
             ereq.access_path,
             ereq.start_event_seq_num,
             ereq.ascending,
             ereq.limit,
-            eresp.events_with_proof,
-            eresp.proof_of_latest_event
+            [EventWithProof.from_proto(x) for x in eresp.events_with_proof],
+            AccountStateWithProof.from_proto(eresp.proof_of_latest_event)
         )
     elif resp_type == "get_transactions_response":
         req = requested_item.get_transactions_request
@@ -134,7 +136,8 @@ def verify_get_txn_by_seq_num_resp(
             sequence_number,
             sequence_number_in_ledger
         )
-        AccountStateWithProof.verify(proof_of_current_sequence_number, ledger_info,
+        breakpoint()
+        AccountStateWithProof.from_proto(proof_of_current_sequence_number).verify(ledger_info,
             ledger_info.version, account)
     else:
         bail(
@@ -147,17 +150,16 @@ def verify_get_txn_by_seq_num_resp(
 
 
 def verify_get_events_by_access_path_resp(
-        ledger_info,
-        req_access_path,
-        req_start_seq_num,
-        req_ascending,
-        req_limit,
-        events_with_proof,
-        proof_of_latest_event,
+        ledger_info: LedgerInfo,
+        req_access_path: AccessPath,
+        req_start_seq_num: Uint64,
+        req_ascending: bool,
+        req_limit: Uint64,
+        events_with_proof: List[EventWithProof],
+        proof_of_latest_event: AccountStateWithProof
     ):
+    proof_of_latest_event.verify(ledger_info, ledger_info.version, req_access_path.address)
     account_resource = AccountResource.get_account_resource_or_default(proof_of_latest_event.blob)
-    AccountStateWithProof.verify(proof_of_latest_event, ledger_info, ledger_info.version,
-            req_access_path.address)
     event_handle = account_resource.get_event_handle_by_query_path(req_access_path.path)
     expected_event_key = event_handle.key
     expected_seq_nums = gen_events_resp_idxs(event_handle.count,
@@ -170,8 +172,7 @@ def verify_get_events_by_access_path_resp(
     )
     zipped = zip(events_with_proof, expected_seq_nums)
     for event_with_proof, seq_num in zipped:
-        EventWithProof.verify(
-            event_with_proof,
+        event_with_proof.verify(
             ledger_info,
             expected_event_key,
             seq_num,
@@ -181,7 +182,7 @@ def verify_get_events_by_access_path_resp(
 
 
 def gen_events_resp_idxs(seq_num_upper_bound, req_start_seq_num, req_ascending, req_limit):
-    if not req_ascending and req_start_seq_num == canoser.Uint64.max_value and seq_num_upper_bound > 0:
+    if not req_ascending and req_start_seq_num == Uint64.max_value and seq_num_upper_bound > 0:
         cursor = seq_num_upper_bound - 1
     else:
         cursor = req_start_seq_num

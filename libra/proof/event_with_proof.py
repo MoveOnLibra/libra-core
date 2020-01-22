@@ -1,8 +1,23 @@
-from libra.proof.mod import ensure, bail, verify_accumulator_element, verify_transaction_info
+from libra.proof.anyhow import ensure, bail
+from libra.proof.definition import EventProof
 from libra.contract_event import ContractEvent
 from libra.hasher import EventAccumulatorHasher
+from libra.ledger_info import LedgerInfo
+from libra.event import EventKey
+from libra.transaction import Version
+from canoser import Uint64
+from dataclasses import dataclass
 
+
+@dataclass
 class EventWithProof:
+    transaction_version: Uint64 # Should be `Version`
+    event_index: Uint64
+    event: ContractEvent
+    proof: EventProof
+
+    # Verifies the event with the proof, both carried by `self`.
+    #
     # Two things are ensured if no error is raised:
     #   1. This event exists in the ledger represented by `ledger_info`.
     #   2. And this event has the same `event_key`, `sequence_number`, `transaction_version`,
@@ -10,65 +25,50 @@ class EventWithProof:
     # to the call site and is supposed to be informed by this struct, get it from the struct
     # itself, such as: `event_with_proof.event.access_path()`, `event_with_proof.event_index()`,
     # etc.
-    @classmethod
     def verify(
-            cls,
-            event_with_proof,
-            ledger_info,
-            event_key,
-            sequence_number,
-            transaction_version,
-            event_index):
+        self,
+        ledger_info: LedgerInfo,
+        event_key: EventKey,
+        sequence_number: Uint64,
+        transaction_version: Version,
+        event_index: Uint64,
+    ):
         ensure(
-            event_with_proof.event.key == bytes(event_key),
+            bytes(self.event.key) == bytes(event_key),
             "Event key ({}) not expected ({}).",
-            event_with_proof.event.key,
-            bytes(event_key)
+            self.event.key,
+            event_key,
         )
         ensure(
-            event_with_proof.event.sequence_number == sequence_number,
+            self.event.event_seq_num == sequence_number,
             "Sequence number ({}) not expected ({}).",
-            event_with_proof.event.sequence_number,
-            sequence_number
+            self.event.event_seq_num,
+            sequence_number,
         )
         ensure(
-            event_with_proof.transaction_version == transaction_version,
+            self.transaction_version == transaction_version,
             "Transaction version ({}) not expected ({}).",
-            event_with_proof.transaction_version,
-            transaction_version
+            self.transaction_version,
+            transaction_version,
         )
         ensure(
-            event_with_proof.event_index == event_index,
+            self.event_index == event_index,
             "Event index ({}) not expected ({}).",
-            event_with_proof.event_index,
-            event_index
-        )
-        ce = ContractEvent.from_proto(event_with_proof.event)
-        verify_event(
-            ledger_info,
-            ce.hash(),
-            transaction_version,
+            self.event_index,
             event_index,
-            event_with_proof.proof
         )
 
-def verify_event(
+        self.proof.verify(
             ledger_info,
-            event_hash,
+            self.event.hash(),
             transaction_version,
-            event_version_within_transaction,
-            event_proof
-        ):
-    verify_accumulator_element(
-        EventAccumulatorHasher,
-        event_proof.transaction_info.event_root_hash,
-        event_hash,
-        event_version_within_transaction,
-        event_proof.transaction_info_to_event_proof
-    )
-    verify_transaction_info(
-        ledger_info,
-        transaction_version,
-        event_proof.transaction_info,
-        event_proof.ledger_info_to_transaction_info_proof
-    )
+            event_index,
+        )
+
+
+    @classmethod
+    def from_proto(cls, event_with_proof):
+        ce = ContractEvent.from_proto(event_with_proof.event)
+        proof = EventProof.from_proto(event_with_proof.proof)
+        return cls(event_with_proof.transaction_version, event_with_proof.event_index, ce, proof)
+
