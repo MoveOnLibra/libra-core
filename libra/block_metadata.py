@@ -7,7 +7,7 @@ from libra.transaction.transaction_argument import ED25519_SIGNATURE_LENGTH
 class BlockMetadata(Struct):
     _fields = [
         ('id', HashValue),
-        ('timestamp_usec', Uint64),
+        ('timestamp_usecs', Uint64),
         ('previous_block_votes', {Address: [Uint8, ED25519_SIGNATURE_LENGTH]}),
         ('proposer', Address)
     ]
