@@ -164,7 +164,7 @@ class InMemoryAccumulator:
             num_new_leaves
         )
         if self.num_leaves == 0:
-            return cls.new(subtrees, num_new_leaves)
+            return self.__class__.new(subtrees, num_new_leaves)
 
         current_subtree_roots = self.frozen_subtree_roots.copy()
         current_num_leaves = self.num_leaves
@@ -195,7 +195,7 @@ class InMemoryAccumulator:
         # of new leaves, `Self.new` below will raise an error.
         current_num_leaves += remaining_new_leaves
         current_subtree_roots.extend(subtree_iter)
-        return cls.new(current_subtree_roots, current_num_leaves)
+        return self.__class__.new(current_subtree_roots, current_num_leaves)
 
 
     def version(self):
