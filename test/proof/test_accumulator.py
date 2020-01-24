@@ -4,23 +4,13 @@ from libra.proof.position import FrozenSubtreeSiblingIterator, Position
 from libra.proof.merkle_tree import TestAccumulatorInternalNode
 from libra.hasher import HashValue, tst_only_hash, TestOnlyHasher, ACCUMULATOR_PLACEHOLDER_HASH
 from typing import Mapping, List
+from libra.intlib import next_power_of_two
 
 def assert_equal(aa, bb):
     assert aa == bb
 
 def assert_true(aa):
     assert aa == True
-
-def next_power_of_two(num):
-    for i in range(99999999):
-        pow2 = pow(2, i)
-        if num <= pow2:
-            return pow2
-
-
-def test_next_power_of_two():
-    assert_equal(next_power_of_two(2), 2)
-    assert_equal(next_power_of_two(3), 4)
 
 
 def resize_list(alist, size, value):

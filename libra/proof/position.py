@@ -5,20 +5,7 @@ from libra.proof.mod import ensure
 from canoser import DelegateT, Uint64, Uint32
 from enum import Enum
 from dataclasses import dataclass
-
-def trailing_zeros(longint):
-  manipulandum = bin(longint)
-  return len(manipulandum)-len(manipulandum.rstrip('0'))
-
-def leading_zeros(longint, bitlen=64):
-    if longint == 0:
-        return bitlen
-    manipulandum = bin(longint)
-    assert manipulandum[0:2] == '0b'
-    return bitlen + 2 - len(manipulandum)
-
-def count_ones(num):
-    return bin(num)[2:].count('1')
+from libra.intlib import trailing_zeros, leading_zeros, count_ones
 
 
 # This module provides an abstraction for positioning a node in a binary tree,
