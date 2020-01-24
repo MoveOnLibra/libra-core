@@ -31,3 +31,11 @@ def resize_list(alist, size, value):
         for _i in range(diff):
             alist.append(value)
         return alist
+
+
+def assert_equal(aa, bb):
+    assert aa == bb
+
+def assert_true(aa):
+    assert aa == True
+

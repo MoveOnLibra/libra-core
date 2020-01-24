@@ -5,10 +5,14 @@ def assert_equal(aa, bb):
 
 
 def test_next_power_of_two():
+    assert_equal(next_power_of_two(0), 1)
+    assert_equal(next_power_of_two(1), 1)
     assert_equal(next_power_of_two(2), 2)
     assert_equal(next_power_of_two(3), 4)
 
 def test_is_power_of_two():
+    assert_equal(is_power_of_two(0), False)
+    assert_equal(is_power_of_two(1), True)
     assert_equal(is_power_of_two(2), True)
     assert_equal(is_power_of_two(3), False)
     assert_equal(is_power_of_two(8), True)

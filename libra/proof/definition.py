@@ -89,7 +89,7 @@ class AccumulatorProof:
                 hashv = MerkleTreeInternalNode(sibling_hash, hashv, self.__class__.hasher).hash()
             index //= 2
         ensure(
-            hashv == bytes(expected_root_hash),
+            bytes(hashv) == bytes(expected_root_hash),
             "Root hashes do not match. Actual root hash: {}. Expected root hash: {}.",
             hashv,
             expected_root_hash
