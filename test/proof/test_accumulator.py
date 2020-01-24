@@ -4,7 +4,7 @@ from libra.proof.position import FrozenSubtreeSiblingIterator, Position
 from libra.proof.merkle_tree import TestAccumulatorInternalNode
 from libra.hasher import HashValue, tst_only_hash, TestOnlyHasher, ACCUMULATOR_PLACEHOLDER_HASH
 from typing import Mapping, List
-from libra.intlib import next_power_of_two
+from libra.rustlib import next_power_of_two, resize_list
 
 def assert_equal(aa, bb):
     assert aa == bb
@@ -12,19 +12,6 @@ def assert_equal(aa, bb):
 def assert_true(aa):
     assert aa == True
 
-
-def resize_list(alist, size, value):
-    if len(alist) >= size:
-        return alist[0:size]
-    else:
-        diff = size - len(alist)
-        for _i in range(diff):
-            alist.append(value)
-        return alist
-
-def test_resize_list():
-    assert_equal(resize_list([1,2,3], 2, None), [1,2])
-    assert_equal(resize_list([1,2,3], 6, 2), [1,2,3,2,2,2])
 
 def compute_parent_hash(left_hash: HashValue, right_hash: HashValue) -> HashValue:
     if left_hash == ACCUMULATOR_PLACEHOLDER_HASH and right_hash == ACCUMULATOR_PLACEHOLDER_HASH:

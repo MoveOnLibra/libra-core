@@ -21,3 +21,13 @@ def leading_zeros(longint, bitlen=64):
 
 def count_ones(num):
     return bin(num)[2:].count('1')
+
+
+def resize_list(alist, size, value):
+    if len(alist) >= size:
+        return alist[0:size]
+    else:
+        diff = size - len(alist)
+        for _i in range(diff):
+            alist.append(value)
+        return alist

@@ -5,7 +5,7 @@ from libra.proof.mod import ensure
 from canoser import DelegateT, Uint64, Uint32
 from enum import Enum
 from dataclasses import dataclass
-from libra.intlib import trailing_zeros, leading_zeros, count_ones
+from libra.rustlib import trailing_zeros, leading_zeros, count_ones
 
 
 # This module provides an abstraction for positioning a node in a binary tree,
