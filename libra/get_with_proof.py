@@ -10,7 +10,7 @@ from libra.proof.event_with_proof import EventWithProof
 from libra.transaction import SignedTransaction, TransactionInfo
 from libra.account_address import Address
 from libra.access_path import AccessPath
-from libra.proof import ensure, bail
+from libra.rustlib import ensure, bail
 from libra.account_resource import AccountResource
 from canoser import Uint64
 from typing import List, Optional

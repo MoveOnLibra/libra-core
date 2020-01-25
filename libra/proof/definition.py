@@ -4,7 +4,7 @@ from libra.hasher import (
     bytes_to_bits, common_prefix_bits_len)
 from libra.proof.merkle_tree import MerkleTreeInternalNode, SparseMerkleLeafNode, SparseMerkleInternalNode
 from libra.validator_verifier import VerifyError
-from libra.proof.anyhow import ensure, bail
+from libra.rustlib import ensure, bail
 from libra.proof.mod import verify_transaction_info
 from libra.account_state_blob import AccountStateBlob
 from libra.transaction import TransactionInfo, Version

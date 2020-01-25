@@ -2,7 +2,7 @@ from libra.account_address import Address
 from libra.account_state_blob import AccountStateBlob
 from libra.transaction import Version
 from libra.proof.definition import AccountStateProof
-from libra.proof.anyhow import ensure, bail
+from libra.rustlib import ensure, bail
 from dataclasses import dataclass, field
 from typing import List, Optional
 

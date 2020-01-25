@@ -1,6 +1,6 @@
 from libra.proof.merkle_tree import MerkleTreeInternalNode
 from libra.proof.definition import LeafCount, MAX_ACCUMULATOR_LEAVES
-from libra.proof.anyhow import ensure
+from libra.rustlib import ensure
 from libra.proof.position import count_ones, trailing_zeros
 from libra.hasher import HashValue, ACCUMULATOR_PLACEHOLDER_HASH
 from dataclasses import dataclass, field

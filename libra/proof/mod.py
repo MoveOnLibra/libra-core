@@ -2,7 +2,7 @@ import collections
 import more_itertools
 from libra.ledger_info import LedgerInfo
 from libra.transaction import Version, TransactionInfo
-from libra.proof.anyhow import ensure, bail
+from libra.rustlib import ensure, bail
 
 
 # Verifies that a given `transaction_info` exists in the ledger using provided proof.

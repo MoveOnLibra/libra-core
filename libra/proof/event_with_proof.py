@@ -1,4 +1,4 @@
-from libra.proof.anyhow import ensure, bail
+from libra.rustlib import ensure, bail
 from libra.proof.definition import EventProof
 from libra.contract_event import ContractEvent
 from libra.hasher import EventAccumulatorHasher

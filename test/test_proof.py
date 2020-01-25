@@ -15,13 +15,6 @@ def test_zero_accumulator_proof():
     assert len(ap.siblings) == 0
 
 
-def test_ensure():
-    ensure(1==1, "{} != {}", 1, 1)
-    with pytest.raises(AssertionError):
-        ensure(1==2, "{} != {}", 1, 2)
-    with pytest.raises(AssertionError):
-        ensure(1==2, "1 != 2")
-
 def test_gen_events_resp_idxs():
     assert [] == gen_events_resp_idxs(2, 3, True, 1)
     assert [] == gen_events_resp_idxs(3, 3, True, 1)

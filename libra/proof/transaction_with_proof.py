@@ -1,6 +1,6 @@
 from libra.proof.definition import TransactionProof
 from libra.proof.accumulator import InMemoryAccumulator
-from libra.proof.anyhow import ensure, bail
+from libra.rustlib import ensure, bail
 from libra.transaction import Transaction, Version
 from libra.contract_event import ContractEvent
 from libra.ledger_info import LedgerInfo

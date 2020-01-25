@@ -39,3 +39,11 @@ def assert_equal(aa, bb):
 def assert_true(aa):
     assert aa == True
 
+
+def bail(hint, *args):
+    errstr = hint.format(*args)
+    raise AssertionError(errstr)
+
+def ensure(exp, hint, *args):
+    if not exp:
+        bail(hint, *args)

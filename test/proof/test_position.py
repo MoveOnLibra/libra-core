@@ -1,5 +1,5 @@
 from libra.proof.position import *
-from libra.proof import ensure
+from libra.rustlib import ensure
 from canoser import Uint64
 from typing import List
 import pytest
