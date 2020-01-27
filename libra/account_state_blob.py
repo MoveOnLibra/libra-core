@@ -1,8 +1,12 @@
 from libra.hasher import gen_hasher
+from canoser import Struct, Uint8
 
-class AccountStateBlob:
-    def __init__(self, blob):
-        self.blob = blob
+
+class AccountStateBlob(Struct):
+    _fields = [
+        ('blob', bytes)
+    ]
+
 
     @classmethod
     def from_proto(cls, proto):

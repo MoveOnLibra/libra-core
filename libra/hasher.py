@@ -1,4 +1,4 @@
-import canoser
+from canoser import Uint8, DelegateT
 import hashlib
 import subprocess
 
@@ -25,11 +25,17 @@ def new_sha3_256():
 
 LIBRA_HASH_SUFFIX = b"@@$$LIBRA$$@@"
 
-class HashValue(canoser.DelegateT):
+class HashValue(DelegateT):
     LENGTH = 32
     LENGTH_IN_BITS = LENGTH * 8
     LENGTH_IN_NIBBLES = LENGTH * 2
-    delegate_type = [canoser.Uint8, LENGTH]
+    delegate_type = [Uint8, LENGTH]
+
+    @classmethod
+    def random_hash(cls):
+        import random
+        return [random.randint(0, Uint8.max_value) for x in range(HashValue.LENGTH)]
+
 
 def uint8_to_bits(uint8):
     return format(uint8, '8b').replace(' ', '0')

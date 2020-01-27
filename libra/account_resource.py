@@ -25,16 +25,6 @@ class AccountState(Struct):
         return amap
 
 
-    def __str__(self):
-        concat = StringIO()
-        concat.write(super().__str__())
-        ar = self.get_resource()
-        if ar:
-            concat.write("\nDecoded:\n")
-            concat.write(ar.__str__())
-        return concat.getvalue()
-
-
 class AccountResource(Struct):
     """
     A Rust/Python representation of an Account resource.
