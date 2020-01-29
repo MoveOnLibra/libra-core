@@ -1,4 +1,4 @@
-from canoser import Uint8, DelegateT
+from canoser import Uint8, DelegateT, BytesT
 import hashlib
 import subprocess
 
@@ -29,7 +29,7 @@ class HashValue(DelegateT):
     LENGTH = 32
     LENGTH_IN_BITS = LENGTH * 8
     LENGTH_IN_NIBBLES = LENGTH * 2
-    delegate_type = [Uint8, LENGTH]
+    delegate_type = BytesT(LENGTH)
 
     @classmethod
     def random_hash(cls):

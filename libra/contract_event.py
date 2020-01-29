@@ -1,4 +1,4 @@
-from canoser import Struct, Uint64, Uint8, bytes_to_int_list
+from canoser import Struct, Uint64, Uint8
 from libra.hasher import gen_hasher
 from libra.language_storage import TypeTag
 from libra.account_config import SentPaymentEvent, ReceivedPaymentEvent
@@ -9,16 +9,16 @@ class ContractEvent(Struct):
         ('key', EventKey),
         ('event_seq_num', Uint64), # change sequence_number to event_seq_num
         ('type_tag', TypeTag),
-        ('event_data', [Uint8])
+        ('event_data', bytes)
     ]
 
     @classmethod
     def from_proto(cls, event_proto):
         ret = cls()
-        ret.key = bytes_to_int_list(event_proto.key)
+        ret.key = event_proto.key
         ret.event_seq_num = event_proto.sequence_number
         ret.type_tag = TypeTag.deserialize(event_proto.type_tag)
-        ret.event_data = bytes_to_int_list(event_proto.event_data)
+        ret.event_data = event_proto.event_data
         if ret.type_tag.Struct and ret.type_tag.value.is_pay_tag():
             if ret.type_tag.value.name == "SentPaymentEvent":
                 ret.event_data_decode = SentPaymentEvent.deserialize(event_proto.event_data)

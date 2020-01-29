@@ -1,4 +1,4 @@
-from canoser import Struct, Uint64, bytes_to_int_list, hex_to_int_list
+from canoser import Struct, Uint64
 from datetime import datetime
 from libra.account_address import Address
 from libra.hasher import gen_hasher, HashValue
@@ -50,7 +50,7 @@ class RawTransaction(Struct):
     @classmethod
     def new_tx(cls, sender_address, sequence_number, payload, max_gas_amount=140_000,
             gas_unit_price=0, txn_expiration=100):
-        sender_address = Address.normalize_to_int_list(sender_address)
+        sender_address = Address.normalize_to_bytes(sender_address)
         return RawTransaction(
             sender_address,
             sequence_number,

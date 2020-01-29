@@ -31,7 +31,7 @@ def test_raw_txn():
 def test_raw_txn_with_metadata():
     a0 = libra.Account(b'0' * 32)
     a1 = libra.Account(b'1' * 32)
-    raw_tx = RawTransaction._gen_transfer_transaction(a0.address, 0, a1.address, 9, metadata=[2,3,4])
+    raw_tx = RawTransaction._gen_transfer_transaction(a0.address, 0, a1.address, 9, metadata=bytes([2,3,4]))
     assert raw_tx.payload.value_type == Script
     script = raw_tx.payload.value
     assert script.code == Script.get_script_bytecode("peer_to_peer_transfer_with_metadata")
@@ -43,7 +43,7 @@ def test_raw_txn_with_metadata():
     assert script.args[1].value == 9
     assert script.args[2].index == 2
     assert script.args[2].ByteArray == True
-    assert script.args[2].value == [2,3,4]
+    assert script.args[2].value == bytes([2,3,4])
 
 
 def test_signed_txn():
@@ -53,6 +53,6 @@ def test_signed_txn():
     stx = SignedTransaction.gen_from_raw_txn(raw_tx, a0)
     stx.check_signature()
     with pytest.raises(nacl.exceptions.BadSignatureError):
-        stx.signature = [0]*64
+        stx.signature = b'\0'*64
         stx.check_signature()
 

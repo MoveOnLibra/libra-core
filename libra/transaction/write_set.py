@@ -5,7 +5,7 @@ from libra.access_path import AccessPath
 class WriteOp(RustEnum):
     _enums = [
         ('Deletion', None),
-        ('Value', [Uint8])
+        ('Value', bytes)
     ]
 
 

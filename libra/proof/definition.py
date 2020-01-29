@@ -16,7 +16,7 @@ import more_itertools
 
 # Converts sibling nodes from Protobuf format to Rust format, using the fact that empty byte
 # arrays represent placeholder hashes.
-def from_proto_siblings(siblings: List[List[Uint8]], placeholder: HashValue) -> List[HashValue]:
+def from_proto_siblings(siblings: List[bytes], placeholder: HashValue) -> List[HashValue]:
     ensure(
         placeholder == ACCUMULATOR_PLACEHOLDER_HASH or placeholder == SPARSE_MERKLE_PLACEHOLDER_HASH,
         "Placeholder can only be ACCUMULATOR_PLACEHOLDER_HASH or SPARSE_MERKLE_PLACEHOLDER_HASH.",
@@ -30,7 +30,7 @@ def from_proto_siblings(siblings: List[List[Uint8]], placeholder: HashValue) -> 
 
 # Converts sibling nodes from Rust format to Protobuf format. The placeholder hashes are
 # converted to empty byte arrays.
-def into_proto_siblings(siblings: List[HashValue], placeholder: HashValue) -> List[List[Uint8]]:
+def into_proto_siblings(siblings: List[HashValue], placeholder: HashValue) -> List[bytes]:
     ensure(
         placeholder == ACCUMULATOR_PLACEHOLDER_HASH or placeholder == SPARSE_MERKLE_PLACEHOLDER_HASH,
         "Placeholder can only be ACCUMULATOR_PLACEHOLDER_HASH or SPARSE_MERKLE_PLACEHOLDER_HASH.",

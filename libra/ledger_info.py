@@ -1,4 +1,4 @@
-from canoser import Struct, Uint8, bytes_to_int_list
+from canoser import Struct, Uint8, BytesT
 from libra.account_address import Address
 from libra.block_info import BlockInfo, OptionValidatorSet
 from libra.hasher import HashValue, gen_hasher
@@ -25,8 +25,8 @@ class LedgerInfo(Struct):
         ret = cls()
         block_info = BlockInfo()
         block_info.version = proto.version
-        block_info.executed_state_id = bytes_to_int_list(proto.transaction_accumulator_hash)
-        block_info.id = bytes_to_int_list(proto.consensus_block_id)
+        block_info.executed_state_id = proto.transaction_accumulator_hash
+        block_info.id = proto.consensus_block_id
         block_info.epoch = proto.epoch
         block_info.round = proto.round
         block_info.timestamp_usecs = proto.timestamp_usecs
@@ -36,7 +36,7 @@ class LedgerInfo(Struct):
         else:
             block_info.next_validator_set = OptionValidatorSet(None)
         ret.commit_info = block_info
-        ret.consensus_data_hash = bytes_to_int_list(proto.consensus_data_hash)
+        ret.consensus_data_hash = proto.consensus_data_hash
         return ret
 
     @property
@@ -83,7 +83,7 @@ class LedgerInfoWithSignatures(Struct):
         ('ledger_info', LedgerInfo),
         # The validator is identified by its account address: in order to verify a signature
         # one needs to retrieve the public key of the validator for the given epoch.
-        ('signatures', {Address: [Uint8, ED25519_SIGNATURE_LENGTH]})
+        ('signatures', {Address: BytesT(ED25519_SIGNATURE_LENGTH)})
     ]
 
     @classmethod
@@ -93,7 +93,7 @@ class LedgerInfoWithSignatures(Struct):
         signatures = {}
         for x in proto.signatures:
             #address = Address.normalize_to_bytes(x.validator_id)
-            signatures[x.validator_id] = bytes_to_int_list(x.signature)
+            signatures[x.validator_id] = x.signature
         ret.signatures = signatures
         return ret
 

@@ -1,4 +1,4 @@
-from canoser import Struct, Uint64, Uint8
+from canoser import Struct, Uint64, Uint8, BytesT
 from libra.crypto.ed25519 import ED25519_PUBLIC_KEY_LENGTH
 from libra.account_address import Address
 from nacl.signing import VerifyKey
@@ -10,7 +10,7 @@ class VerifyError(Exception):
 
 class ValidatorInfo(Struct):
     _fields = [
-        ('public_key', [Uint8, ED25519_PUBLIC_KEY_LENGTH]),
+        ('public_key', BytesT(ED25519_PUBLIC_KEY_LENGTH)),
         ('voting_power', Uint64)
     ]
 

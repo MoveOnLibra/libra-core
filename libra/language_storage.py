@@ -18,7 +18,7 @@ class StructTag(Struct):
         return shazer.digest()
 
     def is_pay_tag(self):
-        return self.address == libra.AccountConfig.core_code_address_ints() and\
+        return self.address == libra.AccountConfig.core_code_address_bytes() and\
                 self.module == libra.AccountConfig.ACCOUNT_MODULE_NAME and\
                 (self.name == "SentPaymentEvent" or self.name == "ReceivedPaymentEvent")
 
@@ -29,7 +29,7 @@ class TypeTag(RustEnum):
         ('U8', Uint8),
         ('U64', Uint64),
         ('U128', Uint128),
-        ('ByteArray', [Uint8]),
+        ('ByteArray', bytes),
         ('Address', Address),
         ('Struct', StructTag)
     ]

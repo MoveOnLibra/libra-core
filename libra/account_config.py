@@ -1,6 +1,6 @@
-from canoser import hex_to_int_list, Struct, Uint64, Uint8
+from canoser import Struct, Uint64, Uint8
 from libra.language_storage import StructTag
-from libra.account_address import HEX_ADDRESS_LENGTH, Address
+from libra.account_address import ADDRESS_LENGTH, HEX_ADDRESS_LENGTH, Address
 
 class AccountConfig:
     # LibraCoin
@@ -34,16 +34,12 @@ class AccountConfig:
         return "0".rjust(HEX_ADDRESS_LENGTH, '0')
 
     @classmethod
-    def core_code_address_ints(cls):
-        return Address.normalize_to_int_list(cls.core_code_address())
+    def core_code_address_bytes(cls):
+        return b'\x00' * ADDRESS_LENGTH
 
     @classmethod
     def association_address(cls):
         return "a550c18".rjust(HEX_ADDRESS_LENGTH, '0')
-
-    @classmethod
-    def association_address_ints(cls):
-        return Address.normalize_to_int_list(cls.association_address())
 
     @classmethod
     def transaction_fee_address(cls):
@@ -61,7 +57,7 @@ class AccountConfig:
     @classmethod
     def account_struct_tag(cls):
         return StructTag(
-            hex_to_int_list(cls.core_code_address()),
+            cls.core_code_address_bytes(),
             cls.ACCOUNT_MODULE_NAME,
             cls.ACCOUNT_STRUCT_NAME,
             []
@@ -83,7 +79,7 @@ class SentPaymentEvent(Struct):
     _fields = [
         ('amount', Uint64),
         ('receiver', Address),
-        ('metadata', [Uint8])
+        ('metadata', bytes)
     ]
 
 
@@ -91,7 +87,7 @@ class ReceivedPaymentEvent(Struct):
     _fields = [
         ('amount', Uint64),
         ('sender', Address),
-        ('metadata', [Uint8])
+        ('metadata', bytes)
     ]
 
 

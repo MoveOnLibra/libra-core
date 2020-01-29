@@ -1,4 +1,4 @@
-from canoser import Struct, Uint8, bytes_to_int_list, hex_to_int_list
+from canoser import Struct, Uint8, BytesT
 from nacl.signing import VerifyKey
 from libra.hasher import gen_hasher, HashValue
 from libra.transaction.raw_transaction import RawTransaction
@@ -12,8 +12,8 @@ class SignedTransaction(Struct):
     """
     _fields = [
         ('raw_txn', RawTransaction),
-        ('public_key', [Uint8, ED25519_PUBLIC_KEY_LENGTH]),
-        ('signature', [Uint8, ED25519_SIGNATURE_LENGTH])
+        ('public_key', BytesT(ED25519_PUBLIC_KEY_LENGTH)),
+        ('signature', BytesT(ED25519_SIGNATURE_LENGTH))
 #        ('transaction_length', Uint64)
     ]
 
@@ -38,8 +38,8 @@ class SignedTransaction(Struct):
         tx_hash = raw_tx.hash()
         signature = sender_account.sign(tx_hash)[:64]
         return SignedTransaction(raw_tx,
-                bytes_to_int_list(sender_account.public_key),
-                bytes_to_int_list(signature)
+                sender_account.public_key,
+                signature
             )
 
     def hash(self):
@@ -53,8 +53,8 @@ class SignedTransaction(Struct):
 
     def check_signature(self):
         message = self.raw_txn.hash()
-        vkey = VerifyKey(bytes(self.public_key))
-        vkey.verify(message, bytes(self.signature))
+        vkey = VerifyKey(self.public_key)
+        vkey.verify(message, self.signature)
 
     @property
     def sender(self):

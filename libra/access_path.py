@@ -1,7 +1,8 @@
-from canoser import Struct, Uint8, Uint64, RustEnum, DelegateT, bytes_to_int_list, hex_to_int_list
+from __future__ import annotations
+from canoser import Struct, Uint8, Uint64, RustEnum, DelegateT
 from libra.account_address import Address
 from libra.account_config import AccountConfig
-from libra.language_storage import ModuleId
+from libra.language_storage import ModuleId, StructTag, ResourceKey
 from typing import List
 
 #SEPARATOR is used as a delimiter between fields. It should not be a legal part of any identifier
@@ -39,42 +40,37 @@ class Accesses(DelegateT):
 class AccessPath(Struct):
     _fields = [
         ('address', Address),
-        ('path', [Uint8])
+        ('path', bytes)
     ]
 
     CODE_TAG = 0
     RESOURCE_TAG = 1
 
-    @staticmethod
-    def str_to_ints(astr):
-        return [x for x in str.encode(astr)]
 
     @classmethod
-    def resource_access_vec(cls, tag, accesses):
-        key = []
-        key.append(cls.RESOURCE_TAG)
-        key.extend(bytes_to_int_list(tag.hash()))
+    def resource_access_vec(cls, tag: StructTag, accesses: List[Access]) -> bytes:
+        ret = bytes([cls.RESOURCE_TAG])
+        ret += tag.hash()
         #We don't need accesses in production right now. Accesses are appended here just for
         #passing the old tests.
         astr = Accesses.as_separated_string(accesses)
-        key.extend(AccessPath.str_to_ints(astr))
-        return key
+        ret += str.encode(astr)
+        return ret
 
-    @classmethod
-    def code_access_path_vec(cls, key: ModuleId):
-        root = []
-        root.append(cls.CODE_TAG)
-        root.extend(bytes_to_int_list(key.hash()))
-        return root
-
-    @classmethod
-    def code_access_path(cls, key: ModuleId):
-        path = AccessPath.code_access_path_vec(key)
+    # Convert Accesses into a byte offset which would be used by the storage layer to resolve
+    # where fields are stored.
+    def resource_access_path(key: ResourceKey, accesses: List[Access]) -> AccessPath:
+        path = AccessPath.resource_access_vec(key.type_, accesses)
         return AccessPath(key.address, path)
 
 
+    @classmethod
+    def code_access_path_vec(cls, key: ModuleId) -> bytes:
+        ret = bytes([cls.CODE_TAG])
+        ret += key.hash()
+        return ret
 
-# VALIDATOR_SET_ACCESS_PATH = AccessPath(
-#     hex_to_int_list(AccountConfig.association_address()),
-#     ValidatorSet.validator_set_path()
-# )
+    @classmethod
+    def code_access_path(cls, key: ModuleId) -> AccessPath:
+        path = AccessPath.code_access_path_vec(key)
+        return AccessPath(key.address, path)

@@ -1,4 +1,4 @@
-from canoser import Struct, Uint8, bytes_to_int_list, hex_to_int_list
+from canoser import Struct, Uint8
 from libra.transaction.transaction_argument import TransactionArgument, normalize_public_key
 from libra.bytecode import bytecodes
 from libra.account_address import Address
@@ -6,16 +6,16 @@ from libra.account_address import Address
 
 class Script(Struct):
     _fields = [
-        ('code', [Uint8]),
+        ('code', bytes),
         ('args', [TransactionArgument])
     ]
 
     @classmethod
     def gen_transfer_script(cls, receiver_address,micro_libra, metadata=None):
-        if isinstance(receiver_address, bytes):
-            receiver_address = bytes_to_int_list(receiver_address)
+        if isinstance(receiver_address, list):
+            receiver_address = bytes(receiver_address)
         if isinstance(receiver_address, str):
-            receiver_address = hex_to_int_list(receiver_address)
+            receiver_address = bytes.fromhex(receiver_address)
         if metadata is None:
             code = bytecodes["peer_to_peer_transfer"]
             args = [
@@ -33,7 +33,7 @@ class Script(Struct):
 
     @classmethod
     def gen_mint_script(cls, receiver_address,micro_libra):
-        receiver_address = Address.normalize_to_int_list(receiver_address)
+        receiver_address = Address.normalize_to_bytes(receiver_address)
         code = bytecodes["mint"]
         args = [
                 TransactionArgument('Address', receiver_address),
@@ -43,7 +43,7 @@ class Script(Struct):
 
     @classmethod
     def gen_create_account_script(cls, fresh_address, initial_balance=0):
-        fresh_address = Address.normalize_to_int_list(fresh_address)
+        fresh_address = Address.normalize_to_bytes(fresh_address)
         code = bytecodes["create_account"]
         args = [
                 TransactionArgument('Address', fresh_address),
@@ -72,7 +72,7 @@ class Script(Struct):
 
     @classmethod
     def gen_add_validator_script(cls, address):
-        address = Address.normalize_to_int_list(address)
+        address = Address.normalize_to_bytes(address)
         code = bytecodes["add_validator"]
         args = [
                 TransactionArgument('Address', address)
@@ -82,7 +82,7 @@ class Script(Struct):
 
     @classmethod
     def gen_remove_validator_script(cls, address):
-        address = Address.normalize_to_int_list(address)
+        address = Address.normalize_to_bytes(address)
         code = bytecodes["remove_validator"]
         args = [
                 TransactionArgument('Address', address)
@@ -99,8 +99,8 @@ class Script(Struct):
         fullnodes_network_identity_pubkey,
         fullnodes_network_address
         ):
-        validator_network_address = Address.normalize_to_int_list(validator_network_address)
-        fullnodes_network_address = Address.normalize_to_int_list(fullnodes_network_address)
+        validator_network_address = Address.normalize_to_bytes(validator_network_address)
+        fullnodes_network_address = Address.normalize_to_bytes(fullnodes_network_address)
         consensus_pubkey = normalize_public_key(consensus_pubkey)
         validator_network_signing_pubkey = normalize_public_key(validator_network_signing_pubkey)
         validator_network_identity_pubkey = normalize_public_key(validator_network_identity_pubkey)

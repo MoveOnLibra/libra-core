@@ -4,9 +4,9 @@ from canoser import Uint32
 
 
 def test_struct_tag():
-    tag1 = StructTag([1]*32, 'm1', 'n1', [])
-    tag2 = StructTag([2]*32, 'm2', 'n2', [])
-    tag3 = StructTag([3]*32, 'm3', 'n3', [tag1, tag2])
+    tag1 = StructTag(b'1'*32, 'm1', 'n1', [])
+    tag2 = StructTag(b'2'*32, 'm2', 'n2', [])
+    tag3 = StructTag(b'3'*32, 'm3', 'n3', [tag1, tag2])
     tag1s = tag1.serialize()
     tag2s = tag2.serialize()
     arrs = Uint32.encode(2)+ tag1s + tag2s

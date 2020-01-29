@@ -1,4 +1,4 @@
-from canoser import Struct, bytes_to_int_list, Uint64
+from canoser import Struct, Uint64
 from libra.hasher import gen_hasher, HashValue
 from libra.access_path import AccessPath
 
@@ -23,9 +23,9 @@ class TransactionInfo(Struct):
     @classmethod
     def from_proto(cls, proto):
         ret = cls()
-        ret.transaction_hash = bytes_to_int_list(proto.transaction_hash)
-        ret.state_root_hash = bytes_to_int_list(proto.state_root_hash)
-        ret.event_root_hash = bytes_to_int_list(proto.event_root_hash)
+        ret.transaction_hash = proto.transaction_hash
+        ret.state_root_hash = proto.state_root_hash
+        ret.event_root_hash = proto.event_root_hash
         ret.gas_used = proto.gas_used
         ret.major_status = proto.major_status
         return ret

@@ -1,4 +1,4 @@
-from canoser import DelegateT, hex_to_int_list
+from canoser import DelegateT
 from libra.validator_public_keys import ValidatorPublicKeys
 from libra.account_config import AccountConfig
 from libra.account_address import Address
@@ -18,7 +18,7 @@ class ValidatorSet(DelegateT):
     @classmethod
     def validator_set_tag(cls) -> StructTag:
         return StructTag(
-            hex_to_int_list(AccountConfig.core_code_address()),
+            AccountConfig.core_code_address_bytes(),
             cls.VALIDATOR_SET_MODULE_NAME,
             cls.VALIDATOR_SET_STRUCT_NAME,
             []

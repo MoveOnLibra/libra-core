@@ -1,4 +1,4 @@
-from canoser import DelegateT, Uint8, bytes_to_int_list
+from canoser import DelegateT, Uint8, BytesT
 from libra.hasher import gen_hasher
 
 import hashlib, random
@@ -8,7 +8,7 @@ ADDRESS_LENGTH = 32
 HEX_ADDRESS_LENGTH = ADDRESS_LENGTH * 2
 
 class Address(DelegateT):
-    delegate_type = [Uint8, ADDRESS_LENGTH, False]
+    delegate_type = BytesT(ADDRESS_LENGTH, encode_len=False)
 
     @classmethod
     def hash(cls, address):
@@ -30,13 +30,6 @@ class Address(DelegateT):
             return address
         raise TypeError(f"Address: {address} has unknown type.")
 
-    @staticmethod
-    def normalize_to_int_list(address):
-        if isinstance(address, list):
-            if len(address) != ADDRESS_LENGTH:
-                raise ValueError(f"{address} is not a valid address.")
-            return address
-        return bytes_to_int_list(Address.normalize_to_bytes(address))
 
     @staticmethod
     def equal_address(addr1, addr2):

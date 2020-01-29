@@ -1,7 +1,6 @@
 from libra.access_path import *
 from libra.account_config import AccountConfig
 from libra.language_storage import ModuleId
-from canoser import hex_to_int_list
 
 #import pdb
 
@@ -10,7 +9,7 @@ def test_resource_access_vec():
     assert bytes(array) == AccountConfig.account_resource_path()
 
 def test_code_access_path():
-    address = hex_to_int_list('795b209248c746de5fc1fc3bd7e1b41aee88916dd8ddfe29dd44fa75ce019dda')
+    address = bytes.fromhex('795b209248c746de5fc1fc3bd7e1b41aee88916dd8ddfe29dd44fa75ce019dda')
     mid = ModuleId(address, 'Pay')
     assert mid.address == address
     assert mid.name == 'Pay'

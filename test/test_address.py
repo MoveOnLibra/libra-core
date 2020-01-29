@@ -25,14 +25,6 @@ def test_normalize_to_bytes():
     addr2 = parse_address("0"*HEX_ADDRESS_LENGTH)
     assert addr1 == addr2
 
-def normalize_to_int_list():
-    addr0 = [0]*ADDRESS_LENGTH
-    addr1 = Address.normalize_to_int_list(addr0)
-    assert addr0 == addr1
-    addr2 = Address.normalize_to_int_list("0"*HEX_ADDRESS_LENGTH)
-    assert addr1 == addr2
-    addr3 = Address.normalize_to_int_list(parse_address("0"*HEX_ADDRESS_LENGTH))
-    assert addr1 == addr3
 
 def test_strict_parse_address():
     address = bytes.fromhex("000000000000000000000000000000000000000000000000000000000a550c18")

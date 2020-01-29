@@ -31,7 +31,7 @@ class AccountResource(Struct):
     This is not how the Account is represented in the VM but it's a convenient representation.
     """
     _fields = [
-        ('authentication_key', [Uint8]),
+        ('authentication_key', bytes),
         ('balance', Uint64),
         ('delegated_key_rotation_capability', bool),
         ('delegated_withdrawal_capability', bool),
