@@ -1,3 +1,7 @@
+from canoser import Uint64
+
+usize = Uint64
+
 def next_power_of_two(num):
     for i in range(99999999):
         pow2 = pow(2, i)
