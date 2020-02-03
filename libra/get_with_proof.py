@@ -1,3 +1,4 @@
+from __future__ import annotations
 from libra.ledger_info import LedgerInfo, LedgerInfoWithSignatures
 from libra.crypto_proxies import EpochInfo
 from libra.validator_verifier import VerifyError, ValidatorVerifier
@@ -14,6 +15,81 @@ from libra.rustlib import ensure, bail
 from libra.account_resource import AccountResource
 from canoser import Uint64
 from typing import List, Optional
+from dataclasses import dataclass
+
+@dataclass
+class UpdateToLatestLedgerRequest:
+    #TODO: defined here, but not used in client. client directly use the proto's type.
+    client_known_version: Uint64
+    requested_items: List[RequestItem]
+
+
+@dataclass
+class UpdateToLatestLedgerResponse:
+    response_items: List[ResponseItem]
+    ledger_info_with_sigs: LedgerInfoWithSignatures
+    validator_change_proof: ValidatorChangeProof
+    ledger_consistency_proof: AccumulatorConsistencyProof
+
+
+class RequestItem:
+    pass
+
+
+@dataclass
+class RequestItemGetAccountTransactionBySequenceNumber(RequestItem):
+    account: Address
+    sequence_number: Uint64
+    fetch_events: bool
+
+
+@dataclass
+class RequestItemGetAccountState(RequestItem):
+    account: Address
+
+
+@dataclass
+class RequestItemGetEventsByEventAccessPath(RequestItem):
+    access_path: AccessPath
+    start_event_seq_num: Uint64
+    ascending: bool
+    limit: Uint64
+
+
+@dataclass
+class RequestItemGetTransactions(RequestItem):
+    start_version: Version
+    limit: Uint64
+    fetch_events: bool
+
+
+class ResponseItem:
+    pass
+
+
+@dataclass
+class ResponseItemGetAccountTransactionBySequenceNumber(ResponseItem):
+    transaction_with_proof: Optional[TransactionWithProof]
+    proof_of_current_sequence_number: Optional[AccountStateWithProof]
+
+
+@dataclass
+class ResponseItemGetAccountState(ResponseItem):
+    account_state_with_proof: AccountStateWithProof
+
+
+@dataclass
+class ResponseItemGetEventsByEventAccessPath(ResponseItem):
+    events_with_proof: List[EventWithProof]
+    # TODO: Rename this field to proof_of_event_handle.
+    proof_of_latest_event: AccountStateWithProof
+
+
+@dataclass
+class ResponseItemGetTransactions(ResponseItem):
+    txn_list_with_proof: TransactionListWithProof
+
+
 
 def verify(verifier_type, request, response) -> Optional[EpochInfo]:
     return verify_update_to_latest_ledger_response(
