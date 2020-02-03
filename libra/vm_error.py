@@ -1,4 +1,7 @@
+from __future__ import annotations
 from canoser import Struct, RustEnum, Uint64, RustOptional
+from enum import IntEnum
+
 # The minimum status code for validation statuses
 VALIDATION_STATUS_MIN_CODE = 0
 
@@ -69,27 +72,51 @@ class VMStatus(Struct):
         return ret
 
 
+    # Return the status type for this VMStatus. This is solely determined by the `major_status`
+    # field.
+    def status_type(self) -> StatusType:
+        major_status_number = self.major_status
+        if major_status_number >= VALIDATION_STATUS_MIN_CODE\
+            and major_status_number <= VALIDATION_STATUS_MAX_CODE:
+            return StatusType.Validation
 
 
-class StatusType(RustEnum):
+        if major_status_number >= VERIFICATION_STATUS_MIN_CODE\
+            and major_status_number <= VERIFICATION_STATUS_MAX_CODE:
+            return StatusType.Verification
+
+
+        if major_status_number >= INVARIANT_VIOLATION_STATUS_MIN_CODE\
+            and major_status_number <= INVARIANT_VIOLATION_STATUS_MAX_CODE:
+            return StatusType.InvariantViolation
+
+
+        if major_status_number >= DESERIALIZATION_STATUS_MIN_CODE\
+            and major_status_number <= DESERIALIZATION_STATUS_MAX_CODE:
+            return StatusType.Deserialization
+
+
+        if major_status_number >= EXECUTION_STATUS_MIN_CODE\
+            and major_status_number <= EXECUTION_STATUS_MAX_CODE:
+            return StatusType.Execution
+
+        return StatusType.Unknown
+
+
+class StatusType(IntEnum):
     """
     A status type is one of 5 different variants along with a fallback variant in the case that we
     don't recognize the status code.
     """
-    _enums = [
-        ('Validation', None),
-        ('Verification', None),
-        ('InvariantViolation', None),
-        ('Deserialization', None),
-        ('Execution', None),
-        ('Unknown', None)
-    ]
+    Validation = 0
+    Verification = 1
+    InvariantViolation = 2
+    Deserialization = 3
+    Execution = 4
+    Unknown = 5
 
 
-
-
-
-class StatusCode:
+class StatusCode(IntEnum):
 
     @classmethod
     def get_name(cls, status):
@@ -227,6 +254,7 @@ class StatusCode:
     UNUSED_LOCALS_SIGNATURE = 1078
     UNUSED_TYPE_SIGNATURE = 1079
     ZERO_SIZED_STRUCT = 1080
+    LINKER_ERROR = 1081
 
     # These are errors that the VM might raise if a violation of internal
     # invariants takes place.
@@ -237,7 +265,7 @@ class StatusCode:
     EMPTY_VALUE_STACK = 2003
     EMPTY_CALL_STACK = 2004
     PC_OVERFLOW = 2005
-    LINKER_ERROR = 2006
+    VERIFICATION_ERROR = 2006
     LOCAL_REFERENCE_ERROR = 2007
     STORAGE_ERROR = 2008
     INTERNAL_TYPE_ERROR = 2009
@@ -293,6 +321,7 @@ class StatusCode:
     CALL_STACK_OVERFLOW = 4021
     NATIVE_FUNCTION_ERROR = 4022
     GAS_SCHEDULE_ERROR = 4023
+    CREATE_NULL_ACCOUNT = 4024
 
     # A reserved status to represent an unknown vm status.
     UNKNOWN_STATUS = Uint64.max_value

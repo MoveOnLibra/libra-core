@@ -36,12 +36,24 @@ def resize_list(alist, size, value):
             alist.append(value)
         return alist
 
+def flatten(ite):
+    return [x for sublist in ite for x in sublist]
+
+def take_n(ite, n):
+    return [x for i,x in enumerate(ite) if i<n]
+
+def nth(ite, n):
+    return next(x for i,x in enumerate(ite) if i==n)
+
 
 def assert_equal(aa, bb):
     assert aa == bb
 
+def assert_ne(aa, bb):
+    assert aa != bb
+
 def assert_true(aa):
-    assert aa == True
+    assert aa
 
 
 def bail(hint, *args):
