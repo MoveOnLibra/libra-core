@@ -44,3 +44,8 @@ def test_common_prefix_nibbles_len():
 
 def test_random_hash():
     HashValue.check_value(HashValue.random_hash())
+
+def test_bytes_to_bools():
+    assert bytes_to_bools(b'') == []
+    assert bytes_to_bools(b'\x01') == [False, False, False, False, False, False, False, True]
+    assert bytes_to_bools(b'\x01a') == [False, False, False, False, False, False, False, True, False, True, True, False, False, False, False, True]

@@ -1,7 +1,7 @@
 from libra.hasher import (
     HashValue, ACCUMULATOR_PLACEHOLDER_HASH,SPARSE_MERKLE_PLACEHOLDER_HASH,
     TransactionAccumulatorHasher, EventAccumulatorHasher, TestOnlyHasher,
-    bytes_to_bits, common_prefix_bits_len)
+    bytes_to_bools, common_prefix_bits_len)
 from libra.proof.merkle_tree import MerkleTreeInternalNode, SparseMerkleLeafNode, SparseMerkleInternalNode
 from libra.validator_verifier import VerifyError
 from libra.rustlib import ensure, bail
@@ -219,10 +219,10 @@ class SparseMerkleProof:
             current_hash = SparseMerkleLeafNode(key, value_hash).hash()
         else:
             current_hash = bytes(SPARSE_MERKLE_PLACEHOLDER_HASH)
-        iter_bits = bytes_to_bits(element_key)[0:len(self.siblings)]
+        iter_bits = bytes_to_bools(element_key)[0:len(self.siblings)]
         zipped = zip(self.siblings, reversed(iter_bits))
         for sibling_hash, bit in zipped:
-            if bit == '1':
+            if bit:
                 current_hash = SparseMerkleInternalNode(sibling_hash, current_hash).hash()
             else:
                 current_hash = SparseMerkleInternalNode(current_hash, sibling_hash).hash()

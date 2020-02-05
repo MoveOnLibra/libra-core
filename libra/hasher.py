@@ -40,8 +40,17 @@ class HashValue(DelegateT):
 def uint8_to_bits(uint8):
     return format(uint8, '8b').replace(' ', '0')
 
+def uint8_to_bools(uint8):
+    return [x == '1' for x in uint8_to_bits(uint8)]
+
 def bytes_to_bits(abytes):
     return ''.join([uint8_to_bits(x) for x in abytes])
+
+def bytes_to_bools(abytes):
+    ret = []
+    for x in abytes:
+        ret.extend(uint8_to_bools(x))
+    return ret
 
 def common_prefix_bits_len(bytes1, bytes2):
     assert len(bytes1) == len(bytes2)
