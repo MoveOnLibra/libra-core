@@ -55,4 +55,5 @@ def test_signed_txn():
     with pytest.raises(nacl.exceptions.BadSignatureError):
         stx.signature = b'\0'*64
         stx.check_signature()
-
+    tx = Transaction('UserTransaction', stx)
+    assert tx.to_proto().transaction == tx.serialize()

@@ -2,6 +2,7 @@ from canoser import Struct, RustOptional, Uint64
 from libra.transaction import Version
 from libra.hasher import HashValue
 from libra.validator_set import ValidatorSet
+from libra.proto_helper import ProtoHelper
 
 # The round of a block is a consensus-internal counter, which starts with 0 and increases
 # monotonically.
@@ -10,6 +11,13 @@ Round = Uint64
 
 class OptionValidatorSet(RustOptional):
     _type = ValidatorSet
+
+    def to_proto(self):
+        proto = ProtoHelper.new_proto_by_name('ValidatorSet')
+        for vpks in self.value:
+            item = proto.validator_public_keys.add()
+            item.MergeFrom(ProtoHelper.to_proto(vpks))
+        return proto
 
 
 class BlockInfo(Struct):

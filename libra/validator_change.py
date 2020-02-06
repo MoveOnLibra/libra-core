@@ -4,7 +4,7 @@ from libra.ledger_info import LedgerInfoWithSignatures
 from libra.waypoint import Waypoint
 from libra.crypto_proxies import EpochInfo
 from libra.validator_verifier import VerifyError, ValidatorVerifier
-
+from dataclasses import dataclass
 
 class VerifierType(RustEnum):
     """
@@ -38,30 +38,30 @@ class VerifierType(RustEnum):
 
 # A vector of LedgerInfo with contiguous increasing epoch numbers to prove a sequence of
 # validator changes from the first LedgerInfo's epoch.
+@dataclass
 class ValidatorChangeProof:
-    def __init__(self, ledger_info_with_sigss : List[LedgerInfoWithSignatures], more : bool):
-        self.ledger_info_with_sigss = ledger_info_with_sigss
-        self.more = more
+    ledger_info_with_sigs : List[LedgerInfoWithSignatures] #better name is ledger_info_with_sigss
+    more : bool
 
     #  Verify the proof is correctly chained with known epoch and validator verifier
     #  and return the LedgerInfo to start target epoch
     #  In case waypoint is present it's going to be used for verifying the very first epoch change
     #  (it's the responsibility of the caller to not pass waypoint in case it's not needed).
     def verify(self, verifier: VerifierType) -> LedgerInfoWithSignatures:
-        if not self.ledger_info_with_sigss:
+        if not self.ledger_info_with_sigs:
             raise VerifyError("Empty ValidatorChangeProof")
-        for ledger_info_with_sigs in self.ledger_info_with_sigss:
-            verifier.verify(ledger_info_with_sigs)
+        for x in self.ledger_info_with_sigs:
+            verifier.verify(x)
             # While the original verification could've been via waypoints, all the next epoch
             # changes are verified using the (already trusted) validator sets.
-            ledger_info = ledger_info_with_sigs.ledger_info
+            ledger_info = x.ledger_info
             validator_set = ledger_info.next_validator_set
             if not ledger_info.has_next_validator_set():
                 raise VerifyError("LedgerInfo doesn't carry ValidatorSet")
             vv = ValidatorVerifier.from_validator_set(validator_set.value)
             epoch_info = EpochInfo(ledger_info.epoch+1, vv)
             verifier = VerifierType('TrustedVerifier', epoch_info)
-        return self.ledger_info_with_sigss[-1]
+        return self.ledger_info_with_sigs[-1]
 
     @classmethod
     def from_proto(cls, proto):

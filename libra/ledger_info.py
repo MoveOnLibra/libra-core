@@ -5,6 +5,7 @@ from libra.hasher import HashValue, gen_hasher
 from libra.crypto.ed25519 import ED25519_SIGNATURE_LENGTH
 from libra.validator_set import ValidatorSet
 from libra.validator_verifier import ValidatorVerifier
+from libra.proto_helper import ProtoHelper
 
 class LedgerInfo(Struct):
 
@@ -38,6 +39,18 @@ class LedgerInfo(Struct):
         ret.commit_info = block_info
         ret.consensus_data_hash = proto.consensus_data_hash
         return ret
+
+    def to_proto(self):
+        proto = ProtoHelper.new_proto_obj(self)
+        proto.version = self.version
+        proto.transaction_accumulator_hash = self.transaction_accumulator_hash
+        proto.consensus_block_id = self.consensus_block_id
+        proto.epoch = self.epoch
+        proto.round = self.round
+        proto.timestamp_usecs = self.timestamp_usecs
+        if self.has_next_validator_set():
+            proto.next_validator_set.MergeFrom(ProtoHelper.to_proto(self.next_validator_set))
+        return proto
 
     @property
     def epoch(self):
@@ -96,6 +109,15 @@ class LedgerInfoWithSignatures(Struct):
             signatures[x.validator_id] = x.signature
         ret.signatures = signatures
         return ret
+
+    def to_proto(self):
+        proto = ProtoHelper.new_proto_obj(self)
+        proto.ledger_info.MergeFrom(self.ledger_info.to_proto())
+        for k,v in self.signatures.items():
+            sig = proto.signatures.add()
+            sig.validator_id = k
+            sig.signature = v
+        return proto
 
     def verify(self, validator: ValidatorVerifier):
         ledger_hash = self.ledger_info.hash()

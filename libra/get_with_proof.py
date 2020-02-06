@@ -16,12 +16,19 @@ from libra.account_resource import AccountResource
 from canoser import Uint64
 from typing import List, Optional
 from dataclasses import dataclass
+import libra.proto.get_with_proof_pb2 as get_with_proof_pb2
+from libra.proto_helper import ProtoHelper
 
 @dataclass
 class UpdateToLatestLedgerRequest:
     #TODO: defined here, but not used in client. client directly use the proto's type.
     client_known_version: Uint64
     requested_items: List[RequestItem]
+
+    @classmethod
+    def from_proto(cls, proto):
+        requested_items = [RequestItem.from_proto(x) for x in proto.requested_items]
+        return cls(proto.client_known_version, requested_items)
 
 
 @dataclass
@@ -31,9 +38,36 @@ class UpdateToLatestLedgerResponse:
     validator_change_proof: ValidatorChangeProof
     ledger_consistency_proof: AccumulatorConsistencyProof
 
+    def to_proto(self):
+        ret = get_with_proof_pb2.UpdateToLatestLedgerResponse()
+        for x in self.response_items:
+            item = ret.response_items.add()
+            x.to_proto_oneof(item)
+        ret.ledger_info_with_sigs.MergeFrom(ProtoHelper.to_proto(self.ledger_info_with_sigs))
+        ret.validator_change_proof.MergeFrom(ProtoHelper.to_proto(self.validator_change_proof))
+        ret.ledger_consistency_proof.MergeFrom(ProtoHelper.to_proto(self.ledger_consistency_proof))
+        return ret
+
+
 
 class RequestItem:
-    pass
+    @classmethod
+    def from_proto(cls, req_item):
+        x = req_item.WhichOneof('requested_items')
+        if x == 'get_account_transaction_by_sequence_number_request':
+            item = req_item.get_account_transaction_by_sequence_number_request
+            return RequestItemGetAccountTransactionBySequenceNumber.from_proto(item)
+        elif x == 'get_account_state_request':
+            item = req_item.get_account_state_request
+            return RequestItemGetAccountState.from_proto(item)
+        elif x == 'get_events_by_event_access_path_request':
+            item = req_item.get_events_by_event_access_path_request
+            return RequestItemGetEventsByEventAccessPath.from_proto(item)
+        elif x == 'get_transactions_request':
+            item = req_item.get_transactions_request
+            return RequestItemGetTransactions.from_proto(item)
+        else:
+            bail(f"Unknown request item: {x}")
 
 
 @dataclass
@@ -42,10 +76,18 @@ class RequestItemGetAccountTransactionBySequenceNumber(RequestItem):
     sequence_number: Uint64
     fetch_events: bool
 
+    @classmethod
+    def from_proto(cls, req_item):
+        return cls(req_item.account, req_item.sequence_number, req_item.fetch_events)
+
 
 @dataclass
 class RequestItemGetAccountState(RequestItem):
     account: Address
+
+    @classmethod
+    def from_proto(cls, req_item):
+        return cls(req_item.account)
 
 
 @dataclass
@@ -55,6 +97,15 @@ class RequestItemGetEventsByEventAccessPath(RequestItem):
     ascending: bool
     limit: Uint64
 
+    @classmethod
+    def from_proto(cls, req_item):
+        return cls(
+            req_item.access_path,
+            req_item.start_event_seq_num,
+            req_item.ascending,
+            req_item.limit
+        )
+
 
 @dataclass
 class RequestItemGetTransactions(RequestItem):
@@ -62,32 +113,55 @@ class RequestItemGetTransactions(RequestItem):
     limit: Uint64
     fetch_events: bool
 
+    @classmethod
+    def from_proto(cls, req_item):
+        return cls(
+            req_item.start_version,
+            req_item.limit,
+            req_item.fetch_events
+        )
+
 
 class ResponseItem:
     pass
 
-
 @dataclass
-class ResponseItemGetAccountTransactionBySequenceNumber(ResponseItem):
+class GetAccountTransactionBySequenceNumberResponse(ResponseItem):
     transaction_with_proof: Optional[TransactionWithProof]
     proof_of_current_sequence_number: Optional[AccountStateWithProof]
 
+    def to_proto_oneof(self, proto_item: ResponseItem) -> None:
+        proto_item.get_account_transaction_by_sequence_number_response\
+            .MergeFrom(ProtoHelper.to_proto(self))
+
 
 @dataclass
-class ResponseItemGetAccountState(ResponseItem):
+class GetAccountStateResponse(ResponseItem):
     account_state_with_proof: AccountStateWithProof
 
+    def to_proto_oneof(self, proto_item: ResponseItem) -> None:
+        proto_item.get_account_state_response\
+            .MergeFrom(ProtoHelper.to_proto(self))
+
 
 @dataclass
-class ResponseItemGetEventsByEventAccessPath(ResponseItem):
+class GetEventsByEventAccessPathResponse(ResponseItem):
     events_with_proof: List[EventWithProof]
     # TODO: Rename this field to proof_of_event_handle.
     proof_of_latest_event: AccountStateWithProof
 
+    def to_proto_oneof(self, proto_item: ResponseItem) -> None:
+        proto_item.get_events_by_event_access_path_response\
+            .MergeFrom(ProtoHelper.to_proto(self))
+
 
 @dataclass
-class ResponseItemGetTransactions(ResponseItem):
+class GetTransactionsResponse(ResponseItem):
     txn_list_with_proof: TransactionListWithProof
+
+    def to_proto_oneof(self, proto_item: ResponseItem) -> None:
+        proto_item.get_transactions_response\
+            .MergeFrom(ProtoHelper.to_proto(self))
 
 
 
