@@ -40,9 +40,9 @@ class EventWithProof:
             event_key,
         )
         ensure(
-            self.event.event_seq_num == sequence_number,
+            self.event.sequence_number == sequence_number,
             "Sequence number ({}) not expected ({}).",
-            self.event.event_seq_num,
+            self.event.sequence_number,
             sequence_number,
         )
         ensure(

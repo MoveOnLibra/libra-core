@@ -7,7 +7,7 @@ from libra.event import EventKey
 class ContractEvent(Struct):
     _fields = [
         ('key', EventKey),
-        ('event_seq_num', Uint64), # change sequence_number to event_seq_num
+        ('sequence_number', Uint64), # better name is 'event_seq_num'
         ('type_tag', TypeTag),
         ('event_data', bytes)
     ]
@@ -16,7 +16,7 @@ class ContractEvent(Struct):
     def from_proto(cls, event_proto):
         ret = cls()
         ret.key = event_proto.key
-        ret.event_seq_num = event_proto.sequence_number
+        ret.sequence_number = event_proto.sequence_number
         ret.type_tag = TypeTag.deserialize(event_proto.type_tag)
         ret.event_data = event_proto.event_data
         if ret.type_tag.Struct and ret.type_tag.value.is_pay_tag():

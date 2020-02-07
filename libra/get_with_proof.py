@@ -56,22 +56,22 @@ class RequestItem:
         x = req_item.WhichOneof('requested_items')
         if x == 'get_account_transaction_by_sequence_number_request':
             item = req_item.get_account_transaction_by_sequence_number_request
-            return RequestItemGetAccountTransactionBySequenceNumber.from_proto(item)
+            return GetAccountTransactionBySequenceNumberRequest.from_proto(item)
         elif x == 'get_account_state_request':
             item = req_item.get_account_state_request
-            return RequestItemGetAccountState.from_proto(item)
+            return GetAccountStateRequest.from_proto(item)
         elif x == 'get_events_by_event_access_path_request':
             item = req_item.get_events_by_event_access_path_request
-            return RequestItemGetEventsByEventAccessPath.from_proto(item)
+            return GetEventsByEventAccessPathRequest.from_proto(item)
         elif x == 'get_transactions_request':
             item = req_item.get_transactions_request
-            return RequestItemGetTransactions.from_proto(item)
+            return GetTransactionsRequest.from_proto(item)
         else:
             bail(f"Unknown request item: {x}")
 
 
 @dataclass
-class RequestItemGetAccountTransactionBySequenceNumber(RequestItem):
+class GetAccountTransactionBySequenceNumberRequest(RequestItem):
     account: Address
     sequence_number: Uint64
     fetch_events: bool
@@ -82,16 +82,16 @@ class RequestItemGetAccountTransactionBySequenceNumber(RequestItem):
 
 
 @dataclass
-class RequestItemGetAccountState(RequestItem):
-    account: Address
+class GetAccountStateRequest(RequestItem):
+    address: Address
 
     @classmethod
     def from_proto(cls, req_item):
-        return cls(req_item.account)
+        return cls(req_item.address)
 
 
 @dataclass
-class RequestItemGetEventsByEventAccessPath(RequestItem):
+class GetEventsByEventAccessPathRequest(RequestItem):
     access_path: AccessPath
     start_event_seq_num: Uint64
     ascending: bool
@@ -108,7 +108,7 @@ class RequestItemGetEventsByEventAccessPath(RequestItem):
 
 
 @dataclass
-class RequestItemGetTransactions(RequestItem):
+class GetTransactionsRequest(RequestItem):
     start_version: Version
     limit: Uint64
     fetch_events: bool
