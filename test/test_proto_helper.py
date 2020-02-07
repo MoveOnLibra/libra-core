@@ -3,7 +3,8 @@ import libra
 from libra.validator_public_keys import ValidatorPublicKeys
 from libra.proto_helper import *
 from libra.proof import *
-
+from libra.get_with_proof import GetEventsByEventAccessPathResponse
+from dataclasses import fields
 
 def test_simple():
     assert "a" == ProtoHelper.to_proto("a")
@@ -31,7 +32,19 @@ def test_canoser():
 
 
 def test_tnxs_with_proof():
+    fs = [(x.name, x.type) for x in fields(TransactionListWithProof)]
+    assert fs[0] == ('transactions', typing.List[libra.transaction.transaction.Transaction])
+    assert isinstance(fs[0][1], typing._GenericAlias)
     tproof = TransactionListWithProof.new_empty()
     proto = ProtoHelper.to_proto(tproof)
     assert isinstance(proto, libra.proto.transaction_pb2.TransactionListWithProof)
+    print(proto)
+
+def test_events_by_access_path():
+    fs = [(x.name, x.type) for x in fields(GetEventsByEventAccessPathResponse)]
+    assert fs[0] == ('events_with_proof', 'List[EventWithProof]')
+    assert isinstance(fs[0][1], str) #TODO: This is Weird, why not typing class???
+    resp = GetEventsByEventAccessPathResponse([], None)
+    proto = ProtoHelper.to_proto(resp)
+    assert isinstance(proto, libra.proto.get_with_proof_pb2.GetEventsByEventAccessPathResponse)
     print(proto)

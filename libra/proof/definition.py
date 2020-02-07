@@ -13,6 +13,7 @@ from canoser import Uint64, Uint8
 from dataclasses import dataclass, field
 from typing import List, Optional, Callable, Tuple
 import more_itertools
+from libra.proto_helper import ProtoHelper
 
 # Converts sibling nodes from Protobuf format to Rust format, using the fact that empty byte
 # arrays represent placeholder hashes.
@@ -134,6 +135,14 @@ class SparseMerkleProof:
     # level to the root level.
     siblings: List[HashValue]
 
+    def to_proto(self):
+        proto = ProtoHelper.new_proto_obj(self)
+        if self.leaf:
+            (hash1, hash2) = self.leaf
+            proto.leaf = hash1 + hash2
+        for sibling in self.siblings:
+            proto.siblings.append(sibling)
+        return proto
 
     @classmethod
     def from_proto(cls, proto_proof):

@@ -147,8 +147,9 @@ class GetAccountStateResponse(ResponseItem):
 @dataclass
 class GetEventsByEventAccessPathResponse(ResponseItem):
     events_with_proof: List[EventWithProof]
-    # TODO: Rename this field to proof_of_event_handle.
     proof_of_latest_event: AccountStateWithProof
+    # TODO: Rename this field to proof_of_event_handle.
+
 
     def to_proto_oneof(self, proto_item: ResponseItem) -> None:
         proto_item.get_events_by_event_access_path_response\

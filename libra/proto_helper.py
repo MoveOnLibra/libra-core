@@ -1,4 +1,4 @@
-from canoser import Struct, RustOptional
+from canoser import Struct, RustOptional, ArrayT, MapT
 from canoser.struct import TypedProperty
 from dataclasses import fields, is_dataclass
 import importlib
@@ -80,12 +80,25 @@ class ProtoHelper:
             if isinstance(value, TypedProperty) or value is None:
                 continue
             dest = getattr(proto, fname)
-            if hasattr(dest, 'MergeFrom'):
-                dest.MergeFrom(ProtoHelper.to_proto(value))
+            if isinstance(ftype, ArrayT):
+                dest.append(ProtoHelper.to_proto(x))
+            elif isinstance(ftype, MapT):
+                breakpoint()
             else:
-                setattr(proto, fname, ProtoHelper.to_proto(value))
+                if hasattr(dest, 'MergeFrom'):
+                    dest.MergeFrom(ProtoHelper.to_proto(value))
+                else:
+                    setattr(proto, fname, ProtoHelper.to_proto(value))
         return proto
 
+    @staticmethod
+    def is_list_dataclass(ftype):
+        if hasattr(ftype, "__origin__"):
+            return ftype.__origin__ == list
+        elif isinstance(ftype, str):
+            return ftype.startswith("List[")
+        else:
+            return False
 
     @staticmethod
     def to_proto_dataclass(obj, field_types):
@@ -93,26 +106,21 @@ class ProtoHelper:
         for fname, ftype in field_types:
             print(fname)
             print(ftype)
-            if hasattr(ftype, "__origin__"):
-                print(ftype.__origin__)
-                print(ftype.__args__)
-                if ftype.__origin__ == list:
-                    for x in getattr(obj, fname):
-                        vec = getattr(proto, fname)
-                        vec.append(ProtoHelper.to_proto(x))
-                elif ftype.__origin__ == typing.Union:
-                    assert ftype.__args__[1] == type(None)
-                    ftype == ftype.__args__[0]
+            if hasattr(ftype, "__origin__") and ftype.__origin__ == typing.Union:
+                assert ftype.__args__[1] == type(None)
+                ftype = ftype.__args__[0]
+            value = getattr(obj, fname)
+            if value is None:
+                continue
+            dest = getattr(proto, fname)
+            if ProtoHelper.is_list_dataclass(ftype):
+                for x in value:
+                    dest.append(ProtoHelper.to_proto(x))
             else:
-                value = getattr(obj, fname)
-                if value is None:
-                    continue
-                dest = getattr(proto, fname)
                 if hasattr(dest, 'MergeFrom'):
                     dest.MergeFrom(ProtoHelper.to_proto(value))
                 else:
                     setattr(proto, fname, ProtoHelper.to_proto(value))
-                #setattr(proto, fname, ProtoHelper.to_proto(value))
         return proto
 
     @staticmethod

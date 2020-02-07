@@ -9,6 +9,8 @@ from libra.hasher import EventAccumulatorHasher
 from canoser import Uint64
 from dataclasses import dataclass, field
 from typing import List, Optional
+from libra.proto_helper import ProtoHelper
+
 
 class EventAccumulatorHasherInMemoryAccumulator(InMemoryAccumulator):
     hasher = EventAccumulatorHasher
@@ -21,7 +23,17 @@ class TransactionWithProof:
     events: Optional[List[ContractEvent]]
     proof: TransactionProof
 
-
+    def to_proto(self):
+        proto = ProtoHelper.new_proto_obj(self)
+        proto.version = self.version
+        proto.transaction.MergeFrom(ProtoHelper.to_proto(self.transaction))
+        if self.events:
+            events_list_proto = ProtoHelper.new_proto_by_name("EventsList")
+            for event in self.events:
+                events_list_proto.events.append(ProtoHelper.to_proto(event))
+            proto.events.MergeFrom(events_list_proto)
+        proto.proof.MergeFrom(ProtoHelper.to_proto(self.proof))
+        return proto
 
     # Verifies the transaction with the proof, both carried by `self`.
     # A few things are ensured if no error is raised:

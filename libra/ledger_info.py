@@ -44,6 +44,7 @@ class LedgerInfo(Struct):
         proto = ProtoHelper.new_proto_obj(self)
         proto.version = self.version
         proto.transaction_accumulator_hash = self.transaction_accumulator_hash
+        proto.consensus_data_hash = self.consensus_data_hash
         proto.consensus_block_id = self.consensus_block_id
         proto.epoch = self.epoch
         proto.round = self.round

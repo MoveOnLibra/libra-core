@@ -3,6 +3,7 @@ from libra.hasher import gen_hasher
 from libra.language_storage import TypeTag
 from libra.account_config import SentPaymentEvent, ReceivedPaymentEvent
 from libra.event import EventKey
+from libra.proto_helper import ProtoHelper
 
 class ContractEvent(Struct):
     _fields = [
@@ -11,6 +12,14 @@ class ContractEvent(Struct):
         ('type_tag', TypeTag),
         ('event_data', bytes)
     ]
+
+    def to_proto(self):
+        proto = ProtoHelper.new_proto_by_name("Event")
+        proto.key = self.key
+        proto.sequence_number = self.sequence_number
+        proto.type_tag = self.type_tag.serialize()
+        proto.event_data = self.event_data
+        return proto
 
     @classmethod
     def from_proto(cls, event_proto):

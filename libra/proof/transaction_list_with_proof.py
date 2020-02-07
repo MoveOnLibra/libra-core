@@ -8,6 +8,7 @@ from libra.ledger_info import LedgerInfo
 from canoser import Uint64
 from dataclasses import dataclass, field
 from typing import List, Optional
+from libra.proto_helper import ProtoHelper
 
 
 class EventAccumulatorHasherInMemoryAccumulator(InMemoryAccumulator):
@@ -26,11 +27,28 @@ class TransactionListWithProof:
     proof: TransactionListProof
 
 
+    def to_proto(self):
+        proto = ProtoHelper.new_proto_obj(self)
+        for tx in self.transactions:
+            proto.transactions.append(ProtoHelper.to_proto(tx))
+        if self.events:
+            events_for_versions_proto = ProtoHelper.new_proto_by_name("EventsForVersions")
+            for events_for_version in self.events:
+                events_list_proto = ProtoHelper.new_proto_by_name("EventsList")
+                for event in events_for_version:
+                    events_list_proto.events.append(ProtoHelper.to_proto(event))
+                events_for_versions_proto.events_for_version.append(events_list_proto)
+            proto.events_for_versions.MergeFrom(events_for_versions_proto)
+        if self.first_transaction_version is not None:
+            proto.first_transaction_version.value = self.first_transaction_version
+        proto.proof.MergeFrom(ProtoHelper.to_proto(self.proof))
+        return proto
+
     # Creates an empty transaction list.
     @classmethod
     def new_empty(cls):
         return cls([], None, None, TransactionListProof.new_empty())
-    
+
     # Verifies the transaction list with the proofs, both carried on `self`.
     #
     # Two things are ensured if no error is raised:
