@@ -1,7 +1,7 @@
 from libra.proof.accumulator import InMemoryAccumulator
 from libra.proof.definition import LeafCount
 from libra.proof.position import FrozenSubtreeSiblingIterator, Position
-from libra.proof.merkle_tree import TestAccumulatorInternalNode
+from libra.proof.merkle_tree import TstAccumulatorInternalNode
 from libra.hasher import HashValue, tst_only_hash, TestOnlyHasher, ACCUMULATOR_PLACEHOLDER_HASH
 from typing import Mapping, List
 from libra.rustlib import next_power_of_two, resize_list, assert_equal
@@ -11,7 +11,7 @@ def compute_parent_hash(left_hash: HashValue, right_hash: HashValue) -> HashValu
     if left_hash == ACCUMULATOR_PLACEHOLDER_HASH and right_hash == ACCUMULATOR_PLACEHOLDER_HASH:
         return ACCUMULATOR_PLACEHOLDER_HASH
     else:
-        return TestAccumulatorInternalNode(left_hash, right_hash).hash()
+        return TstAccumulatorInternalNode(left_hash, right_hash).hash()
 
 
 # Given a list of leaves, constructs the smallest accumulator that has all the leaves and
@@ -67,7 +67,7 @@ def create_leaves(nums):
     usize = 8
     return [tst_only_hash(x.to_bytes(usize, byteorder="big", signed=False)) for x in range(nums)]
 
-class TestOnlyHasherInMemoryAccumulator(InMemoryAccumulator):
+class TstOnlyHasherInMemoryAccumulator(InMemoryAccumulator):
     hasher = TestOnlyHasher
 
 
@@ -75,7 +75,7 @@ def test_accumulator_append():
     # expected_root_hashes[i] is the root hash of an accumulator that has the first i leaves.
     expected_root_hashes = [compute_root_hash_naive(create_leaves(x)) for x in range(100)]
     leaves = create_leaves(100)
-    accumulator = TestOnlyHasherInMemoryAccumulator.default()
+    accumulator = TstOnlyHasherInMemoryAccumulator.default()
     # Append the leaves one at a time and check the root hashes match.
     zipped = zip(leaves, expected_root_hashes)
     for i, (leaf, expected_root_hash) in enumerate(zipped):

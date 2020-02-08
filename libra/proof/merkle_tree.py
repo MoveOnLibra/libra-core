@@ -36,7 +36,7 @@ class EventAccumulatorInternalNode(MerkleTreeInternalNode):
     hasher: Callable[[], object] = field(default=EventAccumulatorHasher)
 
 @dataclass
-class TestAccumulatorInternalNode(MerkleTreeInternalNode):
+class TstAccumulatorInternalNode(MerkleTreeInternalNode):
     #hasher = TestOnlyHasher
     hasher: Callable[[], object] = field(default=TestOnlyHasher)
 
