@@ -1,6 +1,7 @@
 from __future__ import annotations
 from canoser import Struct, Uint8, Uint64
 from libra.event import EventHandle
+import libra
 from libra.account_config import AccountConfig
 from io import StringIO
 from typing import Optional
@@ -8,7 +9,7 @@ from typing import Optional
 
 class AccountState(Struct):
     _fields = [
-        ('ordered_map', {bytes, bytes})
+        ('ordered_map', {bytes: bytes})
     ]
 
     @classmethod
@@ -28,7 +29,7 @@ class AccountState(Struct):
         path = AccountConfig.account_resource_path()
         resource = self.get(path)
         if resource:
-            return AccountResource.deserialize(resource)
+            return libra.AccountResource.deserialize(resource)
         else:
             return None
 
