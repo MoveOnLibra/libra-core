@@ -69,8 +69,11 @@ class TransactionWithProof:
             signed_transaction.sequence_number,
             sequence_number,
         )
-        event_hashes = [x.hash() for x in self.events]
-        events_root_hash = EventAccumulatorHasherInMemoryAccumulator.from_leaves(event_hashes).root_hash
+        if self.events:
+            event_hashes = [x.hash() for x in self.events]
+            events_root_hash = EventAccumulatorHasherInMemoryAccumulator.from_leaves(event_hashes).root_hash
+        else:
+            events_root_hash = None
         self.proof.verify(
             ledger_info,
             self.transaction.hash(),
