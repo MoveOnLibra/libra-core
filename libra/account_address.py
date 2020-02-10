@@ -20,14 +20,18 @@ class Address(DelegateT):
     def normalize_to_bytes(address):
         if isinstance(address, str):
             return strict_parse_address(address)
-        if isinstance(address, list):
-            if len(address) != ADDRESS_LENGTH:
-                raise ValueError(f"{address} is not a valid address.")
-            return bytes(address)
         if isinstance(address, bytes):
             if len(address) != ADDRESS_LENGTH:
                 raise ValueError(f"{address} is not a valid address.")
             return address
+        if isinstance(address, bytearray):
+            if len(address) != ADDRESS_LENGTH:
+                raise ValueError(f"{address} is not a valid address.")
+            return bytes(address)
+        if isinstance(address, list):
+            if len(address) != ADDRESS_LENGTH:
+                raise ValueError(f"{address} is not a valid address.")
+            return bytes(address)
         raise TypeError(f"Address: {address} has unknown type.")
 
 

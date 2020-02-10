@@ -16,8 +16,10 @@ def test_equal_address():
     hexaddr = AccountConfig.association_address()
     bytesaddr = parse_address("0xa550c18")
     intsaddr = bytes_to_int_list(bytesaddr)
+    bytearr = bytearray(intsaddr)
     assert Address.equal_address(hexaddr, bytesaddr)
     assert Address.equal_address(hexaddr, intsaddr)
+    assert Address.equal_address(hexaddr, bytearr)
     assert False == Address.equal_address(hexaddr, parse_address("0x123"))
 
 def test_normalize_to_bytes():
