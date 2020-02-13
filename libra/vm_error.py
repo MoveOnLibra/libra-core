@@ -1,5 +1,7 @@
 from __future__ import annotations
-from canoser import Struct, RustEnum, Uint64, RustOptional
+from canoser import Uint64
+from typing import Optional
+from dataclasses import dataclass
 from enum import IntEnum
 
 # The minimum status code for validation statuses
@@ -32,43 +34,51 @@ EXECUTION_STATUS_MIN_CODE = 4000
 # The maximum status code for runtim statuses
 EXECUTION_STATUS_MAX_CODE = 4999
 
-class OptionUInt64(RustOptional):
-    _type = Uint64
 
-
-class OptionStr(RustOptional):
-    _type = str
-
-
-class VMStatus(Struct):
+@dataclass
+class VMStatus:
     """
     A `VMStatus` is represented as a required major status that is semantic coupled with with
     an optional sub status and message.
     """
-    _fields = [
-        ('major_status', Uint64),
-        ('sub_status', OptionUInt64),
-        ('message', OptionStr)
-    ]
+    major_status: Uint64
+    sub_status: Optional[Uint64] = None
+    message: Optional[str] = None
 
     def err_msg(self):
-        if self.message.value is not None:
-            return self.message.value
+        if self.message is not None:
+            return self.message
         else:
             return StatusCode.get_name(self.major_status)
 
+    def with_message(self, msg):
+        self.message = msg
+        return self
+
+    def append_message_with_separator(self, separator, message):
+        if self.message:
+            self.message += separator
+            self.message += message
+        else:
+            self.message = message
+
+
+    def with_sub_status(self, sub_status):
+        self.sub_status = sub_status
+        return self
+        
     @classmethod
     def from_proto(cls, proto):
         ret = cls()
         ret.major_status = proto.major_status
         if proto.has_sub_status:
-            ret.sub_status = OptionUInt64(proto.sub_status)
+            ret.sub_status = proto.sub_status
         else:
-            ret.sub_status = OptionUInt64(None)
+            ret.sub_status = None
         if proto.has_message:
-            ret.message = OptionStr(proto.message)
+            ret.message = proto.message
         else:
-            ret.message = OptionStr(None)
+            ret.message = None
         return ret
 
 

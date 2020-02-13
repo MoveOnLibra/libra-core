@@ -11,11 +11,13 @@ def test_status_code():
     assert StatusCode.get_name(1) == "INVALID_SIGNATURE"
 
 def test_vm_error():
-    status = VMStatus(4016)
+    status = VMStatus(4016).with_message("test msg")
     assert status.status_type() == StatusType.Execution
+    assert status.message == "test msg"
     ts = TransactionStatus.from_vm_status(status)
     assert ts.tag == TransactionStatus.Keep
     assert ts.vm_status == status
+
 
 def test_vm_error2():
     status = VMStatus(Uint64.max_value)
