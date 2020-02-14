@@ -32,3 +32,16 @@ def test_ensure():
         ensure(1==2, "{} != {}", 1, 2)
     with pytest.raises(AssertionError):
         ensure(1==2, "1 != 2")
+
+def test_flatten():
+    assert flatten([]) == []
+    assert flatten([None]) == []
+    assert flatten([[]]) == []
+    assert flatten([[None]]) == []
+    assert flatten([[], None]) == []
+    assert flatten([[1],[],[None]]) == [1]    
+    assert flatten([[None, 1], [None]]) == [1]
+    assert flatten([[[2]]]) == [[2]]
+    #not support 3 level nested.
+    assert flatten(["alpha", "beta", "gamma"]) == ['a', 'l', 'p', 'h', 'a', 'b', 'e', 't', 'a', 'g', 'a', 'm', 'm', 'a']
+    #not same result as rust: "alphabetagamma"

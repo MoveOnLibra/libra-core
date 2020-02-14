@@ -37,7 +37,7 @@ def resize_list(alist, size, value):
         return alist
 
 def flatten(ite):
-    return [x for sublist in ite for x in sublist]
+    return [x for sublist in ite if sublist is not None for x in sublist if x is not None]
 
 def take_n(ite, n):
     return [x for i,x in enumerate(ite) if i<n]
