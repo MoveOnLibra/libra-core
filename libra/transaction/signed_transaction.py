@@ -79,3 +79,6 @@ class SignedTransaction(Struct):
     @property
     def expiration_time(self):
         return self.raw_txn.expiration_time
+
+    def raw_txn_bytes_len(self):
+        return len(self.raw_txn.serialize())

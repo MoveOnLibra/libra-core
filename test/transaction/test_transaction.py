@@ -52,6 +52,7 @@ def test_signed_txn():
     raw_tx = RawTransaction._gen_transfer_transaction(a0.address, 0, a1.address, 123)
     stx = SignedTransaction.gen_from_raw_txn(raw_tx, a0)
     stx.check_signature()
+    assert len(raw_tx.serialize()) == stx.raw_txn_bytes_len()
     with pytest.raises(nacl.exceptions.BadSignatureError):
         stx.signature = b'\0'*64
         stx.check_signature()

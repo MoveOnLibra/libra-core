@@ -9,3 +9,5 @@ from libra.transaction.signed_transaction import SignedTransaction
 from libra.transaction.transaction_info import TransactionInfo
 from libra.transaction.transaction import Transaction, Version
 from libra.transaction.mod import TransactionStatus, TransactionOutput, TransactionToCommit
+
+MAX_TRANSACTION_SIZE_IN_BYTES = 4096
