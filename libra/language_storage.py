@@ -29,7 +29,7 @@ class TypeTag(RustEnum):
         ('U8', Uint8),
         ('U64', Uint64),
         ('U128', Uint128),
-        ('ByteArray', bytes),
+        ('ByteArray', bytearray),
         ('Address', Address),
         ('Struct', StructTag)
     ]
@@ -54,3 +54,6 @@ class ModuleId(Struct):
         shazer = gen_hasher(b"ModuleId::libra_types::language_storage")
         shazer.update(self.serialize())
         return shazer.digest()
+
+    def __hash__(self):
+        return (self.address, self.name).__hash__()
