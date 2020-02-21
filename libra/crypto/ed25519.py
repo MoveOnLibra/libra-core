@@ -26,7 +26,7 @@ def generate_keypair(seed) -> Tuple[Ed25519PrivateKey, Ed25519PublicKey]:
 		return _generate_keypair_by_private_key(private_key)
 	else:
 		skbob = PrivateKey.generate()
-		return _generate_keypair_by_private_key(skbob.encode)
+		return _generate_keypair_by_private_key(skbob.encode())
 
     
 

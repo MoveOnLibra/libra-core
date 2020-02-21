@@ -11,6 +11,10 @@ class Address(DelegateT):
     delegate_type = BytesT(ADDRESS_LENGTH, encode_len=False)
 
     @classmethod
+    def default(cls):
+        return b'\x00' * ADDRESS_LENGTH
+
+    @classmethod
     def hash(cls, address):
         shazer = gen_hasher(b"AccountAddress::libra_types::account_address")
         shazer.update(address)
