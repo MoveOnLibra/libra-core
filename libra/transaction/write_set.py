@@ -1,3 +1,4 @@
+from __future__ import annotations
 from canoser import Struct, Uint8, RustEnum
 from libra.access_path import AccessPath
 
@@ -17,3 +18,9 @@ class WriteSet(Struct):
     _fields = [
         ('write_set', [(AccessPath, WriteOp)])
     ]
+
+    def freeze(self) -> WriteSet:
+        # TODO: add structural validation
+        return self
+
+WriteSetMut = WriteSet

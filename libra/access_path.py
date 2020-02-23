@@ -36,6 +36,10 @@ class Accesses(DelegateT):
             path += SEPARATOR
         return path
 
+    @classmethod
+    def empty(cls) -> Accesses:
+        return []
+
 
 class AccessPath(Struct):
     _fields = [
