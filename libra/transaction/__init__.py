@@ -11,3 +11,4 @@ from libra.transaction.transaction import Transaction, Version
 from libra.transaction.mod import TransactionStatus, TransactionOutput, TransactionToCommit
 
 MAX_TRANSACTION_SIZE_IN_BYTES = 4096
+SCRIPT_HASH_LENGTH = 32
