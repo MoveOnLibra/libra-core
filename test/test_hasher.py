@@ -24,6 +24,7 @@ def test_default_hasher():
         tst_only_hash(b"world").hex(),
         "420baf620e3fcd9b3715b42b92506e9304d56e02d3a103499a3a292560cb66b2"
     )
+    assert tst_only_hash(b"world") == HashValue.from_sha3_256(b"world")
 
 
 def test_placeholder_hash():

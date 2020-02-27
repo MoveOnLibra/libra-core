@@ -36,6 +36,11 @@ class HashValue(DelegateT):
         import random
         return bytes([random.randint(0, Uint8.max_value) for x in range(HashValue.LENGTH)])
 
+    @classmethod
+    def from_sha3_256(cls, data):
+        sha3 = new_sha3_256()
+        sha3.update(data)
+        return sha3.digest()
 
 def uint8_to_bits(uint8):
     return format(uint8, '8b').replace(' ', '0')

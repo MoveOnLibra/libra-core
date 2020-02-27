@@ -57,3 +57,7 @@ class ModuleId(Struct):
 
     def __hash__(self):
         return (self.address, self.name).__hash__()
+
+    def into(self):
+        from libra.access_path import AccessPath
+        return AccessPath.code_access_path(self)

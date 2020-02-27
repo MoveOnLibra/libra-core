@@ -78,3 +78,6 @@ class AccessPath(Struct):
     def code_access_path(cls, key: ModuleId) -> AccessPath:
         path = AccessPath.code_access_path_vec(key)
         return AccessPath(key.address, path)
+
+    def __hash__(self):
+        return (self.address, self.path).__hash__()
