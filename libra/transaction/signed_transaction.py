@@ -1,9 +1,10 @@
+from __future__ import annotations
 from canoser import Struct, Uint8, BytesT
 from nacl.signing import VerifyKey
 from libra.hasher import gen_hasher, HashValue
 from libra.transaction.raw_transaction import RawTransaction
 from libra.crypto.ed25519 import ED25519_PUBLIC_KEY_LENGTH, ED25519_SIGNATURE_LENGTH
-
+from dataclasses import dataclass
 
 class SignedTransaction(Struct):
     """A transaction that has been signed.
@@ -51,10 +52,11 @@ class SignedTransaction(Struct):
     def from_proto(cls, proto):
         return cls.deserialize(proto.txn_bytes)
 
-    def check_signature(self):
+    def check_signature(self) -> SignatureCheckedTransaction:
         message = self.raw_txn.hash()
         vkey = VerifyKey(self.public_key)
         vkey.verify(message, self.signature)
+        return SignatureCheckedTransaction(self)
 
     @property
     def sender(self):
@@ -82,3 +84,13 @@ class SignedTransaction(Struct):
 
     def raw_txn_bytes_len(self):
         return len(self.raw_txn.serialize())
+
+@dataclass
+class SignatureCheckedTransaction:
+    v0: SignedTransaction
+
+    def into_inner(self) -> SignedTransaction:
+        return self.v0
+
+    def into_raw_transaction(self) -> RawTransaction:
+        return self.v0.raw_txn
