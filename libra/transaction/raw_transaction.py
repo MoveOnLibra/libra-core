@@ -5,6 +5,7 @@ from libra.hasher import gen_hasher, HashValue
 from libra.transaction.transaction_payload import TransactionPayload
 from libra.transaction.transaction_argument import TransactionArgument
 from libra.transaction.script import Script
+from nacl.signing import SigningKey
 
 
 class RawTransaction(Struct):
@@ -26,10 +27,10 @@ class RawTransaction(Struct):
         return shazer.digest()
 
     @classmethod
-    def new_write_set_tx(cls, sender_address, sequence_number, write_set):
+    def new_change_set(cls, sender_address, sequence_number, change_set):
         return RawTransaction(
             sender_address, sequence_number,
-            TransactionPayload('WriteSet', write_set),
+            TransactionPayload('WriteSet', change_set),
             # Since write-set transactions bypass the VM, these fields aren't relevant.
             0, 0,
             # Write-set transactions are special and important and shouldn't expire.
@@ -72,3 +73,14 @@ class RawTransaction(Struct):
             gas_unit_price,
             txn_expiration
         )
+
+    def sign(self, private_key, public_key):
+        from libra.transaction.signed_transaction import SignedTransaction, SignatureCheckedTransaction
+        _signing_key = SigningKey(private_key)
+        signature = _signing_key.sign(self.hash())[:64]
+        assert len(signature) == 64
+        return SignatureCheckedTransaction(SignedTransaction(self,
+                public_key,
+                signature
+            ))
+

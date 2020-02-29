@@ -23,4 +23,7 @@ class WriteSet(Struct):
         # TODO: add structural validation
         return self
 
+    def append(self, tup):
+        self.write_set.append(tup)
+
 WriteSetMut = WriteSet
