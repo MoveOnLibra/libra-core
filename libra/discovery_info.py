@@ -2,7 +2,7 @@ from canoser import Struct, BytesT
 from libra.account_address import Address
 from libra.crypto.x25519 import X25519_PUBLIC_KEY_LENGTH
 
-Multiaddr = str
+Multiaddr = BytesT()
 
 class DiscoveryInfo(Struct):
     """

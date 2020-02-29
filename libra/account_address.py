@@ -1,5 +1,5 @@
 from canoser import DelegateT, Uint8, BytesT
-from libra.hasher import gen_hasher
+from libra.hasher import gen_hasher, HashValue
 
 import hashlib, random
 from datetime import datetime
@@ -13,6 +13,10 @@ class Address(DelegateT):
     @classmethod
     def default(cls):
         return b'\x00' * ADDRESS_LENGTH
+
+    @classmethod
+    def from_public_key(cls, pubkey):
+        return HashValue.from_sha3_256(pubkey)
 
     @classmethod
     def hash(cls, address):

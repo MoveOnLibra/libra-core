@@ -81,3 +81,6 @@ class AccessPath(Struct):
 
     def __hash__(self):
         return (self.address, self.path).__hash__()
+
+    def __lt__(self, other):
+        return self.serialize().__lt__(other.serialize())

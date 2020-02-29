@@ -25,12 +25,12 @@ class StructTag(Struct):
 
 class TypeTag(RustEnum):
     _enums = [
-        ('Bool', bool),
-        ('U8', Uint8),
-        ('U64', Uint64),
-        ('U128', Uint128),
-        ('ByteArray', bytearray),
-        ('Address', Address),
+        ('Bool', None),
+        ('U8', None),
+        ('U64', None),
+        ('U128', None),
+        ('ByteArray', None),
+        ('Address', None),
         ('Struct', StructTag)
     ]
 

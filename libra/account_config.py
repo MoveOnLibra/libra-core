@@ -42,16 +42,32 @@ class AccountConfig:
         return "a550c18".rjust(HEX_ADDRESS_LENGTH, '0')
 
     @classmethod
+    def association_address_bytes(cls):
+        return bytes.fromhex(cls.association_address())
+
+    @classmethod
     def transaction_fee_address(cls):
         return "FEE".rjust(HEX_ADDRESS_LENGTH, '0')
+
+    @classmethod
+    def transaction_fee_address_bytes(cls):
+        return bytes.fromhex(cls.transaction_fee_address())
 
     @classmethod
     def validator_set_address(cls):
         return "1d8".rjust(HEX_ADDRESS_LENGTH, '0')
 
     @classmethod
+    def validator_set_address_bytes(cls):
+        return bytes.fromhex(cls.validator_set_address())
+
+    @classmethod
     def discovery_set_address(cls):
         return "D15C0".rjust(HEX_ADDRESS_LENGTH, '0')
+
+    @classmethod
+    def discovery_set_address_bytes(cls):
+        return bytes.fromhex(cls.discovery_set_address())
 
 
     @classmethod

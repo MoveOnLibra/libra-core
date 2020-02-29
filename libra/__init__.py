@@ -11,3 +11,5 @@ from libra.account_address import Address
 from libra.account import Account
 from libra.transaction import SignedTransaction, RawTransaction, Transaction, Version
 from libra.hasher import HashValue
+
+PeerId = Address
