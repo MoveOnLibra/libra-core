@@ -1,4 +1,5 @@
 from canoser import Uint64
+import collections
 
 usize = Uint64
 
@@ -37,7 +38,14 @@ def resize_list(alist, size, value):
         return alist
 
 def flatten(ite):
-    return [x for sublist in ite if sublist is not None for x in sublist if x is not None]
+    ret = []
+    for sublist in ite:
+        if sublist is not None:
+            if isinstance(sublist, collections.Iterable):
+                ret.extend([x for x in sublist if x is not None])
+            else:
+                ret.append(sublist)
+    return ret
 
 def take_n(ite, n):
     return [x for i,x in enumerate(ite) if i<n]

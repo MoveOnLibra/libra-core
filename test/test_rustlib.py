@@ -45,3 +45,5 @@ def test_flatten():
     #not support 3 level nested.
     assert flatten(["alpha", "beta", "gamma"]) == ['a', 'l', 'p', 'h', 'a', 'b', 'e', 't', 'a', 'g', 'a', 'm', 'm', 'a']
     #not same result as rust: "alphabetagamma"
+    assert flatten([1, 2]) == [1, 2]
+    assert flatten([1, [2, 3], [4]]) == [1, 2, 3, 4]
