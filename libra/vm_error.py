@@ -61,6 +61,7 @@ class VMStatus:
             self.message += message
         else:
             self.message = message
+        return self
 
 
     def with_sub_status(self, sub_status):

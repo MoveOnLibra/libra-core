@@ -120,7 +120,7 @@ class LedgerInfoWithSignatures(Struct):
             sig.signature = v
         return proto
 
-    def verify(self, validator: ValidatorVerifier):
+    def verify_signatures(self, validator: ValidatorVerifier):
         ledger_hash = self.ledger_info.hash()
         validator.batch_verify_aggregated_signature(ledger_hash, self.signatures)
 

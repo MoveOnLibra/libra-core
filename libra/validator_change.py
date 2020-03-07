@@ -25,7 +25,7 @@ class VerifierType(RustEnum):
                     self.value.epoch,
                     ledger_info_with_sigs.ledger_info.epoch
                     ))
-            ledger_info_with_sigs.verify(self.value.verifier)
+            ledger_info_with_sigs.verify_signatures(self.value.verifier)
 
     #  Returns true in case the given epoch is larger than the existing verifier can support.
     #  In this case the ValidatorChangeProof should be verified and the verifier updated.
@@ -51,6 +51,7 @@ class ValidatorChangeProof:
         if not self.ledger_info_with_sigs:
             raise VerifyError("Empty ValidatorChangeProof")
         for x in self.ledger_info_with_sigs:
+            #TODO: skip stale ledger, is_ledger_info_stale
             verifier.verify(x)
             # While the original verification could've been via waypoints, all the next epoch
             # changes are verified using the (already trusted) validator sets.
