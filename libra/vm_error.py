@@ -67,11 +67,10 @@ class VMStatus:
     def with_sub_status(self, sub_status):
         self.sub_status = sub_status
         return self
-        
+
     @classmethod
     def from_proto(cls, proto):
-        ret = cls()
-        ret.major_status = proto.major_status
+        ret = cls(proto.major_status)
         if proto.has_sub_status:
             ret.sub_status = proto.sub_status
         else:
