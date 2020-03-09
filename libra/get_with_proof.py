@@ -2,7 +2,7 @@ from __future__ import annotations
 from libra.ledger_info import LedgerInfo, LedgerInfoWithSignatures
 from libra.crypto_proxies import EpochInfo
 from libra.validator_verifier import VerifyError, ValidatorVerifier
-from libra.validator_change import ValidatorChangeProof
+from libra.validator_change import ValidatorChangeProof, VerifierType
 from libra.hasher import *
 from libra.proof.transaction_with_proof import TransactionWithProof
 from libra.proof.transaction_list_with_proof import TransactionListWithProof
