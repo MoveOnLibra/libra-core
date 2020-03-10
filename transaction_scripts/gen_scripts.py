@@ -26,10 +26,15 @@ def compile(script):
 # for script in whitelists:
 #     compile(script)
 
+# def get_code_by_filename(script_file):
+#     with open(script_file) as f:
+#         amap = json.load(f)
+#         return amap['code']
+
 def get_code_by_filename(script_file):
-    with open(script_file) as f:
-        amap = json.load(f)
-        return amap['code']
+    with open(script_file, 'rb') as f:
+        code = f.read()
+        return code
 
 bytecodes = {}
 

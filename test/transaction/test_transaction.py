@@ -12,7 +12,7 @@ def test_raw_txn():
     a1 = libra.Account(b'1' * 32)
     assert RawTransaction.__doc__.startswith("RawTransaction is the portion of a transaction that a client signs")
     raw_tx = RawTransaction._gen_transfer_transaction(a0.address, 0, a1.address, 123)
-    assert raw_tx.max_gas_amount == 140000
+    assert raw_tx.max_gas_amount == 400_000
     assert raw_tx.gas_unit_price == 0
     assert bytes(raw_tx.sender) == a0.address
     assert raw_tx.payload.enum_name == "Script"
