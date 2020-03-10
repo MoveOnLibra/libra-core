@@ -53,6 +53,11 @@ def take_n(ite, n):
 def nth(ite, n):
     return next(x for i,x in enumerate(ite) if i==n)
 
+#Get an item from list with index, return None if not exsits.
+def list_get(alist, n):
+    if n<0 or n > len(alist):
+        return None
+    return alist[n]
 
 def assert_equal(aa, bb):
     assert aa == bb
