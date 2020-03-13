@@ -51,3 +51,7 @@ def test_strict_parse_address():
         strict_parse_address(None)
     with pytest.raises(ValueError):
         strict_parse_address(b'abc')
+
+def test_from_hex_literal():
+    addr = Address.from_hex_literal("0xa550c18")
+    assert addr == AccountConfig.association_address_bytes()

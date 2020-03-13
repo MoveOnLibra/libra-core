@@ -44,6 +44,24 @@ class Address(DelegateT):
 
 
     @staticmethod
+    def from_hex_literal(literal):
+        from libra.rustlib import ensure, bail
+        ensure(literal.startswith("0x"), "literal must start with 0x.")
+        bys = literal[2:]
+        if len(bys) % 2 != 0:
+            bys = bytes.fromhex('0'+bys)
+        else:
+            bys = bytes.fromhex(bys)
+
+        if len(bys) > ADDRESS_LENGTH:
+            bail("The Address {} is of invalid length", literal)
+        elif len(bys) < ADDRESS_LENGTH:
+            return bys.rjust(ADDRESS_LENGTH, b'\x00')
+        else:
+            return bys
+
+
+    @staticmethod
     def equal_address(addr1, addr2):
         return Address.normalize_to_bytes(addr1) == Address.normalize_to_bytes(addr2)
 
