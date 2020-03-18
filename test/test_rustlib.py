@@ -39,7 +39,7 @@ def test_flatten():
     assert flatten([[]]) == []
     assert flatten([[None]]) == []
     assert flatten([[], None]) == []
-    assert flatten([[1],[],[None]]) == [1]    
+    assert flatten([[1],[],[None]]) == [1]
     assert flatten([[None, 1], [None]]) == [1]
     assert flatten([[[2]]]) == [[2]]
     #not support 3 level nested.
@@ -47,3 +47,16 @@ def test_flatten():
     #not same result as rust: "alphabetagamma"
     assert flatten([1, 2]) == [1, 2]
     assert flatten([1, [2, 3], [4]]) == [1, 2, 3, 4]
+
+def test_position():
+    out = 'c'
+    alist = ['a', 'b', 'c', 'd']
+    lambdaf = lambda x: x == out
+    assert position(alist, lambdaf) == 2
+    assert position(alist, lambda x: x=='e') == None
+
+def test_format_str():
+    assert format_str("x{}{}", 2, 3) == "x23"
+    assert format_str("x{}", 2) == "x2"
+    assert format_str("x{name}", name=3) == "x3"
+    assert format_str("x{}{key}{value}", 1, key=2, value=3) == "x123"

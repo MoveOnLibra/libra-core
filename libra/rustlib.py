@@ -59,6 +59,12 @@ def list_get(alist, n):
         return None
     return alist[n]
 
+def position(alist, lambdaf):
+    for idx, item in enumerate(alist):
+        if lambdaf(item):
+            return idx
+    return None
+
 def assert_equal(aa, bb):
     assert aa == bb
 
@@ -76,3 +82,9 @@ def bail(hint, *args):
 def ensure(exp, hint, *args):
     if not exp:
         bail(hint, *args)
+
+def format_str(astr, *args, **kwargs):
+    return astr.format(*args, **kwargs)
+
+def snake_to_camel(word):
+    return ''.join(x.capitalize() for x in word.split('_'))
