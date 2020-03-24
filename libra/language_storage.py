@@ -9,7 +9,7 @@ class StructTag(Struct):
         ('address', Address),
         ('module', Identifier),
         ('name', Identifier),
-        ('type_params', ['libra.language_storage.StructTag'])
+        ('type_params', ['libra.language_storage.TypeTag'])
     ]
 
     def hash(self):

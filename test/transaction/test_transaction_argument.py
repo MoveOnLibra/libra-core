@@ -14,6 +14,9 @@ def test_parse_as_transaction_argument():
     i = TransactionArgument.parse_as_transaction_argument('1234')
     assert i.U64
     assert i.value == 1234
+    b = TransactionArgument.parse_as_transaction_argument('true')
+    assert b.Bool
+    assert b.value == True
     with pytest.raises(Exception):
         TransactionArgument.parse_as_transaction_argument('abc')
     with pytest.raises(Exception):

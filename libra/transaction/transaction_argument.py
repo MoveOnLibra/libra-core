@@ -34,12 +34,15 @@ class TransactionArgument(RustEnum):
         elif s[0:2] == 'b"' and s[-1] == '"' and len(s) > 3:
             barr = bytes.fromhex(s[2:-1])
             return TransactionArgument('ByteArray', barr)
+        elif s.lower() == "true":
+            return TransactionArgument('Bool', True)
+        elif s.lower() == "false":
+            return TransactionArgument('Bool', False)
         else:
             try:
                 i = Uint64.int_safe(s)
                 return TransactionArgument('U64', i)
             except Exception:
-                raise
+                pass
         raise TypeError(f"cannot parse {s} as transaction argument")
-        #TODO: why not support String type.
 

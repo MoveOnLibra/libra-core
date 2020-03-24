@@ -7,17 +7,22 @@ from libra.account_state_blob import AccountStateBlob
 from libra.contract_event import ContractEvent
 from canoser import Uint64
 from typing import List, Mapping
+from enum import IntEnum
+
+class TransactionStatusTag(IntEnum):
+    Discard = 0  # Discard the transaction output
+    Keep = 1
 
 # The status of executing a transaction. The VM decides whether or not we should `Keep` the
 # transaction output or `Discard` it based upon the execution of the transaction. We wrap these
 # decisions around a `VMStatus` that provides more detail on the final execution state of the VM.
 @dataclass
 class TransactionStatus:
-    tag: int #0/Discard, 1/Keep
+    tag: TransactionStatusTag
     vm_status: VMStatus
 
-    Discard = 0     # Discard the transaction output
-    Keep = 1
+    Discard = TransactionStatusTag.Discard
+    Keep = TransactionStatusTag.Keep
 
     @classmethod
     def from_vm_status(cls, vm_status: VMStatus):
