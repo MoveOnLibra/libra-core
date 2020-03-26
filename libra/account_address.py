@@ -4,11 +4,13 @@ from libra.hasher import gen_hasher, HashValue
 import hashlib, random
 from datetime import datetime
 
-ADDRESS_LENGTH = 32
+ADDRESS_LENGTH = 16
 HEX_ADDRESS_LENGTH = ADDRESS_LENGTH * 2
 
 class Address(DelegateT):
     delegate_type = BytesT(ADDRESS_LENGTH, encode_len=False)
+
+    LENGTH = ADDRESS_LENGTH
 
     @classmethod
     def default(cls):

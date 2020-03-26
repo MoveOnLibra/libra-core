@@ -1,5 +1,6 @@
 import pytest
 import libra
+from libra import Address
 from libra.validator_public_keys import ValidatorPublicKeys
 from libra.proto_helper import *
 from libra.proof import *
@@ -16,13 +17,13 @@ def test_canoser():
     zero = ProtoHelper.to_proto(vkeys)
     with pytest.raises(TypeError):
         ValidatorPublicKeys.from_proto(zero)
-    vkeys.account_address = b'\x01' * 32
+    vkeys.account_address = b'\x01' * Address.LENGTH
     vkeys.consensus_public_key = b'\x02' * 32
     vkeys.consensus_voting_power = 3
     vkeys.network_signing_public_key = b''
     vkeys.network_identity_public_key = b'\x05' * 32
     proto = ProtoHelper.to_proto(vkeys)
-    assert proto.account_address == b'\x01' * 32
+    assert proto.account_address == b'\x01' * Address.LENGTH
     assert proto.consensus_public_key == b'\x02' * 32
     assert proto.consensus_voting_power == 3
     assert proto.network_signing_public_key == b''

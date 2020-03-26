@@ -4,7 +4,7 @@ import pytest
 #import pdb
 
 def test_parse_as_transaction_argument():
-    address = bytes.fromhex("000000000000000000000000000000000000000000000000000000000a550c18")
+    address = bytes.fromhex("0000000000000000000000000a550c18")
     addr = TransactionArgument.parse_as_transaction_argument(AccountConfig.association_address())
     assert bytes(addr.value) == address
     assert addr.Address

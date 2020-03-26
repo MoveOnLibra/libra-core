@@ -1,6 +1,7 @@
 from libra.discovery_set import DiscoverySet
+from libra.event import EVENT_KEY_LENGTH
 
 def test_discovery_set():
     key = DiscoverySet.change_event_key()
-    assert len(key) == 40
-    assert key == bytes([2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 13, 21, 192])
+    assert len(key) == EVENT_KEY_LENGTH
+    assert key.hex() == '0200000000000000000000000000000000000000000d15c0'

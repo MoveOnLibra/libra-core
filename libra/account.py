@@ -23,7 +23,7 @@ class Account:
     def gen_address_from_pk(cls, public_key):
         shazer = new_sha3_256()
         shazer.update(public_key)
-        return shazer.digest()
+        return shazer.digest()[0: Address.LENGTH]
 
     def json_print_fields(self):
         return ["address", "private_key", "public_key"]

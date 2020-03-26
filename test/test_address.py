@@ -4,7 +4,7 @@ from libra.account_config import AccountConfig
 import pytest
 
 def test_parse():
-    address = bytes.fromhex("000000000000000000000000000000000000000000000000000000000a550c18")
+    address = bytes.fromhex("0000000000000000000000000a550c18")
     assert parse_address(AccountConfig.association_address()) == address
     assert parse_address("0xa550c18") == address
     assert parse_address("0xA550c18") == address
@@ -29,7 +29,7 @@ def test_normalize_to_bytes():
 
 
 def test_strict_parse_address():
-    address = bytes.fromhex("000000000000000000000000000000000000000000000000000000000a550c18")
+    address = bytes.fromhex("0000000000000000000000000a550c18")
     hexstr = AccountConfig.association_address()
     assert strict_parse_address(hexstr) == address
     assert strict_parse_address("0x"+hexstr) == address

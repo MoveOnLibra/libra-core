@@ -63,6 +63,9 @@ class VMStatus:
             self.message = message
         return self
 
+    def append(self, other):
+        msg = f"{other}"
+        return self.append_message_with_separator('\n', msg)
 
     def with_sub_status(self, sub_status):
         self.sub_status = sub_status
