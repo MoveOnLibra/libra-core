@@ -11,6 +11,8 @@ EVENT_KEY_LENGTH = 24
 class EventKey(DelegateT):
     delegate_type = BytesT(EVENT_KEY_LENGTH)
 
+    LENGTH = EVENT_KEY_LENGTH
+
     @classmethod
     def new_from_address(cls, addr, salt):
         lhs = Uint64.encode(salt)
