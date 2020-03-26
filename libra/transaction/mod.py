@@ -12,6 +12,7 @@ from enum import IntEnum
 class TransactionStatusTag(IntEnum):
     Discard = 0  # Discard the transaction output
     Keep = 1
+    Retry = 2
 
 # The status of executing a transaction. The VM decides whether or not we should `Keep` the
 # transaction output or `Discard` it based upon the execution of the transaction. We wrap these
@@ -23,6 +24,13 @@ class TransactionStatus:
 
     Discard = TransactionStatusTag.Discard
     Keep = TransactionStatusTag.Keep
+    Retry = TransactionStatusTag.Retry
+
+    def vm_status(self) -> VMStatus:
+        if self.tag == TransactionStatusTag.Retry:
+            return VMStatus(StatusCode.UNKNOWN_VALIDATION_STATUS)
+        else:
+            return self.vm_status
 
     @classmethod
     def from_vm_status(cls, vm_status: VMStatus):
