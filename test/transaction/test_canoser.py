@@ -112,7 +112,7 @@ def test_transaction_argument_address_canonical_serialization_example():
 
 
 def test_transaction_argument_byte_array_canonical_serialization_example():
-    input = TransactionArgument('ByteArray', bytes([0xCA, 0xFE, 0xD0, 0x0D]))
+    input = TransactionArgument('U8Vector', bytes([0xCA, 0xFE, 0xD0, 0x0D]))
     expected_output = [
         0x02, 0x00, 0x00, 0x00, 0x04, 0x00, 0x00, 0x00, 0xCA, 0xFE, 0xD0, 0x0D,
     ]

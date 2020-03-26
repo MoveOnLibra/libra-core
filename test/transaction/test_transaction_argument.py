@@ -9,7 +9,7 @@ def test_parse_as_transaction_argument():
     assert bytes(addr.value) == address
     assert addr.Address
     hello = TransactionArgument.parse_as_transaction_argument('b"48656c6c6f20776f726c6421"')
-    assert hello.ByteArray
+    assert hello.U8Vector
     assert bytes(hello.value) == b"Hello world!"
     i = TransactionArgument.parse_as_transaction_argument('1234')
     assert i.U64

@@ -27,7 +27,7 @@ class Script(Struct):
             args = [
                     TransactionArgument('Address', receiver_address),
                     TransactionArgument('U64', micro_libra),
-                    TransactionArgument('ByteArray', metadata)
+                    TransactionArgument('U8Vector', metadata)
                 ]
         return Script(code, args)
 
@@ -56,7 +56,7 @@ class Script(Struct):
         key = normalize_public_key(public_key)
         code = bytecodes["rotate_authentication_key"]
         args = [
-                TransactionArgument('ByteArray', key)
+                TransactionArgument('U8Vector', key)
             ]
         return Script(code, args)
 
@@ -65,7 +65,7 @@ class Script(Struct):
         key = normalize_public_key(public_key)
         code = bytecodes["rotate_consensus_pubkey"]
         args = [
-                TransactionArgument('ByteArray', key)
+                TransactionArgument('U8Vector', key)
             ]
         return Script(code, args)
 
@@ -107,11 +107,11 @@ class Script(Struct):
         fullnodes_network_identity_pubkey = normalize_public_key(fullnodes_network_identity_pubkey)
         code = bytecodes["register_validator"]
         args = [
-                TransactionArgument('ByteArray', consensus_pubkey),
-                TransactionArgument('ByteArray', validator_network_signing_pubkey),
-                TransactionArgument('ByteArray', validator_network_identity_pubkey),
+                TransactionArgument('U8Vector', consensus_pubkey),
+                TransactionArgument('U8Vector', validator_network_signing_pubkey),
+                TransactionArgument('U8Vector', validator_network_identity_pubkey),
                 TransactionArgument('Address', validator_network_address),
-                TransactionArgument('ByteArray', fullnodes_network_identity_pubkey),
+                TransactionArgument('U8Vector', fullnodes_network_identity_pubkey),
                 TransactionArgument('Address', fullnodes_network_address)
             ]
         return Script(code, args)

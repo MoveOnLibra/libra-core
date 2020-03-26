@@ -1,12 +1,10 @@
 from canoser import DelegateT, Struct, Uint64, Uint8, BytesT
 from libra.account_address import Address
 
+EVENT_KEY_LENGTH = Address.LENGTH + 8
 
 def random_eventkey():
     return bytes([Uint8.random() for _x in range(EVENT_KEY_LENGTH)])
-
-
-EVENT_KEY_LENGTH = 24
 
 class EventKey(DelegateT):
     delegate_type = BytesT(EVENT_KEY_LENGTH)

@@ -44,7 +44,7 @@ def test_raw_txn_with_metadata():
     assert script.args[1].U64 == True
     assert script.args[1].value == 9
     assert script.args[2].index == 2
-    assert script.args[2].ByteArray == True
+    assert script.args[2].U8Vector == True
     assert script.args[2].value == bytes([2,3,4])
 
 

@@ -21,7 +21,7 @@ class TransactionArgument(RustEnum):
     _enums = [
         ('U64', Uint64),
         ('Address', Address),
-        ('ByteArray', bytes),
+        ('U8Vector', bytes),
         ('Bool', bool)
     ]
 
@@ -33,7 +33,7 @@ class TransactionArgument(RustEnum):
             return TransactionArgument('Address', address)
         elif s[0:2] == 'b"' and s[-1] == '"' and len(s) > 3:
             barr = bytes.fromhex(s[2:-1])
-            return TransactionArgument('ByteArray', barr)
+            return TransactionArgument('U8Vector', barr)
         elif s.lower() == "true":
             return TransactionArgument('Bool', True)
         elif s.lower() == "false":
