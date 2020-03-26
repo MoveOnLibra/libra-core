@@ -1,5 +1,5 @@
 from libra.transaction import *
-from libra import AccessPath, Address
+from libra import AccessPath, Address, AccountConfig
 from canoser import *
 #import pdb
 
@@ -59,6 +59,7 @@ def test_raw_transaction_with_a_program_canonical_serialization_example():
         TransactionPayload('Script', get_common_program()),
         10000,
         20000,
+        AccountConfig.lbr_type_tag(),
         86400,
     )
     expected_output = [

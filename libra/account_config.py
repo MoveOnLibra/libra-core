@@ -1,17 +1,24 @@
 from canoser import Struct, Uint64, Uint8
-from libra.language_storage import StructTag
+from libra.language_storage import StructTag, TypeTag
 from libra.account_address import ADDRESS_LENGTH, HEX_ADDRESS_LENGTH, Address
 
 CORE_CODE_ADDRESS = b'\x00' * 32
 
 class AccountConfig:
     # LibraCoin
-    COIN_MODULE_NAME = "LibraCoin";
-    COIN_STRUCT_NAME = "T";
+    COIN_MODULE_NAME = "LibraCoin"
+    COIN_STRUCT_NAME = "T"
+
+    LBR_MODULE_NAME = "LBR"
+    LBR_STRUCT_NAME = "T"
 
     # Account
-    ACCOUNT_MODULE_NAME = "LibraAccount";
-    ACCOUNT_STRUCT_NAME = "T";
+    ACCOUNT_MODULE_NAME = "LibraAccount"
+    ACCOUNT_STRUCT_NAME = "T"
+
+    ACCOUNT_BALANCE_STRUCT_NAME = "Balance"
+    ACCOUNT_EVENT_HANDLE_STRUCT_NAME = "EventHandle"
+    ACCOUNT_EVENT_HANDLE_GENERATOR_STRUCT_NAME = "EventHandleGenerator"
 
     # Hash
     HASH_MODULE_NAME = "Hash";
@@ -80,6 +87,29 @@ class AccountConfig:
             cls.ACCOUNT_STRUCT_NAME,
             []
         )
+
+    @classmethod
+    def account_balance_struct_tag(cls):
+        return StructTag(
+            cls.core_code_address_bytes(),
+            cls.ACCOUNT_MODULE_NAME,
+            cls.ACCOUNT_BALANCE_STRUCT_NAME,
+            [lbr_type_tag()]
+        )
+
+    @classmethod
+    def lbr_type_tag(cls) -> TypeTag:
+        return TypeTag('Struct', cls.lbr_struct_tag())
+
+    @classmethod
+    def lbr_struct_tag(cls):
+        return StructTag(
+            cls.core_code_address_bytes(),
+            cls.LBR_MODULE_NAME,
+            cls.LBR_STRUCT_NAME,
+            []
+        )
+
 
     @classmethod
     def all_config(cls):

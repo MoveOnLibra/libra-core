@@ -29,7 +29,6 @@ class TypeTag(RustEnum):
         ('U8', None),
         ('U64', None),
         ('U128', None),
-        ('ByteArray', None),
         ('Address', None),
         ('Vector', 'libra.language_storage.TypeTag'),
         ('Struct', StructTag)
