@@ -7,6 +7,7 @@ from libra.transaction.transaction_argument import TransactionArgument
 from libra.transaction.script import Script
 from libra.language_storage import TypeTag
 from nacl.signing import SigningKey
+from libra.transaction.authenticator import TransactionAuthenticator
 
 MAX_GAS_AMOUNT = 400_000
 
@@ -84,8 +85,8 @@ class RawTransaction(Struct):
         _signing_key = SigningKey(private_key)
         signature = _signing_key.sign(self.hash())[:64]
         assert len(signature) == 64
-        return SignatureCheckedTransaction(SignedTransaction(self,
-                public_key,
-                signature
-            ))
+        authenticator = TransactionAuthenticator.ed25519(public_key, signature)
+        return SignatureCheckedTransaction(
+            SignedTransaction(self, authenticator)
+        )
 

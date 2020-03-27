@@ -1,8 +1,8 @@
 from __future__ import annotations
 from canoser import Struct, Uint8, BytesT
-from nacl.signing import VerifyKey
 from libra.hasher import gen_hasher, HashValue
 from libra.transaction.raw_transaction import RawTransaction
+from libra.transaction.authenticator import TransactionAuthenticator
 from libra.crypto.ed25519 import ED25519_PUBLIC_KEY_LENGTH, ED25519_SIGNATURE_LENGTH
 from dataclasses import dataclass
 
@@ -13,9 +13,7 @@ class SignedTransaction(Struct):
     """
     _fields = [
         ('raw_txn', RawTransaction),
-        ('public_key', BytesT(ED25519_PUBLIC_KEY_LENGTH)),
-        ('signature', BytesT(ED25519_SIGNATURE_LENGTH))
-#        ('transaction_length', Uint64)
+        ('authenticator', TransactionAuthenticator)
     ]
 
 
@@ -38,10 +36,9 @@ class SignedTransaction(Struct):
         """
         tx_hash = raw_tx.hash()
         signature = sender_account.sign(tx_hash)[:64]
-        return SignedTransaction(raw_tx,
-                sender_account.public_key,
-                signature
-            )
+        authenticator = TransactionAuthenticator.ed25519(sender_account.public_key, signature)
+        return SignedTransaction(raw_tx, authenticator)
+
 
     def hash(self):
         shazer = gen_hasher(b"SignedTransaction::libra_types::transaction")
@@ -54,8 +51,7 @@ class SignedTransaction(Struct):
 
     def check_signature(self) -> SignatureCheckedTransaction:
         message = self.raw_txn.hash()
-        vkey = VerifyKey(self.public_key)
-        vkey.verify(message, self.signature)
+        self.authenticator.verify_signature(message)
         return SignatureCheckedTransaction(self)
 
     @property

@@ -18,7 +18,7 @@ class Address(DelegateT):
 
     @classmethod
     def from_public_key(cls, pubkey):
-        return HashValue.from_sha3_256(pubkey)
+        return HashValue.from_sha3_256(pubkey)[HashValue.LENGTH-ADDRESS_LENGTH:]
 
     @classmethod
     def hash(cls, address):

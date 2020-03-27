@@ -53,13 +53,14 @@ def test_signed_txn():
     a1 = libra.Account(b'1' * ED25519_PRIVATE_KEY_LENGTH)
     raw_tx = RawTransaction._gen_transfer_transaction(a0.address, 0, a1.address, 123)
     stx = SignedTransaction.gen_from_raw_txn(raw_tx, a0)
-    assert len(stx.signature) == ED25519_SIGNATURE_LENGTH
+    assert len(stx.authenticator.value.signature) == ED25519_SIGNATURE_LENGTH
     stx.check_signature()
     sctx = raw_tx.sign(a0.private_key, a0.public_key)
     assert sctx.v0 == stx
     assert len(raw_tx.serialize()) == stx.raw_txn_bytes_len()
     with pytest.raises(nacl.exceptions.BadSignatureError):
-        stx.signature = b'\0'*ED25519_SIGNATURE_LENGTH
+        authenticator = TransactionAuthenticator.ed25519(a0.public_key, b'\0'*ED25519_SIGNATURE_LENGTH)
+        stx.authenticator = authenticator
         stx.check_signature()
     tx = Transaction('UserTransaction', stx)
     assert tx.to_proto().transaction == tx.serialize()

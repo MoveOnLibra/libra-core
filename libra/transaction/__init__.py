@@ -9,6 +9,7 @@ from libra.transaction.signed_transaction import SignedTransaction, SignatureChe
 from libra.transaction.transaction_info import TransactionInfo
 from libra.transaction.transaction import Transaction, Version
 from libra.transaction.mod import TransactionStatus, TransactionOutput, TransactionToCommit
+from libra.transaction.authenticator import TransactionAuthenticator
 
 MAX_TRANSACTION_SIZE_IN_BYTES = 4096
 SCRIPT_HASH_LENGTH = 32

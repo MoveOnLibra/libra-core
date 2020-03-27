@@ -13,6 +13,9 @@ class Ed25519PrivateKey(DelegateT):
 class Ed25519PublicKey(DelegateT):
     delegate_type = BytesT(ED25519_PUBLIC_KEY_LENGTH)
 
+class Ed25519Signature(DelegateT):
+    delegate_type = BytesT(ED25519_SIGNATURE_LENGTH)
+
 
 # Generate an arbitrary key pair, with possible Rng input
     #
@@ -29,7 +32,7 @@ def generate_keypair(seed) -> Tuple[Ed25519PrivateKey, Ed25519PublicKey]:
 		skbob = PrivateKey.generate()
 		return _generate_keypair_by_private_key(skbob.encode())
 
-    
+
 
 # Generates a well-known keypair `(Ed25519PrivateKey, Ed25519PublicKey)` for special use
 # in the genesis block. A genesis block is the first block of a blockchain and it is
