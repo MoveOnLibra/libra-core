@@ -28,7 +28,11 @@ class AccountConfig:
     def account_resource_path(cls):
         from libra.access_path import AccessPath
         return bytes(AccessPath.resource_access_vec(AccountConfig.account_struct_tag(), []))
-        #return b'\x01\xa2\x08\xdf\x13O\xef\xed\x84B\xb1\xf0\x1f\xabY\x07\x18\x98\xf5\xa1\xafQd\xe1,YM\xe5Zp\x04\xa9\x1c'
+
+    @classmethod
+    def balance_resource_path(cls):
+        from libra.access_path import AccessPath
+        return bytes(AccessPath.resource_access_vec(AccountConfig.account_balance_struct_tag(), []))
 
     @classmethod
     def account_sent_event_path(cls):
@@ -94,7 +98,7 @@ class AccountConfig:
             cls.core_code_address_bytes(),
             cls.ACCOUNT_MODULE_NAME,
             cls.ACCOUNT_BALANCE_STRUCT_NAME,
-            [lbr_type_tag()]
+            [cls.lbr_type_tag()]
         )
 
     @classmethod

@@ -1,6 +1,7 @@
 from canoser import Struct, Uint64, Uint8, BytesT
 from libra.hasher import HashValue
-from libra import Address, AccountConfig
+from libra.account_address import Address
+from libra.account_config import AccountConfig
 from libra.event import EventKey, EventHandle
 from libra.access_path import AccessPath, Accesses
 from libra.language_storage import StructTag

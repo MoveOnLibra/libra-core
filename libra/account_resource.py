@@ -1,7 +1,6 @@
 from canoser import Struct, Uint8, Uint64
 from libra.event import EventHandle
 from libra.account_config import AccountConfig
-from libra.account_state import AccountState
 from libra.rustlib import bail
 from io import StringIO
 
@@ -13,7 +12,6 @@ class AccountResource(Struct):
     """
     _fields = [
         ('authentication_key', bytes),
-        ('balance', Uint64),
         ('delegated_key_rotation_capability', bool),
         ('delegated_withdrawal_capability', bool),
         ('received_events', EventHandle),
@@ -24,6 +22,8 @@ class AccountResource(Struct):
 
     @classmethod
     def get_account_resource_or_default(cls, blob):
+        #TODO: remove this method
+        from libra.account_state import AccountState
         if blob:
             omap = AccountState.deserialize(blob.blob).ordered_map
             resource = omap[AccountConfig.account_resource_path()]
@@ -38,3 +38,12 @@ class AccountResource(Struct):
             return self.sent_events
         else:
             bail("Unrecognized query path: {}", query_path);
+
+
+
+# The balance resource held under an account.
+class BalanceResource(Struct):
+    _fields = [
+        ('coin', Uint64)
+    ]
+
