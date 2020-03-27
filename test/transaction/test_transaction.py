@@ -21,7 +21,7 @@ def test_raw_txn():
     assert raw_tx.payload.index == 2
     assert raw_tx.payload.value_type == Script
     script = raw_tx.payload.value
-    assert script.code == Script.get_script_bytecode("peer_to_peer_transfer")
+    assert script.code == Script.get_script_bytecode("peer_to_peer")
     assert script.args[0].index == 1
     assert script.args[0].Address == True
     assert script.args[0].enum_name == 'Address'
@@ -36,7 +36,7 @@ def test_raw_txn_with_metadata():
     raw_tx = RawTransaction._gen_transfer_transaction(a0.address, 0, a1.address, 9, metadata=bytes([2,3,4]))
     assert raw_tx.payload.value_type == Script
     script = raw_tx.payload.value
-    assert script.code == Script.get_script_bytecode("peer_to_peer_transfer_with_metadata")
+    assert script.code == Script.get_script_bytecode("peer_to_peer_with_metadata")
     assert script.args[0].index == 1
     assert script.args[0].Address == True
     assert script.args[0].enum_name == 'Address'
@@ -64,4 +64,6 @@ def test_signed_txn():
         stx.check_signature()
     tx = Transaction('UserTransaction', stx)
     assert tx.to_proto().transaction == tx.serialize()
+    jstr = tx.to_json()
+    print(jstr)
 

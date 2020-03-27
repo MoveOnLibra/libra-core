@@ -17,13 +17,13 @@ class Script(Struct):
         if isinstance(receiver_address, str):
             receiver_address = bytes.fromhex(receiver_address)
         if metadata is None:
-            code = bytecodes["peer_to_peer_transfer"]
+            code = bytecodes["peer_to_peer"]
             args = [
                     TransactionArgument('Address', receiver_address),
                     TransactionArgument('U64', micro_libra)
                 ]
         else:
-            code = bytecodes["peer_to_peer_transfer_with_metadata"]
+            code = bytecodes["peer_to_peer_with_metadata"]
             args = [
                     TransactionArgument('Address', receiver_address),
                     TransactionArgument('U64', micro_libra),
