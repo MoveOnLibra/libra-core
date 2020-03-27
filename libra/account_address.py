@@ -26,6 +26,10 @@ class Address(DelegateT):
         shazer.update(address)
         return shazer.digest()
 
+    @classmethod
+    def random(cls):
+        return bytes([random.randint(0, Uint8.max_value) for x in range(ADDRESS_LENGTH)])
+
     @staticmethod
     def normalize_to_bytes(address):
         if isinstance(address, str):
@@ -92,10 +96,3 @@ def strict_parse_address(s: str) -> bytes:
         else:
             raise ValueError(f"{orig_str} is not a valid address.")
     return strict_parse_address(s, s)
-
-
-def gen_random_address():
-    hasher = hashlib.sha256()
-    ran = random.random() + datetime.now().timestamp()
-    hasher.update(ran.__str__().encode('utf-8'))
-    return hasher.digest().hex()[0:64]

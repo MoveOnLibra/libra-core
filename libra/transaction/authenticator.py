@@ -144,7 +144,7 @@ class AuthenticationKey(bytes):
     # Create an authentication key from a preimage by taking its sha3 hash
     @classmethod
     def from_preimage(cls, preimage: AuthenticationKeyPreimage) -> AuthenticationKey:
-        AuthenticationKey.new(HashValue.from_sha3_256(preimage))
+        return AuthenticationKey.new(HashValue.from_sha3_256(preimage))
 
 
     # Create an authentication key from an Ed25519 public key
@@ -189,7 +189,7 @@ class AuthenticationKeyPreimage(bytes):
     # Return bytes for (public_key | scheme_id)
     @classmethod
     def new(cls, public_key_bytes: bytes, scheme: Scheme) -> AuthenticationKeyPreimage:
-        return cls(public_key_bytes + scheme)
+        return cls(public_key_bytes + scheme.to_bytes(1, byteorder="big"))
 
 
     # Construct a preimage from an Ed25519 public key
