@@ -13,20 +13,16 @@ class Account:
     def __init__(self, private_key, address=None, sequence_number=0):
         self._signing_key = SigningKey(private_key)
         self._verify_key = self._signing_key.verify_key
+        self.auth_key = AuthenticationKey.ed25519(self.public_key)
         if address is None:
-            self.gen_address_from_pk(self._verify_key.encode())
+            self.address = self.auth_key.derived_address()
         else:
             self.address = Address.normalize_to_bytes(address)
         self.sequence_number = sequence_number
         self.status = AccountStatus.Local
 
-    def gen_address_from_pk(self, public_key):
-        auth_key = AuthenticationKey.ed25519(public_key)
-        self.auth_key_prefix = auth_key.prefix()
-        self.address = auth_key.derived_address()
-
     def json_print_fields(self):
-        return ["address", "private_key", "public_key"]
+        return ["address", "private_key", "public_key", "auth_key"]
 
     @classmethod
     def faucet_account(cls, private_key):
@@ -56,6 +52,10 @@ class Account:
     @property
     def address_hex(self):
         return self.address.hex()
+
+    @property
+    def auth_key_prefix(self):
+        return self.auth_key[0:Address.LENGTH]
 
     @property
     def public_key(self):
