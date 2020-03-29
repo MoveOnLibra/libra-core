@@ -10,8 +10,7 @@ def test_faucet_account(capsys):
     assert faucet_account.status == AccountStatus.Local
     assert faucet_account.public_key != faucet_account.auth_key
     json_print(faucet_account)
-    #faucet key changed, sucks.
-    assert True or capsys.readouterr().out == """{
+    assert capsys.readouterr().out == """{
     "address": "0000000000000000000000000a550c18",
     "private_key": "99622b3e626182ca29cc0c759d4f639b97ad1cee5ec12cab2c9c0d1120c6f8e7",
     "public_key": "78153472e480e0222ce49ac048e9c915bcfb4e469cb3888d69da30f653a911b9",
