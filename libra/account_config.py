@@ -120,6 +120,7 @@ class AccountConfig:
         return {
             "core_code_address" : AccountConfig.core_code_address(),
             "association_address" : AccountConfig.association_address(),
+            "transaction_fee_address" : AccountConfig.transaction_fee_address(),
             "validator_set_address" : AccountConfig.validator_set_address(),
             "account_resource_path": AccountConfig.account_resource_path(),
             "account_sent_event_path" : AccountConfig.account_sent_event_path(),
