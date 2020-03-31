@@ -18,15 +18,18 @@ with open("libra/version.py", "r") as fp:
 
 
 install_requires=[
-        'canoser>=0.8.1',
-        'protobuf',
-        'grpcio',
-        'more-itertools',
-        'PyNaCl',
-        'pygments',
-        'requests',
-        "toml",
-    ]
+    'canoser>=0.8.1',
+    'protobuf',
+    'grpcio',
+    'more-itertools',
+    'PyNaCl',
+    'pygments',
+]
+
+tests_require = [
+    'pytest',
+]
+
 
 if not 'sha3_256' in hashlib.algorithms_available:
     #only exec under sdist, not bdist_wheel
@@ -45,6 +48,7 @@ setuptools.setup(
     packages=setuptools.find_packages(),
     include_package_data=True,
     install_requires=install_requires,
+    tests_require=tests_require,
     classifiers=[
         "Programming Language :: Python :: 3",
         "License :: OSI Approved :: MIT License",
