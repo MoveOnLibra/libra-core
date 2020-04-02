@@ -12,7 +12,7 @@ def test_struct_tag():
     tag3 = StructTag(b'3'*Address.LENGTH, 'm3', 'n3', [tag1, tag2])
     tag1s = tag1.serialize()
     tag2s = tag2.serialize()
-    arrs = Uint32.encode(2)+ tag1s + tag2s
+    arrs = Uint32.serialize_uint32_as_uleb128(2) + tag1s + tag2s
     tag3s = tag3.serialize()
     assert tag3s.endswith(arrs)
     assert StructTag.deserialize(tag3s) == tag3

@@ -5,7 +5,7 @@
 #    pip-compile
 #
 
-canoser==0.8.1            # via libra-core (setup.py)
+canoser==0.8.2            # via libra-core (setup.py)
 cffi==1.14.0              # via pynacl
 grpcio==1.27.1            # via libra-core (setup.py)
 more-itertools==8.2.0     # via libra-core (setup.py)

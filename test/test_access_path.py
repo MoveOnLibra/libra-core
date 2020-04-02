@@ -16,7 +16,7 @@ def test_code_access_path():
     path = AccessPath.code_access_path_vec(mid)
     assert len(path) == 33
     assert path[0] == 0
-    assert bytes(path).hex() == "004f37ea258b9fbef8e67caccde1ff4a9b8d54e48a19efcb4eae6ab0230393257b"
+    assert bytes(path).hex() == "0084eb49a874bc95da42abebc3ca4938db7535a1cc364d576792879bb6053cde01"
     ap = AccessPath.code_access_path(mid)
     assert ap.address == address
     assert ap.path == path
