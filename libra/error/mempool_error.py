@@ -8,15 +8,16 @@ class MempoolAddTransactionStatusCode:
                 return name
         raise f"mempool error code:{status} not exsits."
 
-    # Transaction was sent to Mempool
-    Valid = 0
-    # The sender does not have enough balance for the transaction.
-    InsufficientBalance = 1
+    # Transaction was accepted by Mempool
+    Accepted = 0
     # Sequence number is old, etc.
-    InvalidSeqNumber = 2
+    InvalidSeqNumber = 1
     # Mempool is full (reached max global capacity)
-    MempoolIsFull = 3
+    MempoolIsFull = 2
     # Account reached max capacity per account
-    TooManyTransactions = 4
+    TooManyTransactions = 3
     # Invalid update. Only gas price increase is allowed
-    InvalidUpdate = 5
+    InvalidUpdate = 4
+    # transaction didn't pass vm_validation
+    VmError = 5
+    UnknownStatus = 6
