@@ -2,11 +2,11 @@ from canoser import Struct, Uint64, Uint8
 from libra.language_storage import StructTag, TypeTag
 from libra.account_address import ADDRESS_LENGTH, HEX_ADDRESS_LENGTH, Address
 
-CORE_CODE_ADDRESS = b'\x00' * 32
+CORE_CODE_ADDRESS = b'\x00' * ADDRESS_LENGTH
 
 class AccountConfig:
     # LibraCoin
-    COIN_MODULE_NAME = "LibraCoin"
+    COIN_MODULE_NAME = "Libra"
     COIN_STRUCT_NAME = "T"
 
     LBR_MODULE_NAME = "LBR"

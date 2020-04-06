@@ -25,9 +25,12 @@ class AccountResource(Struct):
         #TODO: remove this method
         from libra.account_state import AccountState
         if blob:
-            omap = AccountState.deserialize(blob.blob).ordered_map
-            resource = omap[AccountConfig.account_resource_path()]
-            return cls.deserialize(resource)
+            try:
+                omap = AccountState.deserialize(blob.blob).ordered_map
+                resource = omap[AccountConfig.account_resource_path()]
+                return cls.deserialize(resource)
+            except Exception:
+                return cls()
         else:
             return cls()
 
