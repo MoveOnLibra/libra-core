@@ -20,3 +20,4 @@ def test_code_access_path():
     ap = AccessPath.code_access_path(mid)
     assert ap.address == address
     assert ap.path == path
+    print(ap)

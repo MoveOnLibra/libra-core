@@ -50,6 +50,18 @@ class AccessPath(Struct):
     CODE_TAG = 0
     RESOURCE_TAG = 1
 
+    CODE_MAP = {}
+    RESOURCE_MAP = {}
+
+    @classmethod
+    def parse_access_path(cls, path: bytes):
+        if path[0] == cls.CODE_TAG:
+            return cls.CODE_MAP[path]
+        else:
+            return cls.RESOURCE_MAP[path]
+
+    def parse_path(self):
+        return AccessPath.parse_access_path(self.path)
 
     @classmethod
     def resource_access_vec(cls, tag: StructTag, accesses: List[Access]) -> bytes:
@@ -59,6 +71,7 @@ class AccessPath(Struct):
         #passing the old tests.
         astr = Accesses.as_separated_string(accesses)
         ret += str.encode(astr)
+        cls.RESOURCE_MAP[ret] = tag
         return ret
 
     # Convert Accesses into a byte offset which would be used by the storage layer to resolve
@@ -72,6 +85,7 @@ class AccessPath(Struct):
     def code_access_path_vec(cls, key: ModuleId) -> bytes:
         ret = bytes([cls.CODE_TAG])
         ret += key.hash()
+        cls.CODE_MAP[ret] = key
         return ret
 
     @classmethod
@@ -84,3 +98,14 @@ class AccessPath(Struct):
 
     def __lt__(self, other):
         return self.serialize().__lt__(other.serialize())
+
+    def to_json_serializable(self):
+        amap = super().to_json_serializable()
+        try:
+            obj = self.parse_path()
+            amap["parsed_path"] = {
+                obj.__class__.__qualname__  : obj.to_json_serializable()
+            }
+        except Exception:
+            pass
+        return amap
