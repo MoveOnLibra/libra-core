@@ -15,7 +15,7 @@ class OptionValidatorSet(RustOptional):
     def to_proto(self):
         proto = ProtoHelper.new_proto_by_name('ValidatorSet')
         for vpks in self.value:
-            item = proto.validator_public_keys.add()
+            item = proto.validator_info.add()
             item.MergeFrom(ProtoHelper.to_proto(vpks))
         return proto
 

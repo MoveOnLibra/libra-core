@@ -1,7 +1,7 @@
 from canoser import Struct, Uint8, Uint64
 from libra.account_address import Address
 
-class ValidatorPublicKeys(Struct):
+class ValidatorInfo(Struct):
     _fields = [
         ('account_address', Address),
         ('consensus_public_key', bytes),

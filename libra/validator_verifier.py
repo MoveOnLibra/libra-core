@@ -34,7 +34,7 @@ class ValidatorVerifier(Struct):
     @classmethod
     def from_validator_set(cls, vset):
         address_to_validator_info = {}
-        for vpkeys in vset:
+        for vpkeys in vset.payload:
             vinfo = ValidatorInfo(vpkeys.consensus_public_key, vpkeys.consensus_voting_power)
             address_to_validator_info[bytes(vpkeys.account_address)] = vinfo
         return cls(address_to_validator_info)

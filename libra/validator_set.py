@@ -1,13 +1,22 @@
-from canoser import DelegateT, Struct, Uint64
-from libra.validator_public_keys import ValidatorPublicKeys
+from canoser import RustEnum, Struct, Uint64
+from libra.validator_info import ValidatorInfo
 from libra.account_config import AccountConfig
 from libra.account_address import Address
 from libra.language_storage import StructTag
 from libra.access_path import AccessPath
 from libra.event import EventKey, EventHandle
 
-class ValidatorSet(DelegateT):
-    delegate_type = [ValidatorPublicKeys]
+class ConsensusScheme(RustEnum):
+    _enums = [
+        ('Ed25519', None),
+    ]
+
+
+class ValidatorSet(Struct):
+    _fields = [
+        ('scheme', ConsensusScheme),
+        ('payload', [ValidatorInfo])
+    ]
 
     LIBRA_SYSTEM_MODULE_NAME = "LibraSystem"
     VALIDATOR_SET_STRUCT_NAME = "ValidatorSet"
@@ -37,11 +46,12 @@ class ValidatorSet(DelegateT):
         return EventKey.new_from_address(AccountConfig.validator_set_address(), 2)
 
     @classmethod
-    def from_proto(cls, next_validator_set_proto):
-        ret = []
-        for keys in next_validator_set_proto.validator_public_keys:
-            ret.append(ValidatorPublicKeys.from_proto(keys))
-        return ret
+    def from_proto(cls, proto):
+        return ValidatorSet.deserialize(proto.bytes)
+        # ret = []
+        # for keys in next_validator_set_proto.validator_info:
+        #     ret.append(ValidatorInfo.from_proto(keys))
+        # return ret
 
 
 class ValidatorSetResource(Struct):

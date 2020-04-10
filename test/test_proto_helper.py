@@ -1,7 +1,7 @@
 import pytest
 import libra
 from libra import Address
-from libra.validator_public_keys import ValidatorPublicKeys
+from libra.validator_info import ValidatorInfo
 from libra.proto_helper import *
 from libra.proof import *
 from libra.get_with_proof import GetEventsByEventAccessPathResponse
@@ -13,10 +13,10 @@ def test_simple():
     assert 123 == ProtoHelper.to_proto(123)
 
 def test_canoser():
-    vkeys = ValidatorPublicKeys()
+    vkeys = ValidatorInfo()
     zero = ProtoHelper.to_proto(vkeys)
     with pytest.raises(TypeError):
-        ValidatorPublicKeys.from_proto(zero)
+        ValidatorInfo.from_proto(zero)
     vkeys.account_address = b'\x01' * Address.LENGTH
     vkeys.consensus_public_key = b'\x02' * 32
     vkeys.consensus_voting_power = 3
@@ -28,7 +28,7 @@ def test_canoser():
     assert proto.consensus_voting_power == 3
     assert proto.network_signing_public_key == b''
     assert proto.network_identity_public_key == b'\x05' * 32
-    v2 = ValidatorPublicKeys.from_proto(proto)
+    v2 = ValidatorInfo.from_proto(proto)
     assert vkeys == v2
 
 
