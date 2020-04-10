@@ -34,17 +34,17 @@ class Account:
             faucet_account_file = cls.faucet_file_path()
         with open(faucet_account_file, 'rb') as f:
             data = f.read()
-            assert len(data) == 72
-            assert b' \x00\x00\x00' == data[0:4]
-            assert b' \x00\x00\x00' == data[36:40]
-            private_key = data[4:36]
-            public_key = data[40:]
+            assert len(data) == 66
+            assert 32 == data[0]
+            assert 32 == data[33]
+            private_key = data[1:33]
+            public_key = data[34:]
             return cls.faucet_account(private_key)
 
     @classmethod
     def faucet_file_path(cls):
         curdir = os.path.dirname(libra.__file__)
-        return os.path.abspath((os.path.join(curdir, "faucet_key_for_test")))
+        return os.path.abspath((os.path.join(curdir, "mint.key")))
 
     def sign(self, message):
         return self._signing_key.sign(message)
