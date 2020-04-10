@@ -42,7 +42,8 @@ def test_account_address_canonical_serialization_example():
 def test_program_canonical_serialization_example():
     input = get_common_program()
     expected_output = [
-        0x04, 0x6D, 0x6F, 0x76, 0x65, 0x01, 0x00, 0xEF, 0xBE, 0xAD, 0xDE, 0x0D, 0xD0, 0xFE, 0xCA,
+        0x04, 0x6D, 0x6F, 0x76, 0x65, 0x00, 0x01, 0x00, 0xEF, 0xBE, 0xAD, 0xDE, 0x0D, 0xD0, 0xFE,
+        0xCA,
     ]
     actual_output = input.serialize()
     assert bytes(expected_output) == actual_output
@@ -63,9 +64,9 @@ def test_raw_transaction_with_a_program_canonical_serialization_example():
     )
     expected_output = [
         58, 36, 166, 30, 5, 209, 41, 202, 206, 158, 14, 252, 139, 201, 227, 56, 32, 0, 0, 0, 0, 0,
-        0, 0, 2, 4, 109, 111, 118, 101, 1, 0, 239, 190, 173, 222, 13, 208, 254, 202, 16, 39, 0, 0,
-        0, 0, 0, 0, 32, 78, 0, 0, 0, 0, 0, 0, 6, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3,
-        76, 66, 82, 1, 84, 0, 128, 81, 1, 0, 0, 0, 0, 0,
+        0, 0, 2, 4, 109, 111, 118, 101, 0, 1, 0, 239, 190, 173, 222, 13, 208, 254, 202, 16, 39, 0,
+        0, 0, 0, 0, 0, 32, 78, 0, 0, 0, 0, 0, 0, 6, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        3, 76, 66, 82, 1, 84, 0, 128, 81, 1, 0, 0, 0, 0, 0,
     ]
     actual_output = input.serialize()
     assert bytes(expected_output) == actual_output
@@ -127,8 +128,8 @@ def test_transaction_argument_u64_canonical_serialization_example():
 def test_transaction_payload_with_a_program_canonical_serialization_example():
     input = TransactionPayload('Script', get_common_program())
     expected_output = [
-        0x02, 0x04, 0x6D, 0x6F, 0x76, 0x65, 0x01, 0x00, 0xEF, 0xBE, 0xAD, 0xDE, 0x0D, 0xD0, 0xFE,
-        0xCA,
+        0x02, 0x04, 0x6D, 0x6F, 0x76, 0x65, 0x00, 0x01, 0x00, 0xEF, 0xBE, 0xAD, 0xDE, 0x0D, 0xD0,
+        0xFE, 0xCA,
     ]
     actual_output = TransactionPayload.encode(input)
     assert bytes(expected_output) == actual_output
@@ -182,6 +183,7 @@ def test_write_set_canonical_serialization_example():
 def get_common_program():
     return Script(
         b"move",
+        [],
         [
             TransactionArgument('U64', 0xcafe_d00d_dead_beef)
         ]

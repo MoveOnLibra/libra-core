@@ -2,11 +2,14 @@ from canoser import Struct, Uint8
 from libra.transaction.transaction_argument import TransactionArgument, normalize_public_key
 from libra.bytecode import bytecodes
 from libra.account_address import Address
+from libra.account_config import AccountConfig
+from libra.language_storage import TypeTag
 
 
 class Script(Struct):
     _fields = [
         ('code', bytes),
+        ('ty_args', [TypeTag]),
         ('args', [TransactionArgument])
     ]
 
@@ -38,7 +41,8 @@ class Script(Struct):
                     TransactionArgument('U64', micro_libra),
                     TransactionArgument('U8Vector', metadata)
                 ]
-        return Script(code, args)
+        ty_args = [AccountConfig.lbr_type_tag()]
+        return Script(code, ty_args, args)
 
     @classmethod
     def gen_mint_script(cls, receiver_address, auth_key_prefix, micro_libra):
@@ -49,7 +53,7 @@ class Script(Struct):
                 TransactionArgument('U8Vector', auth_key_prefix),
                 TransactionArgument('U64', micro_libra)
             ]
-        return Script(code, args)
+        return Script(code, [], args)
 
     @classmethod
     def gen_create_account_script(cls, fresh_address, auth_key_prefix, initial_balance=0):
@@ -60,7 +64,7 @@ class Script(Struct):
                 TransactionArgument('U8Vector', auth_key_prefix),
                 TransactionArgument('U64', initial_balance)
             ]
-        return Script(code, args)
+        return Script(code, [], args)
 
     @classmethod
     def gen_rotate_auth_key_script(cls, public_key):
@@ -69,7 +73,7 @@ class Script(Struct):
         args = [
                 TransactionArgument('U8Vector', key)
             ]
-        return Script(code, args)
+        return Script(code, [], args)
 
     @classmethod
     def gen_rotate_consensus_pubkey_script(cls, public_key):
@@ -78,7 +82,7 @@ class Script(Struct):
         args = [
                 TransactionArgument('U8Vector', key)
             ]
-        return Script(code, args)
+        return Script(code, [], args)
 
 
     @classmethod
@@ -88,7 +92,7 @@ class Script(Struct):
         args = [
                 TransactionArgument('Address', address)
             ]
-        return Script(code, args)
+        return Script(code, [], args)
 
 
     @classmethod
@@ -98,7 +102,7 @@ class Script(Struct):
         args = [
                 TransactionArgument('Address', address)
             ]
-        return Script(code, args)
+        return Script(code, [], args)
 
 
     @classmethod
@@ -125,7 +129,7 @@ class Script(Struct):
                 TransactionArgument('U8Vector', fullnodes_network_identity_pubkey),
                 TransactionArgument('Address', fullnodes_network_address)
             ]
-        return Script(code, args)
+        return Script(code, [], args)
 
 
     @staticmethod
