@@ -2,3 +2,4 @@ pytest
 twine
 setuptools
 wheel
+grpc-tools
