@@ -1,4 +1,4 @@
-from canoser import Struct, Uint8, BytesT
+from canoser import Struct, Uint8, BytesT, RustEnum
 from libra.account_address import Address
 from libra.block_info import BlockInfo, OptionValidatorSet
 from libra.hasher import HashValue, gen_hasher
@@ -85,13 +85,12 @@ class LedgerInfo(Struct):
         return self.commit_info.next_validator_set.value is not None
 
 
-
 # The validator node returns this structure which includes signatures
 # from validators that confirm the state.  The client needs to only pass back
 # the LedgerInfo element since the validator node doesn't need to know the signatures
 # again when the client performs a query, those are only there for the client
 # to be able to verify the state
-class LedgerInfoWithSignatures(Struct):
+class LedgerInfoWithV0(Struct):
 
     _fields = [
         ('ledger_info', LedgerInfo),
@@ -123,4 +122,14 @@ class LedgerInfoWithSignatures(Struct):
     def verify_signatures(self, validator: ValidatorVerifier):
         ledger_hash = self.ledger_info.hash()
         validator.batch_verify_aggregated_signature(ledger_hash, self.signatures)
+
+
+class LedgerInfoWithSignatures(RustEnum):
+    _enums = [
+        ('V0', LedgerInfoWithV0),
+    ]
+
+    @classmethod
+    def from_proto(cls, proto):
+        return LedgerInfoWithSignatures.deserialize(proto.bytes).value
 
