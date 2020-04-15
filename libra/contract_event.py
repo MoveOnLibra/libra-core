@@ -70,15 +70,15 @@ class ContractEvent(RustEnum):
     @classmethod
     def from_proto_event_with_proof(cls, event_with_proof):
         ret = cls.from_proto(event_with_proof.event)
-        ret.transaction_version = event_with_proof.transaction_version
-        ret.event_index = event_with_proof.event_index
+        ret.value.transaction_version = event_with_proof.transaction_version
+        ret.value.event_index = event_with_proof.event_index
         return ret
 
     def to_json_serializable(self):
         amap = super().to_json_serializable()
-        if hasattr(self, 'transaction_version'):
+        if hasattr(self.value, 'transaction_version'):
             amap["transaction_version"] = self.transaction_version
-        if hasattr(self, 'event_index'):
+        if hasattr(self.value, 'event_index'):
             amap["event_index"] = self.event_index
         if hasattr(self.value, 'event_data_decode'):
             amap["event_data_decode"] = self.value.event_data_decode.to_json_serializable()
