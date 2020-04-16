@@ -5,8 +5,20 @@ from libra.account_config import AccountConfig
 from libra.event import EventKey, EventHandle
 from libra.access_path import AccessPath, Accesses
 from libra.language_storage import StructTag
+from libra.move_resource import MoveResource
 from libra.crypto.ed25519 import ED25519_SIGNATURE_LENGTH
 from typing import List
+
+
+class LibraBlockResource(Struct, MoveResource):
+    _fields = [
+        ('height', Uint64),
+        ('new_block_events', EventHandle),
+    ]
+
+    MODULE_NAME: str = "LibraBlock"
+    STRUCT_NAME: str = "BlockMetadata"
+
 
 class BlockMetadata(Struct):
     _fields = [
@@ -39,38 +51,10 @@ def new_block_event_key() -> EventKey:
     return EventKey.new_from_address(AccountConfig.association_address(), 2)
 
 
-LIBRA_BLOCK_MODULE_NAME = "LibraBlock"
-BLOCK_STRUCT_NAME = "BlockMetadata"
-
-def libra_block_module_name():
-    return LIBRA_BLOCK_MODULE_NAME
-
-
-def block_struct_name():
-    return BLOCK_STRUCT_NAME
-
-
-def libra_block_tag() -> StructTag:
-    return StructTag(
-        AccountConfig.core_code_address_bytes(),
-        LIBRA_BLOCK_MODULE_NAME,
-        BLOCK_STRUCT_NAME,
-        []
-    )
-
-
-# The access path where the BlockMetadata resource is stored.
-LIBRA_BLOCK_RESOURCE_PATH = AccessPath.resource_access_vec(libra_block_tag(), Accesses.empty())
-
 # The path to the new block event handle under a LibraBlock.BlockMetadata resource.
-NEW_BLOCK_EVENT_PATH = LIBRA_BLOCK_RESOURCE_PATH + b"/new_block_event/"
+NEW_BLOCK_EVENT_PATH = LibraBlockResource.resource_path() + b"/new_block_event/"
 
 
-class LibraBlockResource(Struct):
-    _fields = [
-        ('height', Uint64),
-        ('new_block_events', EventHandle),
-    ]
 
 class NewBlockEvent(Struct):
     _fields = [

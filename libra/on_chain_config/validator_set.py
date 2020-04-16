@@ -58,11 +58,3 @@ class ValidatorSet(Struct, OnChainConfig):
         # for keys in next_validator_set_proto.validator_info:
         #     ret.append(ValidatorInfo.from_proto(keys))
         # return ret
-
-
-class ValidatorSetResource(Struct):
-    _fields = [
-        ('validator_set', ValidatorSet),
-        ('last_reconfiguration_time', Uint64),
-        ('change_events', EventHandle)
-    ]

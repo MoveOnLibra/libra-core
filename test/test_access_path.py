@@ -1,12 +1,13 @@
 from libra.access_path import *
 from libra.account_config import AccountConfig
+from libra.account_resource import AccountResource
 from libra.language_storage import ModuleId
 
 #import pdb
 
 def test_resource_access_vec():
-    array = AccessPath.resource_access_vec(AccountConfig.account_struct_tag(), [])
-    assert bytes(array) == AccountConfig.account_resource_path()
+    array = AccessPath.resource_access_vec(AccountResource.struct_tag(), [])
+    assert bytes(array) == AccountResource.resource_path()
 
 def test_code_access_path():
     address = b'1' * Address.LENGTH

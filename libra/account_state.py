@@ -6,8 +6,11 @@ from libra.account_config import AccountConfig
 from libra.account_resource import AccountResource, BalanceResource
 from libra.block_metadata import NEW_BLOCK_EVENT_PATH
 from libra.discovery_set import DiscoverySetResource, DiscoverySet
-from libra.on_chain_config.validator_set import ValidatorSet
+from libra.move_resource import MoveResource
+from libra.on_chain_config import ConfigurationResource, ValidatorSet
 from libra.validator_config import ValidatorConfigResource
+from libra.libra_timestamp import LibraTimestampResource
+from libra.block_metadata import LibraBlockResource
 
 from io import StringIO
 from typing import Optional
@@ -31,52 +34,58 @@ class AccountState(Struct):
         else:
             return None
 
-    def get_resource(self, path=None, T=AccountResource) -> Optional[obj]:
-        if path is None:
-            path = AccountConfig.account_resource_path()
+    def get_resource(self, path: bytes, T) -> Optional[obj]:
         resource = self.get(path)
         if resource:
             return T.deserialize(resource)
         else:
             return None
 
+    def get_move_resource(self, T: MoveResource) -> MoveResource:
+        return self.get_resource(T.resource_path(), T)
+
     def to_json_serializable(self):
         amap = super().to_json_serializable()
-        ar = self.get_resource()
+        ar = self.get_account_resource()
         if ar:
-            amap["account_resource_path"] = AccountConfig.account_resource_path().hex()
+            amap["account_resource_path"] = AccountResource.resource_path().hex()
             amap["decoded_account_resource"] = ar.to_json_serializable()
         return amap
 
 
     def get_account_resource(self) -> Optional[AccountResource]:
-        path = AccountConfig.account_resource_path()
-        return self.get_resource(path)
+        return self.get_move_resource(AccountResource)
 
 
     def get_balance_resource(self) -> Optional[BalanceResource]:
-        path = AccountConfig.balance_resource_path()
-        return self.get_resource(path, BalanceResource)
+        return self.get_move_resource(BalanceResource)
+
+
+    def get_configuration_resource(self) -> Optional[ConfigurationResource]:
+        return self.get_move_resource(ConfigurationResource)
 
 
     def get_discovery_set_resource(self) -> Optional[DiscoverySetResource]:
-        return self.get_resource(DISCOVERY_SET_RESOURCE_PATH, DiscoverySetResource)
+        return self.get_move_resource(DiscoverySetResource)
 
 
     def get_libra_timestamp_resource(self) -> Optional[LibraTimestampResource]:
-        return self.get_resource(LIBRA_TIMESTAMP_RESOURCE_PATH, LibraTimestampResource)
+        return self.get_move_resource(LibraTimestampResource)
 
 
     def get_validator_config_resource(self) -> Optional[ValidatorConfigResource]:
-        return self.get_resource(VALIDATOR_CONFIG_RESOURCE_PATH, ValidatorConfigResource)
+        return self.get_move_resource(ValidatorConfigResource)
 
 
-    def get_validator_set_resource(self) -> Optional[ValidatorSetResource]:
-        return self.get_resource(VALIDATOR_SET_RESOURCE_PATH, ValidatorSetResource)
+    def get_validator_set(self) -> Optional[ValidatorSet]:
+        return self.get_resource(
+            ValidatorSet.get_config_id().access_path().path,
+            ValidatorSet,
+        )
 
 
     def get_libra_block_resource(self) -> Optional[LibraBlockResource]:
-        return self.get_resource(LIBRA_BLOCK_RESOURCE_PATH, LibraBlockResource)
+        return self.get_move_resource(LibraBlockResource)
 
 
     def get_event_handle_by_query_path(self, query_path: bytes) -> EventHandle:
@@ -88,9 +97,6 @@ class AccountState(Struct):
 
         elif DISCOVERY_SET_CHANGE_EVENT_PATH == query_path:
             return self.get_discovery_set_resource().change_events
-
-        elif VALIDATOR_SET_CHANGE_EVENT_PATH == query_path:
-            return self.get_validator_set_resource().change_events
 
         elif NEW_BLOCK_EVENT_PATH == query_path:
             return self.get_libra_block_resource().new_block_events

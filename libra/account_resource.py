@@ -1,11 +1,14 @@
 from canoser import Struct, Uint8, Uint64
 from libra.event import EventHandle
 from libra.account_config import AccountConfig
+from libra.move_resource import MoveResource
+from libra.language_storage import TypeTag
 from libra.rustlib import bail
 from io import StringIO
+from typing import List
 
 
-class AccountResource(Struct):
+class AccountResource(Struct, MoveResource):
     """
     A Rust/Python representation of an Account resource.
     This is not how the Account is represented in the VM but it's a convenient representation.
@@ -20,6 +23,10 @@ class AccountResource(Struct):
         ('event_generator', Uint64)
     ]
 
+    MODULE_NAME: str = AccountConfig.ACCOUNT_MODULE_NAME
+    STRUCT_NAME: str = "T"
+
+
     @classmethod
     def get_account_resource_or_default(cls, blob):
         #TODO: remove this method
@@ -27,7 +34,7 @@ class AccountResource(Struct):
         if blob:
             try:
                 omap = AccountState.deserialize(blob.blob).ordered_map
-                resource = omap[AccountConfig.account_resource_path()]
+                resource = omap[AccountResource.resource_path()]
                 return cls.deserialize(resource)
             except Exception:
                 return cls()
@@ -45,8 +52,15 @@ class AccountResource(Struct):
 
 
 # The balance resource held under an account.
-class BalanceResource(Struct):
+class BalanceResource(Struct, MoveResource):
     _fields = [
         ('coin', Uint64)
     ]
 
+    @classmethod
+    def type_params(cls) -> List[TypeTag]:
+        return [AccountConfig.lbr_type_tag()]
+
+
+    MODULE_NAME: str = AccountConfig.ACCOUNT_MODULE_NAME
+    STRUCT_NAME: str = "Balance"

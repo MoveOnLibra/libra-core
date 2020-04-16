@@ -3,6 +3,7 @@ from libra.access_path import AccessPath, Accesses
 from libra.account_config import AccountConfig
 from libra.language_storage import StructTag, TypeTag
 # from move_core_types.identifier import IdentStr, Identifier
+from typing import List
 
 class MoveResource:
     MODULE_NAME: str
