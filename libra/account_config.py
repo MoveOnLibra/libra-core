@@ -9,8 +9,7 @@ class AccountConfig:
     COIN_MODULE_NAME = "Libra"
     COIN_STRUCT_NAME = "T"
 
-    LBR_MODULE_NAME = "LBR"
-    LBR_STRUCT_NAME = "T"
+    LBR_NAME = "LBR"
 
     # Account
     ACCOUNT_MODULE_NAME = "LibraAccount"
@@ -109,8 +108,8 @@ class AccountConfig:
     def lbr_struct_tag(cls):
         return StructTag(
             cls.core_code_address_bytes(),
-            cls.LBR_MODULE_NAME,
-            cls.LBR_STRUCT_NAME,
+            cls.LBR_NAME,
+            cls.COIN_STRUCT_NAME,
             []
         )
 

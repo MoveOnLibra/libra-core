@@ -75,11 +75,11 @@ class ContractEvent(RustEnum):
         return ret
 
     def to_json_serializable(self):
-        amap = super().to_json_serializable()
+        amap = self.value.to_json_serializable()
         if hasattr(self.value, 'transaction_version'):
-            amap["transaction_version"] = self.transaction_version
+            amap["transaction_version"] = self.value.transaction_version
         if hasattr(self.value, 'event_index'):
-            amap["event_index"] = self.event_index
+            amap["event_index"] = self.value.event_index
         if hasattr(self.value, 'event_data_decode'):
             amap["event_data_decode"] = self.value.event_data_decode.to_json_serializable()
         return amap
