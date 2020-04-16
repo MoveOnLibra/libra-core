@@ -1,7 +1,7 @@
 from canoser import Struct, RustOptional, Uint64
 from libra.transaction import Version
 from libra.hasher import HashValue
-from libra.validator_set import ValidatorSet
+from libra.on_chain_config.validator_set import ValidatorSet
 from libra.proto_helper import ProtoHelper
 
 # The round of a block is a consensus-internal counter, which starts with 0 and increases

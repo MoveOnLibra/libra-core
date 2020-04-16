@@ -6,8 +6,8 @@ from libra.account_config import AccountConfig
 from libra.account_resource import AccountResource, BalanceResource
 from libra.block_metadata import NEW_BLOCK_EVENT_PATH
 from libra.discovery_set import DiscoverySetResource, DiscoverySet
-from libra.validator_set import ValidatorSetResource, ValidatorSet
-# from libra.validator_config import ValidatorConfigResource
+from libra.on_chain_config.validator_set import ValidatorSet
+from libra.validator_config import ValidatorConfigResource
 
 from io import StringIO
 from typing import Optional

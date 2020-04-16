@@ -6,7 +6,7 @@ from libra.event import EventKey
 
 
 # State sync will panic if the value of any config in this registry is uninitialized
-ON_CHAIN_CONFIG_REGISTRY: List[ConfigID] = [
+ON_CHAIN_CONFIG_REGISTRY = [
     VMPublishingOption.get_config_id(),
     LibraVersion.get_config_id(),
     ValidatorSet.get_config_id(),

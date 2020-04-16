@@ -1,11 +1,11 @@
 from __future__ import annotations
 from libra.access_path import AccessPath, Accesses
 from libra.account_address import Address
-from libra.account_config import AccountConfig, association_address, CORE_CODE_ADDRESS
+from libra.account_config import AccountConfig, CORE_CODE_ADDRESS
 from libra.event import EventHandle, EventKey
 from libra.language_storage import StructTag, TypeTag
 from libra.move_resource import MoveResource
-from canoser import Base, Struct, Uint64, Uint8
+from canoser import Struct, Uint64, Uint8
 
 # To register an on-chain config in Rust:
 # 1. Implement the `OnChainConfig` trait for the Rust representation of the config
@@ -47,7 +47,7 @@ class ConfigStorage:
 
 # Trait to be implemented by a Rust struct representation of an on-chain config
 # that is stored in storage as a deserialized byte array
-class OnChainConfig(Base):
+class OnChainConfig:
     # association_address
     ADDRESS: str = "0xA550C18"
     IDENTIFIER: str
@@ -77,7 +77,7 @@ class OnChainConfig(Base):
         return cls.deserialize_default_impl(v)
 
     @classmethod
-    def fetch_config(cls, storage: ConfigStorage) -> Optional[OnChainConfig]
+    def fetch_config(cls, storage: ConfigStorage) -> Optional[OnChainConfig]:
         path = cls.get_config_id().access_path()
         v = storage.fetch_config(path)
         return cls.deserialize_into_config(v)

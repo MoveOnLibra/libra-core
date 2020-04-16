@@ -2,7 +2,7 @@ from __future__ import annotations
 from libra.on_chain_config.on_chain_config import OnChainConfig
 from libra.hasher import HashValue
 from libra.transaction import SCRIPT_HASH_LENGTH
-from canoser import Struct, Uint64
+from canoser import RustEnum, Struct, Uint64, BytesT
 
 # Defines and holds the publishing policies for the VM. There are three possible configurations:
 # 1. No module publishing, only whitelisted scripts are allowed.
@@ -13,14 +13,14 @@ from canoser import Struct, Uint64
 class VMPublishingOption(RustEnum, OnChainConfig):
     _enums = [
         # Only allow scripts on a whitelist to be run
-        ('Locked', List[BytesT(SCRIPT_HASH_LENGTH)]),
+        ('Locked', [BytesT(SCRIPT_HASH_LENGTH)]),
         # Allow custom scripts, but _not_ custom module publishing
         ('CustomScripts', None),
         # Allow both custom scripts and custom module publishing
         ('Open', None)
     ]
 
-    const IDENTIFIER: str = "ScriptWhitelist"
+    IDENTIFIER: str = "ScriptWhitelist"
 
     def deserialize_into_config(cls, v: bytes) -> VMPublishingOption:
         deser = BytesT.decode(Cursor(v))

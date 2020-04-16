@@ -3,7 +3,7 @@ from libra.account_address import Address
 from libra.block_info import BlockInfo, OptionValidatorSet
 from libra.hasher import HashValue, gen_hasher
 from libra.crypto.ed25519 import ED25519_SIGNATURE_LENGTH
-from libra.validator_set import ValidatorSet
+from libra.on_chain_config.validator_set import ValidatorSet
 from libra.validator_verifier import ValidatorVerifier
 from libra.proto_helper import ProtoHelper
 
