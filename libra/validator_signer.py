@@ -13,14 +13,14 @@ class ValidatorSigner:
     author: Address
     private_key: Ed25519PrivateKey
 
-
     # Constructs a signature for `message` using `private_key`.
+
     def sign_message(self, message: HashValue) -> Ed25519Signature:
         _signing_key = SigningKey(self.private_key)
         return _signing_key.sign(message)
 
-
     # Returns the public key associated with this signer.
+
     def public_key(self) -> Ed25519PublicKey:
         _signing_key = SigningKey(self.private_key)
         _verify_key = _signing_key.verify_key

@@ -42,5 +42,3 @@ class BlockInfo(Struct):
         # An optional field containing the set of validators for the start of the next epoch
         ("next_validator_set", OptionValidatorSet)
     ]
-
-

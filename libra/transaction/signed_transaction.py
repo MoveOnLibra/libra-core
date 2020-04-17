@@ -5,6 +5,7 @@ from libra.transaction.raw_transaction import RawTransaction
 from libra.transaction.authenticator import TransactionAuthenticator
 from dataclasses import dataclass
 
+
 class SignedTransaction(Struct):
     """A transaction that has been signed.
     A `SignedTransaction` is a single transaction that can be atomically executed. Clients submit
@@ -14,7 +15,6 @@ class SignedTransaction(Struct):
         ('raw_txn', RawTransaction),
         ('authenticator', TransactionAuthenticator)
     ]
-
 
     def to_json_serializable(self):
         amap = super().to_json_serializable()
@@ -37,7 +37,6 @@ class SignedTransaction(Struct):
         signature = sender_account.sign(tx_hash)[:64]
         authenticator = TransactionAuthenticator.ed25519(sender_account.public_key, signature)
         return SignedTransaction(raw_tx, authenticator)
-
 
     def hash(self):
         shazer = gen_hasher(b"SignedTransaction::libra_types::transaction")
@@ -79,6 +78,7 @@ class SignedTransaction(Struct):
 
     def raw_txn_bytes_len(self):
         return len(self.raw_txn.serialize())
+
 
 @dataclass
 class SignatureCheckedTransaction:

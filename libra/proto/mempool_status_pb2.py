@@ -11,64 +11,60 @@ from google.protobuf import symbol_database as _symbol_database
 _sym_db = _symbol_database.Default()
 
 
-
-
 DESCRIPTOR = _descriptor.FileDescriptor(
-  name='mempool_status.proto',
-  package='types',
-  syntax='proto3',
-  serialized_options=None,
-  serialized_pb=b'\n\x14mempool_status.proto\x12\x05types\".\n\rMempoolStatus\x12\x0c\n\x04\x63ode\x18\x01 \x01(\x04\x12\x0f\n\x07message\x18\x05 \x01(\tb\x06proto3'
+    name='mempool_status.proto',
+    package='types',
+    syntax='proto3',
+    serialized_options=None,
+    serialized_pb=b'\n\x14mempool_status.proto\x12\x05types\".\n\rMempoolStatus\x12\x0c\n\x04\x63ode\x18\x01 \x01(\x04\x12\x0f\n\x07message\x18\x05 \x01(\tb\x06proto3'
 )
 
 
-
-
 _MEMPOOLSTATUS = _descriptor.Descriptor(
-  name='MempoolStatus',
-  full_name='types.MempoolStatus',
-  filename=None,
-  file=DESCRIPTOR,
-  containing_type=None,
-  fields=[
-    _descriptor.FieldDescriptor(
-      name='code', full_name='types.MempoolStatus.code', index=0,
-      number=1, type=4, cpp_type=4, label=1,
-      has_default_value=False, default_value=0,
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
-    _descriptor.FieldDescriptor(
-      name='message', full_name='types.MempoolStatus.message', index=1,
-      number=5, type=9, cpp_type=9, label=1,
-      has_default_value=False, default_value=b"".decode('utf-8'),
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
-  ],
-  extensions=[
-  ],
-  nested_types=[],
-  enum_types=[
-  ],
-  serialized_options=None,
-  is_extendable=False,
-  syntax='proto3',
-  extension_ranges=[],
-  oneofs=[
-  ],
-  serialized_start=31,
-  serialized_end=77,
+    name='MempoolStatus',
+    full_name='types.MempoolStatus',
+    filename=None,
+    file=DESCRIPTOR,
+    containing_type=None,
+    fields=[
+        _descriptor.FieldDescriptor(
+            name='code', full_name='types.MempoolStatus.code', index=0,
+            number=1, type=4, cpp_type=4, label=1,
+            has_default_value=False, default_value=0,
+            message_type=None, enum_type=None, containing_type=None,
+            is_extension=False, extension_scope=None,
+            serialized_options=None, file=DESCRIPTOR),
+        _descriptor.FieldDescriptor(
+            name='message', full_name='types.MempoolStatus.message', index=1,
+            number=5, type=9, cpp_type=9, label=1,
+            has_default_value=False, default_value=b"".decode('utf-8'),
+            message_type=None, enum_type=None, containing_type=None,
+            is_extension=False, extension_scope=None,
+            serialized_options=None, file=DESCRIPTOR),
+    ],
+    extensions=[
+    ],
+    nested_types=[],
+    enum_types=[
+    ],
+    serialized_options=None,
+    is_extendable=False,
+    syntax='proto3',
+    extension_ranges=[],
+    oneofs=[
+    ],
+    serialized_start=31,
+    serialized_end=77,
 )
 
 DESCRIPTOR.message_types_by_name['MempoolStatus'] = _MEMPOOLSTATUS
 _sym_db.RegisterFileDescriptor(DESCRIPTOR)
 
 MempoolStatus = _reflection.GeneratedProtocolMessageType('MempoolStatus', (_message.Message,), {
-  'DESCRIPTOR' : _MEMPOOLSTATUS,
-  '__module__' : 'mempool_status_pb2'
-  # @@protoc_insertion_point(class_scope:types.MempoolStatus)
-  })
+    'DESCRIPTOR': _MEMPOOLSTATUS,
+    '__module__': 'mempool_status_pb2'
+    # @@protoc_insertion_point(class_scope:types.MempoolStatus)
+})
 _sym_db.RegisterMessage(MempoolStatus)
 
 

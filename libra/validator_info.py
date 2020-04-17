@@ -1,6 +1,7 @@
 from canoser import Struct, Uint64
 from libra.account_address import Address
 
+
 class ValidatorInfo(Struct):
     _fields = [
         ('account_address', Address),

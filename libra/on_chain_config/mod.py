@@ -15,4 +15,3 @@ ON_CHAIN_CONFIG_REGISTRY = [
 
 def new_epoch_event_key() -> EventKey:
     return EventKey.new_from_address(AccountConfig.association_address(), 4)
-

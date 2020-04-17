@@ -2,6 +2,7 @@ import json
 from pygments import highlight, lexers, formatters
 from canoser.base import Base
 
+
 class LibraEncoder(json.JSONEncoder):
     def default(self, obj):
         if isinstance(obj, bytes):
@@ -17,7 +18,7 @@ def to_json_serializable(obj):
             components = name.split('.')
             if len(components) == 0:
                 raise TypeError(f"{names} contain empty string.")
-            if len(components) > 2 :
+            if len(components) > 2:
                 raise TypeError(f"{names} has more than one level nested fields.")
             value = getattr(obj, components[0])
             if len(components) == 2:
@@ -42,6 +43,7 @@ def to_json_serializable(obj):
 def json_dumps(obj, sort_keys=False):
     to_dump = to_json_serializable(obj)
     return json.dumps(to_dump, cls=LibraEncoder, sort_keys=sort_keys, indent=4)
+
 
 def json_print(obj, sort_keys=False, color=False, bgcolor=None):
     jsonstr = json_dumps(obj, sort_keys)

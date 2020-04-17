@@ -27,7 +27,6 @@ class Waypoint(Struct):
         return cls(ledger_info.version, converter.hash())
 
 
-
 class Ledger2WaypointConverter(Struct):
     """
     # Keeps the fields of LedgerInfo that are hashed for generating a waypoint.
@@ -54,9 +53,7 @@ class Ledger2WaypointConverter(Struct):
         ret.next_validator_set = ledger_info.next_validator_set
         return ret
 
-
     def hash(self):
         shazer = gen_hasher(b"Ledger2WaypointConverter::libra_types::waypoint")
         shazer.update(self.serialize())
         return shazer.digest()
-

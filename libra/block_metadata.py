@@ -26,7 +26,6 @@ class BlockMetadata(Struct):
         ('proposer', Address)
     ]
 
-
     def to_json_serializable(self):
         amap = super().to_json_serializable()
         if hasattr(self, 'transaction_info'):
@@ -39,7 +38,6 @@ class BlockMetadata(Struct):
             amap["success"] = self.success
         return amap
 
-
     def voters(self) -> List[Address]:
         return self.previous_block_votes
 
@@ -50,7 +48,6 @@ def new_block_event_key() -> EventKey:
 
 # The path to the new block event handle under a LibraBlock.BlockMetadata resource.
 NEW_BLOCK_EVENT_PATH = LibraBlockResource.resource_path() + b"/new_block_event/"
-
 
 
 class NewBlockEvent(Struct):

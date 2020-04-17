@@ -26,4 +26,5 @@ class WriteSet(Struct):
     def append(self, tup):
         self.write_set.append(tup)
 
+
 WriteSetMut = WriteSet

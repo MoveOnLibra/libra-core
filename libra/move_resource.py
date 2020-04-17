@@ -7,6 +7,7 @@ from typing import List
 
 Identifier = str
 
+
 class MoveResource:
     MODULE_NAME: str
     STRUCT_NAME: str
@@ -31,4 +32,3 @@ class MoveResource:
     @classmethod
     def resource_path(cls) -> bytes:
         return AccessPath.resource_access_vec(cls.struct_tag(), Accesses.empty())
-

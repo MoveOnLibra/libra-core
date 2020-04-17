@@ -25,7 +25,6 @@ class TransactionListWithProof:
     first_transaction_version: Optional[Version]
     proof: TransactionListProof
 
-
     def to_proto(self):
         proto = ProtoHelper.new_proto_obj(self)
         for tx in self.transactions:
@@ -89,7 +88,6 @@ class TransactionListWithProof:
                      transaction info.",
                 )
 
-
     def is_empty(self) -> bool:
         return len(self.transactions) == 0
 
@@ -108,7 +106,7 @@ class TransactionListWithProof:
             first_transaction_version = proto.first_transaction_version.value
         else:
             if len(transactions) > 0:
-                #Maybe bug of protobuf of py
+                # Maybe bug of protobuf of py
                 first_transaction_version = 0
             else:
                 first_transaction_version = None

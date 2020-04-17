@@ -9,7 +9,7 @@ from libra.proto_helper import ProtoHelper
 class ContractEventV0(Struct):
     _fields = [
         ('key', EventKey),
-        ('sequence_number', Uint64), # better name is 'event_seq_num'
+        ('sequence_number', Uint64),  # better name is 'event_seq_num'
         ('type_tag', TypeTag),
         ('event_data', bytes)
     ]
@@ -36,12 +36,10 @@ class ContractEvent(RustEnum):
     def event_data(self):
         return self.value.event_data
 
-
     def hash(self):
         shazer = gen_hasher(b"ContractEvent::libra_types::contract_event")
         shazer.update(self.serialize())
         return shazer.digest()
-
 
     def to_proto(self):
         proto = ProtoHelper.new_proto_by_name("Event")
@@ -83,4 +81,3 @@ class ContractEvent(RustEnum):
         if hasattr(self.value, 'event_data_decode'):
             amap["event_data_decode"] = self.value.event_data_decode.to_json_serializable()
         return amap
-

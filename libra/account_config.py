@@ -4,6 +4,7 @@ from libra.account_address import ADDRESS_LENGTH, HEX_ADDRESS_LENGTH, Address
 
 CORE_CODE_ADDRESS = b'\x00' * ADDRESS_LENGTH
 
+
 class AccountConfig:
     # LibraCoin
     COIN_MODULE_NAME = "Libra"
@@ -14,12 +15,11 @@ class AccountConfig:
     # Account
     ACCOUNT_MODULE_NAME = "LibraAccount"
 
-
     ACCOUNT_EVENT_HANDLE_STRUCT_NAME = "EventHandle"
     ACCOUNT_EVENT_HANDLE_GENERATOR_STRUCT_NAME = "EventHandleGenerator"
 
     # Hash
-    HASH_MODULE_NAME = "Hash";
+    HASH_MODULE_NAME = "Hash"
 
     @classmethod
     def account_sent_event_path(cls):
@@ -84,18 +84,17 @@ class AccountConfig:
             []
         )
 
-
     @classmethod
     def all_config(cls):
         from libra.account_resource import AccountResource
         return {
-            "core_code_address" : AccountConfig.core_code_address(),
-            "association_address" : AccountConfig.association_address(),
-            "transaction_fee_address" : AccountConfig.transaction_fee_address(),
-            "validator_set_address" : AccountConfig.validator_set_address(),
+            "core_code_address": AccountConfig.core_code_address(),
+            "association_address": AccountConfig.association_address(),
+            "transaction_fee_address": AccountConfig.transaction_fee_address(),
+            "validator_set_address": AccountConfig.validator_set_address(),
             "account_resource_path": AccountResource.resource_path(),
-            "account_sent_event_path" : AccountConfig.account_sent_event_path(),
-            "account_received_event_path" : AccountConfig.account_received_event_path()
+            "account_sent_event_path": AccountConfig.account_sent_event_path(),
+            "account_received_event_path": AccountConfig.account_received_event_path()
         }
 
 
@@ -113,6 +112,3 @@ class ReceivedPaymentEvent(Struct):
         ('sender', Address),
         ('metadata', bytes)
     ]
-
-
-

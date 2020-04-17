@@ -7,6 +7,7 @@ from libra.on_chain_config.validator_set import ValidatorSet
 from libra.validator_verifier import ValidatorVerifier
 from libra.proto_helper import ProtoHelper
 
+
 class LedgerInfo(Struct):
 
     _fields = [
@@ -113,7 +114,7 @@ class LedgerInfoWithV0(Struct):
     def to_proto(self):
         proto = ProtoHelper.new_proto_obj(self)
         proto.ledger_info.MergeFrom(self.ledger_info.to_proto())
-        for k,v in self.signatures.items():
+        for k, v in self.signatures.items():
             sig = proto.signatures.add()
             sig.validator_id = k
             sig.signature = v
@@ -132,4 +133,3 @@ class LedgerInfoWithSignatures(RustEnum):
     @classmethod
     def from_proto(cls, proto):
         return LedgerInfoWithSignatures.deserialize(proto.bytes).value
-

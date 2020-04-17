@@ -33,9 +33,10 @@ class NodeDirection(Enum):
     Left = 0
     Right = 1
 
-@dataclass#(unsafe_hash=True)
+
+@dataclass  # (unsafe_hash=True)
 class Position:
-    value : Uint64
+    value: Uint64
     # invariant Position.0 < Uint64::max_value() - 1
 
     def __hash__(self):
@@ -46,7 +47,6 @@ class Position:
     def level(self) -> Uint32:
         return trailing_zeros(~self.value)
 
-
     def is_leaf(self) -> bool:
         return self.value & 1 == 0
 
@@ -54,7 +54,6 @@ class Position:
     # are to the left of this node at the same level
     def pos_counting_from_left(self) -> Uint64:
         return self.value >> (self.level() + 1)
-
 
     # pos count start from 0 on each level
     @staticmethod
@@ -69,47 +68,40 @@ class Position:
     def from_inorder_index(index: Uint64) -> Position:
         return Position(index)
 
-
     def to_inorder_index(self) -> Uint64:
         return self.value
-
 
     @staticmethod
     def from_postorder_index(index: Uint64) -> Position:
         return Position(postorder_to_inorder(index))
 
-
     def to_postorder_index(self) -> Uint64:
         return inorder_to_postorder(self.to_inorder_index())
 
-
     # What is the parent of this node?
+
     def parent(self) -> Position:
-        assert self.value < Uint64.max_value - 1    #invariant
+        assert self.value < Uint64.max_value - 1  # invariant
         return Position(
             (self.value | isolate_rightmost_zero_bit(self.value))
-                & ~(isolate_rightmost_zero_bit(self.value) << 1)
+            & ~(isolate_rightmost_zero_bit(self.value) << 1)
         )
 
-
-
     # What is the left node of this node? Will overflow if the node is a leaf
+
     def left_child(self) -> Position:
         assert self.is_leaf() == False
         return Position.child(self, NodeDirection.Left)
 
-
-
     # What is the right node of this node? Will overflow if the node is a leaf
+
     def right_child(self) -> Position:
         assert self.is_leaf() == False
         return Position.child(self, NodeDirection.Right)
 
-
-
     def child(self, dir: NodeDirection) -> Position:
         assert self.is_leaf() == False
-        assert self.value < Uint64.max_value - 1    #invariant
+        assert self.value < Uint64.max_value - 1  # invariant
 
         if dir == NodeDirection.Left:
             direction_bit = 0
@@ -117,25 +109,21 @@ class Position:
             direction_bit = isolate_rightmost_zero_bit(self.value)
         return Position((self.value | direction_bit) & ~(isolate_rightmost_zero_bit(self.value) >> 1))
 
-
-
     # Whether this position is a left child of its parent.  The observation is that,
     # after stripping out all right-most 1 bits, a left child will have a bit pattern
     # of xxx00(11..), while a right child will be represented by xxx10(11..)
-    def is_left_child(self) -> bool:
-        assert self.value < Uint64.max_value - 1    #invariant
-        return self.value & (isolate_rightmost_zero_bit(self.value) << 1) == 0
 
+    def is_left_child(self) -> bool:
+        assert self.value < Uint64.max_value - 1  # invariant
+        return self.value & (isolate_rightmost_zero_bit(self.value) << 1) == 0
 
     def is_right_child(self) -> bool:
         return not self.is_left_child()
-
 
     # Opposite of get_left_node_count_from_position.
     @staticmethod
     def from_leaf_index(leaf_index: Uint64) -> Position:
         return Position.from_level_and_pos(0, leaf_index)
-
 
     # This method takes in a node position and return its sibling position
 
@@ -143,10 +131,10 @@ class Position:
     # two sibling nodes flip the the next right-most bits with each other.
     # To find out the right-most common bits, first remove all the right-most ones
     # because they are corresponding to level's indicator. Then remove next zero right after.
-    def sibling(self) -> Position:
-        assert self.value < Uint64.max_value - 1    #invariant
-        return Position(self.value ^ (isolate_rightmost_zero_bit(self.value) << 1))
 
+    def sibling(self) -> Position:
+        assert self.value < Uint64.max_value - 1  # invariant
+        return Position(self.value ^ (isolate_rightmost_zero_bit(self.value) << 1))
 
     # Given a leaf index, calculate the position of a minimum root which contains this leaf
     # This method calculates the index of the smallest root which contains this leaf.
@@ -159,31 +147,30 @@ class Position:
     #     -------
     #     0001111(root)
     # ```
+
     def root_from_leaf_index(leaf_index: Uint64) -> Position:
         leaf = Position.from_leaf_index(leaf_index)
         return Position(smear_ones_for_u64(leaf.value) >> 1)
 
-
     def root_from_leaf_count(leaf_count: LeafCount) -> Position:
         assert leaf_count > 0
         return Position.root_from_leaf_index((leaf_count - 1))
-
 
     def root_level_from_leaf_count(leaf_count: LeafCount) -> Uint32:
         assert leaf_count > 0
         index = (leaf_count - 1)
         return MAX_ACCUMULATOR_PROOF_DEPTH + 1 - leading_zeros(index)
 
-
     # Given a node, find its right most child in its subtree.
     # Right most child is a Position, could be itself, at level 0
+
     def right_most_child(self) -> Position:
         level = self.level()
         return Position(self.value + (1 << level) - 1)
 
-
     # Given a node, find its left most child in its subtree
     # Left most child is a node, could be itself, at level 0
+
     def left_most_child(self) -> Position:
         # Turn off its right most x bits. while x=level of node
         level = self.level()
@@ -201,17 +188,18 @@ class Position:
     # node or leaf node. if right most child is a leaf node, then it is freezable.
     # if right most child is larger than max_leaf_node, it is a placeholder node, and not
     # freezable.
+
     def is_freezable(self, leaf_index: Uint64) -> bool:
         leaf = Position.from_leaf_index(leaf_index)
         right_most_child = self.right_most_child()
         return right_most_child.value <= leaf.value
-
 
     # Given index of right most leaf, calculate if a position should contain
     # a placeholder node at this moment
     # A node is a placeholder if both two conditions below are true:
     # 1, the node's in order traversal seq > max_leaf_node's, and
     # 2, the node does not have left child or right child.
+
     def is_placeholder(self, leaf_index: Uint64) -> bool:
         leaf = Position.from_leaf_index(leaf_index)
         if self.value <= leaf.value:
@@ -224,12 +212,10 @@ class Position:
     def iter_ancestor(self) -> AncestorIterator:
         return AncestorIterator(self)
 
-
     # Creates an `AncestorSiblingIterator` using this position.
+
     def iter_ancestor_sibling(self) -> AncestorSiblingIterator:
         return AncestorSiblingIterator(self)
-
-
 
 
 # `AncestorSiblingIterator` generates current sibling position and moves itself to its parent
@@ -262,7 +248,6 @@ class AncestorIterator:
         return current_position
 
 
-
 # Traverse leaves from left to right in groups that forms full subtrees, yielding root positions
 # of such subtrees.
 # Note that each 1-bit in num_leaves corresponds to a full subtree.
@@ -291,7 +276,7 @@ class FrozenSubTreeIterator:
         return self
 
     def __next__(self):
-        assert self.seen_leaves < Uint64.max_value - self.bitmap # invariant
+        assert self.seen_leaves < Uint64.max_value - self.bitmap  # invariant
         if self.bitmap == 0:
             raise StopIteration
 
@@ -303,7 +288,7 @@ class FrozenSubTreeIterator:
         # subtree root is (num_leaves - 1) greater than that of the leftmost leaf, and also
         # (num_leaves - 1) less than that of the rightmost leaf.
         root_offset = smear_ones_for_u64(self.bitmap) >> 1
-        assert root_offset < self.bitmap # relate bit logic to integer logic
+        assert root_offset < self.bitmap  # relate bit logic to integer logic
         num_leaves = root_offset + 1
         leftmost_leaf = Position.from_leaf_index(self.seen_leaves)
         root = Position.from_inorder_index(leftmost_leaf.to_inorder_index() + root_offset)
@@ -323,9 +308,9 @@ class FrozenSubtreeSiblingIterator:
     current_num_leaves: LeafCount
     remaining_new_leaves: LeafCount
 
-
     # Constructs a new `FrozenSubtreeSiblingIterator` given the size of current accumulator and
     # the size of the bigger accumulator.
+
     def __init__(self, current_num_leaves: LeafCount, new_num_leaves: LeafCount):
         ensure(
             new_num_leaves <= MAX_ACCUMULATOR_LEAVES,
@@ -342,14 +327,13 @@ class FrozenSubtreeSiblingIterator:
         self.current_num_leaves = current_num_leaves
         self.remaining_new_leaves = new_num_leaves - current_num_leaves
 
-
     # Helper function to return the next set of leaves that form a complete subtree.  For
     # example, if there are 5 leaves (..0101), 2 ^ (63 - 61 leading zeros) = 4 leaves should be
     # taken next.
+
     def next_new_leaf_batch(self) -> LeafCount:
         zeros = leading_zeros(self.remaining_new_leaves)
         return 1 << (MAX_ACCUMULATOR_PROOF_DEPTH - zeros)
-
 
     def __iter__(self):
         return self
@@ -380,10 +364,8 @@ class FrozenSubtreeSiblingIterator:
         self.remaining_new_leaves -= next_subtree_leaves
 
         return Position.from_inorder_index(
-            (first_leaf_index + last_leaf_index) #as Uint64,
+            (first_leaf_index + last_leaf_index)  # as Uint64,
         )
-
-
 
 
 def children_of_node(node: Uint64) -> Uint64:
@@ -450,12 +432,9 @@ def postorder_to_inorder(node: Uint64) -> Uint64:
             node -= full_binary_size
             bitmap |= 1 << i
         full_binary_size >>= 1
-    level = node # as u32
+    level = node  # as u32
     pos = bitmap >> level
     return Position.from_level_and_pos(level, pos).to_inorder_index()
-
-
-
 
 
 # Some helper functions to perform general bit manipulation
@@ -463,12 +442,12 @@ def postorder_to_inorder(node: Uint64) -> Uint64:
 # Smearing all the bits starting from MSB with ones
 def smear_ones_for_u64(v: Uint64) -> Uint64:
     n = v
-    n |= n >> 1;
-    n |= n >> 2;
-    n |= n >> 4;
-    n |= n >> 8;
-    n |= n >> 16;
-    n |= n >> 32;
+    n |= n >> 1
+    n |= n >> 2
+    n |= n >> 4
+    n |= n >> 8
+    n |= n >> 16
+    n |= n >> 32
     return n
 
 

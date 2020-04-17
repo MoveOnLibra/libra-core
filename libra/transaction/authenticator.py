@@ -23,17 +23,18 @@ from typing import Union
 # under the transaction's sender account address (2).
 
 
-
 class Scheme(IntEnum):
     Ed25519 = 0
     MultiEd25519 = 1
     # ... add more schemes here
+
 
 class Ed25519_(Struct):
     _fields = [
         ('public_key', Ed25519PublicKey),
         ('signature', Ed25519Signature)
     ]
+
 
 class MultiEd25519_(Struct):
     # Single signature
@@ -42,13 +43,13 @@ class MultiEd25519_(Struct):
         ('signature', MultiEd25519Signature)
     ]
 
+
 class TransactionAuthenticator(RustEnum):
     # K-of-N multisignature
     _enums = [
         ('Ed25519', Ed25519_),
         ('MultiEd25519', MultiEd25519_)
     ]
-
 
     def scheme(self) -> Scheme:
         if self.Ed25519:
@@ -58,7 +59,6 @@ class TransactionAuthenticator(RustEnum):
         else:
             raise AssertionError("unreachable!")
 
-
     # Create a single-signature ed25519 authenticator
     @classmethod
     def ed25519(cls, public_key: Ed25519PublicKey, signature: Ed25519Signature) -> TransactionAuthenticator:
@@ -67,20 +67,19 @@ class TransactionAuthenticator(RustEnum):
             signature,
         ))
 
-
     # Create a multisignature ed25519 authenticator
     @classmethod
     def multi_ed25519(cls,
-        public_key: MultiEd25519PublicKey,
-        signature: MultiEd25519Signature,
-    ) -> TransactionAuthenticator:
+                      public_key: MultiEd25519PublicKey,
+                      signature: MultiEd25519Signature,
+                      ) -> TransactionAuthenticator:
         return cls('MultiEd25519', MultiEd25519_(
             public_key,
             signature,
         ))
 
-
     # Return Ok if the authenticator's public key matches its signature, Err otherwise
+
     def verify_signature(self, message: HashValue) -> None:
         if self.Ed25519:
             vkey = VerifyKey(self.value.public_key)
@@ -90,8 +89,8 @@ class TransactionAuthenticator(RustEnum):
         else:
             raise AssertionError("unreachable!")
 
-
     # Return the raw bytes of `self.public_key`
+
     def public_key_bytes(self) -> bytes:
         return self.value.public_key
 
@@ -103,11 +102,10 @@ class TransactionAuthenticator(RustEnum):
     def authentication_key_preimage(self) -> AuthenticationKeyPreimage:
         return AuthenticationKeyPreimage.new(self.public_key_bytes(), self.scheme())
 
-
     # Return an authentication key derived from `self`'s public key and scheme id
+
     def authentication_key(self) -> AuthenticationKey:
         return AuthenticationKey.from_preimage(self.authentication_key_preimage())
-
 
     def __str__(self):
         return "TransactionAuthenticator[scheme id: {}, public key: {}, signature: {}]".format(
@@ -141,41 +139,37 @@ class AuthenticationKey(bytes):
         )
         return cls(bs)
 
-
     # Create an authentication key from a preimage by taking its sha3 hash
     @classmethod
     def from_preimage(cls, preimage: AuthenticationKeyPreimage) -> AuthenticationKey:
         return AuthenticationKey.new(HashValue.from_sha3_256(preimage))
-
 
     # Create an authentication key from an Ed25519 public key
     @classmethod
     def ed25519(cls, public_key: Ed25519PublicKey) -> AuthenticationKey:
         return cls.from_preimage(AuthenticationKeyPreimage.ed25519(public_key))
 
-
     # Create an authentication key from a MultiEd25519 public key
     @classmethod
     def multi_ed25519(cls, public_key: MultiEd25519PublicKey) -> AuthenticationKey:
         return cls.from_preimage(AuthenticationKeyPreimage.multi_ed25519(public_key))
 
-
     # Return an address derived from the last `Address.LENGTH` bytes of this
     # authentication key.
+
     def derived_address(self) -> Address:
         # keep only last 16 bytes
         return self[AuthenticationKey.LENGTH - Address.LENGTH:]
 
-
     # Return the first Address.LENGTH bytes of this authentication key
+
     def prefix(self) -> bytes:
         return self[:Address.LENGTH]
 
-
     # Return an abbreviated representation of this authentication key
+
     def short_str(self) -> str:
         return self[:4].hex()
-
 
     # Create a random authentication key. For testing only
     @classmethod
@@ -192,12 +186,10 @@ class AuthenticationKeyPreimage(bytes):
     def new(cls, public_key_bytes: bytes, scheme: Scheme) -> AuthenticationKeyPreimage:
         return cls(public_key_bytes + scheme.to_bytes(1, byteorder="big"))
 
-
     # Construct a preimage from an Ed25519 public key
     @classmethod
     def ed25519(cls, public_key: Ed25519PublicKey) -> AuthenticationKeyPreimage:
         return cls.new(public_key, Scheme.Ed25519)
-
 
     # Construct a preimage from a MultiEd25519 public key
     @classmethod

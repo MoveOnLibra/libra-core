@@ -88,4 +88,3 @@ class TransactionWithProof:
         proof = TransactionProof.from_proto(proto.proof)
         events = [ContractEvent.from_proto(x) for x in proto.events.events]
         return cls(version, transaction, events, proof)
-

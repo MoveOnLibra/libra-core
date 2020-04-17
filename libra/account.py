@@ -6,7 +6,8 @@ from libra.transaction.authenticator import AuthenticationKey
 import libra
 import os
 
-AccountStatus = Enum('AccountStatus', ('Local','Persisted','Unknown'))
+AccountStatus = Enum('AccountStatus', ('Local', 'Persisted', 'Unknown'))
+
 
 class Account:
     def __init__(self, private_key, address=None, sequence_number=0):
@@ -71,4 +72,3 @@ class Account:
     @property
     def private_key_hex(self):
         return self.private_key.hex()
-

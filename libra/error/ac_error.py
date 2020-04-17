@@ -14,4 +14,3 @@ class AdmissionControlStatusCode:
     Blacklisted = 1
     # The transaction is rejected, e.g. due to incorrect signature.
     Rejected = 2
-

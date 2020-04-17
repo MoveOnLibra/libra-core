@@ -1,5 +1,5 @@
 from libra.hasher import (
-    HashValue, ACCUMULATOR_PLACEHOLDER_HASH,SPARSE_MERKLE_PLACEHOLDER_HASH,
+    HashValue, ACCUMULATOR_PLACEHOLDER_HASH, SPARSE_MERKLE_PLACEHOLDER_HASH,
     TransactionAccumulatorHasher, EventAccumulatorHasher, TestOnlyHasher,
     bytes_to_bools, common_prefix_bits_len)
 from libra.proof.merkle_tree import MerkleTreeInternalNode, SparseMerkleLeafNode, SparseMerkleInternalNode
@@ -17,11 +17,14 @@ from libra.proto_helper import ProtoHelper
 
 # Converts sibling nodes from Protobuf format to Rust format, using the fact that empty byte
 # arrays represent placeholder hashes.
+
+
 def from_proto_siblings(siblings: List[bytes], placeholder: HashValue) -> List[HashValue]:
     ensure(
         placeholder == ACCUMULATOR_PLACEHOLDER_HASH or placeholder == SPARSE_MERKLE_PLACEHOLDER_HASH,
         "Placeholder can only be ACCUMULATOR_PLACEHOLDER_HASH or SPARSE_MERKLE_PLACEHOLDER_HASH.",
     )
+
     def hash_bytes_transform(hash_bytes):
         if not hash_bytes:
             return placeholder
@@ -31,11 +34,14 @@ def from_proto_siblings(siblings: List[bytes], placeholder: HashValue) -> List[H
 
 # Converts sibling nodes from Rust format to Protobuf format. The placeholder hashes are
 # converted to empty byte arrays.
+
+
 def into_proto_siblings(siblings: List[HashValue], placeholder: HashValue) -> List[bytes]:
     ensure(
         placeholder == ACCUMULATOR_PLACEHOLDER_HASH or placeholder == SPARSE_MERKLE_PLACEHOLDER_HASH,
         "Placeholder can only be ACCUMULATOR_PLACEHOLDER_HASH or SPARSE_MERKLE_PLACEHOLDER_HASH.",
     )
+
     def hash_bytes_transform(sibling):
         if sibling != placeholder:
             return sibling
@@ -53,7 +59,6 @@ MAX_ACCUMULATOR_PROOF_DEPTH = 63
 MAX_ACCUMULATOR_LEAVES = 1 << MAX_ACCUMULATOR_PROOF_DEPTH
 
 
-
 # A proof that can be used authenticate an element in an accumulator given trusted root hash. For
 # example, both `LedgerInfoToTransactionInfoProof` and `TransactionInfoToEventProof` can be
 # constructed on top of this structure.
@@ -64,9 +69,9 @@ class AccumulatorProof:
     siblings: List[HashValue]
     #hasher: Callable[[], object] = field(init=False)
 
-
     # Verifies an element whose hash is `element_hash` and version is `element_version` exists in
     # the accumulator whose root hash is `expected_root_hash` using the provided proof.
+
     def verify(
         self,
         expected_root_hash: HashValue,
@@ -96,24 +101,25 @@ class AccumulatorProof:
             expected_root_hash
         )
 
-
     @classmethod
     def from_proto(cls, proto):
         siblings = from_proto_siblings(proto.siblings, ACCUMULATOR_PLACEHOLDER_HASH)
         return cls(siblings)
 
+
 @dataclass
 class TransactionAccumulatorProof(AccumulatorProof):
     hasher = TransactionAccumulatorHasher
+
 
 @dataclass
 class EventAccumulatorProof(AccumulatorProof):
     hasher = EventAccumulatorHasher
 
+
 @dataclass
 class TestAccumulatorProof(AccumulatorProof):
     hasher = TestOnlyHasher
-
 
 
 # A proof that can be used to authenticate an element in a Sparse Merkle Tree given trusted root
@@ -150,7 +156,7 @@ class SparseMerkleProof:
         if proto_leaf:
             if len(proto_leaf) == HashValue.LENGTH * 2:
                 key = proto_leaf[0:HashValue.LENGTH]
-                value_hash = proto_leaf[HashValue.LENGTH:HashValue.LENGTH*2]
+                value_hash = proto_leaf[HashValue.LENGTH:HashValue.LENGTH * 2]
                 leaf = (key, value_hash)
             else:
                 bail(
@@ -163,11 +169,11 @@ class SparseMerkleProof:
         siblings = from_proto_siblings(proto_proof.siblings, SPARSE_MERKLE_PLACEHOLDER_HASH)
         return cls(leaf, siblings)
 
-
     # If `element_blob` is present, verifies an element whose key is `element_key` and value is
     # `element_blob` exists in the Sparse Merkle Tree using the provided proof. Otherwise
     # verifies the proof is a valid non-inclusion proof that shows this key doesn't exist in the
     # tree.
+
     def verify(
         self,
         expected_root_hash: HashValue,
@@ -243,7 +249,6 @@ class SparseMerkleProof:
         )
 
 
-
 # A proof that can be used to show that two Merkle accumulators are consistent -- the big one can
 # be obtained by appending certain leaves to the small one. For example, at some point in time a
 # client knows that the root hash of the ledger at version 10 is `old_root` (it could be a
@@ -295,9 +300,9 @@ class AccumulatorRangeProof:
     def new_empty(cls):
         return cls([], [])
 
-
     # Verifies the proof is correct. The verifier needs to have `expected_root_hash`, the index
     # of the first leaf and all of the leaves in possession.
+
     def verify(
         self,
         expected_root_hash: HashValue,
@@ -343,8 +348,8 @@ class AccumulatorRangeProof:
         # Keep reducing the list of hashes by combining all the children pairs, until there is
         # only one hash left.
         while len(current_hashes) > 1 \
-            or len(self.left_siblings) > left_sibling_iter \
-            or len(self.right_siblings) > right_sibling_iter:
+                or len(self.left_siblings) > left_sibling_iter \
+                or len(self.right_siblings) > right_sibling_iter:
             children_iter = current_hashes.__iter__()
 
             # If the first position on the current level is a right child, it needs to be combined
@@ -355,7 +360,6 @@ class AccumulatorRangeProof:
                 right_hash = children_iter.__next__()
                 hashv = MerkleTreeInternalNode(left_hash, right_hash, self.__class__.hasher).hash()
                 parent_hashes.append(hashv)
-
 
             # Next we take two children at a time and compute their parents.
             for chunk in more_itertools.chunked(children_iter, 2):
@@ -394,6 +398,7 @@ class AccumulatorRangeProof:
 class TransactionAccumulatorRangeProof(AccumulatorRangeProof):
     hasher = TransactionAccumulatorHasher
 
+
 class TestAccumulatorRangeProof(AccumulatorRangeProof):
     hasher = TestOnlyHasher
 
@@ -423,12 +428,10 @@ class SparseMerkleRangeProof:
     # bottom are at the beginning of the vector. In the above example, it's `[X, h]`.
     right_siblings: List[HashValue]
 
-
     @classmethod
     def from_proto(cls, proto):
         right_siblings = from_proto_siblings(proto.right_siblings, SPARSE_MERKLE_PLACEHOLDER_HASH)
         return cls(right_siblings)
-
 
 
 # The complete proof used to authenticate a `Transaction` object.  This structure consists of an
@@ -445,10 +448,10 @@ class TransactionProof:
     # The `TransactionInfo` object at the leaf of the accumulator.
     transaction_info: TransactionInfo
 
-
     # Verifies that a `Transaction` with hash value of `transaction_hash` is the version
     # `transaction_version` transaction in the ledger using the provided proof.  If
     # `event_root_hash` is provided, it's also verified against the proof.
+
     def verify(
         self,
         ledger_info: LedgerInfo,
@@ -480,10 +483,9 @@ class TransactionProof:
     @classmethod
     def from_proto(cls, proto_proof):
         ledger_info_to_transaction_info_proof = TransactionAccumulatorProof.from_proto(proto_proof.
-            ledger_info_to_transaction_info_proof)
+                                                                                       ledger_info_to_transaction_info_proof)
         transaction_info = TransactionInfo.from_proto(proto_proof.transaction_info)
         return cls(ledger_info_to_transaction_info_proof, transaction_info)
-
 
 
 # The complete proof used to authenticate the state of an account. This structure consists of the
@@ -526,12 +528,11 @@ class AccountStateProof:
     @classmethod
     def from_proto(cls, proto_proof):
         ledger_info_to_transaction_info_proof = TransactionAccumulatorProof.from_proto(proto_proof.
-            ledger_info_to_transaction_info_proof)
+                                                                                       ledger_info_to_transaction_info_proof)
         transaction_info = TransactionInfo.from_proto(proto_proof.transaction_info)
         transaction_info_to_account_proof = SparseMerkleProof.from_proto(proto_proof
-            .transaction_info_to_account_proof)
+                                                                         .transaction_info_to_account_proof)
         return cls(ledger_info_to_transaction_info_proof, transaction_info, transaction_info_to_account_proof)
-
 
 
 # The complete proof used to authenticate a contract event. This structure consists of the
@@ -549,8 +550,8 @@ class EventProof:
     # The accumulator proof from event root to the actual event.
     transaction_info_to_event_proof: EventAccumulatorProof
 
-
     # Verifies that a given event is correct using provided proof.
+
     def verify(
         self,
         ledger_info: LedgerInfo,
@@ -573,10 +574,10 @@ class EventProof:
     @classmethod
     def from_proto(cls, proto_proof):
         ledger_info_to_transaction_info_proof = TransactionAccumulatorProof.from_proto(proto_proof.
-            ledger_info_to_transaction_info_proof)
+                                                                                       ledger_info_to_transaction_info_proof)
         transaction_info = TransactionInfo.from_proto(proto_proof.transaction_info)
         transaction_info_to_event_proof = EventAccumulatorProof.from_proto(proto_proof
-            .transaction_info_to_event_proof)
+                                                                           .transaction_info_to_event_proof)
         return cls(ledger_info_to_transaction_info_proof, transaction_info, transaction_info_to_event_proof)
 
 
@@ -594,9 +595,9 @@ class TransactionListProof:
     def new_empty(cls):
         return cls(AccumulatorRangeProof.new_empty(), [])
 
-
     # Verifies the list of transactions are correct using the proof. The verifier needs to have
     # the ledger info and the version of the first transaction in possession.
+
     def verify(
         self,
         ledger_info: LedgerInfo,
@@ -626,10 +627,9 @@ class TransactionListProof:
             txn_info_hashes
         )
 
-
     @classmethod
     def from_proto(cls, proto_proof):
         ledger_info_to_transaction_infos_proof = TransactionAccumulatorRangeProof.from_proto(proto_proof.
-            ledger_info_to_transaction_infos_proof)
+                                                                                             ledger_info_to_transaction_infos_proof)
         transaction_infos = [TransactionInfo.from_proto(x) for x in proto_proof.transaction_infos]
         return cls(ledger_info_to_transaction_infos_proof, transaction_infos)

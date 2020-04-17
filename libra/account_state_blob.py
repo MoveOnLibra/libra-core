@@ -7,7 +7,6 @@ class AccountStateBlob(Struct):
         ('blob', bytes)
     ]
 
-
     @classmethod
     def from_proto(cls, proto):
         return cls(proto.blob)

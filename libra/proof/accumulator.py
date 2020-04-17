@@ -15,6 +15,7 @@ from typing import List
 # This accumulator is immutable once constructed. If we append new leaves to the tree we will
 # obtain a new accumulator instance and the old one remains unchanged.
 
+
 @dataclass
 class InMemoryAccumulator:
     # Represents the roots of all the full subtrees from left to right in this accumulator. For
@@ -40,8 +41,7 @@ class InMemoryAccumulator:
     # The root hash of this accumulator.
     root_hash: HashValue
 
-    #hasher: Callable[[], object]# = field(init=False)
-
+    # hasher: Callable[[], object]# = field(init=False)
 
     # Constructs a new accumulator with roots of existing frozen subtrees. Returns error if the
     # number of frozen subtree roots does not match the number of leaves.
@@ -57,16 +57,15 @@ class InMemoryAccumulator:
         root_hash = cls.compute_root_hash(frozen_subtree_roots, num_leaves)
         return cls(frozen_subtree_roots, num_leaves, root_hash)
 
-
     # Constructs a new accumulator with given leaves.
     @classmethod
     def from_leaves(cls, leaves: [HashValue]):
         return cls.default().append(leaves)
 
-
     # Appends a list of new leaves to an existing accumulator. Since the accumulator is
     # immutable, the existing one remains unchanged and a new one representing the result is
     # returned.
+
     def append(self, leaves: [HashValue]):
         frozen_subtree_roots = self.frozen_subtree_roots
         num_leaves = self.num_leaves
@@ -75,9 +74,9 @@ class InMemoryAccumulator:
             num_leaves += 1
         return self.__class__.new(frozen_subtree_roots, num_leaves)
 
-
     # Appends one leaf. This will update `frozen_subtree_roots` to store new frozen root nodes
     # and remove old nodes if they are now part of a larger frozen subtree.
+
     def append_one(
         self,
         frozen_subtree_roots: List[HashValue],
@@ -108,7 +107,6 @@ class InMemoryAccumulator:
             left_hash = frozen_subtree_roots.pop()
             parent_hash = MerkleTreeInternalNode(left_hash, right_hash, self.__class__.hasher).hash()
             frozen_subtree_roots.append(parent_hash)
-
 
     # Appends a list of new subtrees to the existing accumulator. This is similar to
     # [`append`](Accumulator.append) except that the new leaves themselves are not known and
@@ -152,6 +150,7 @@ class InMemoryAccumulator:
     #               / \ / \ / \ / \                         / \           / \   / \ / \      / \ / \                / \
     #               o o o o o o o o                         o o           A B   C D E F      G H I J  K (subtrees[3]) placeholder
     # ```
+
     def append_subtrees(
         self,
         subtrees: List[HashValue],
@@ -197,13 +196,11 @@ class InMemoryAccumulator:
         current_subtree_roots.extend(subtree_iter)
         return self.__class__.new(current_subtree_roots, current_num_leaves)
 
-
     def version(self):
         if self.num_leaves == 0:
             return 0
         else:
             return self.num_leaves - 1
-
 
     # Computes the root hash of an accumulator given the frozen subtree roots and the number of
     # leaves in this accumulator.
@@ -235,7 +232,6 @@ class InMemoryAccumulator:
                 ).hash()
             bitmap >>= 1
         return current_hash
-
 
     @classmethod
     def default(cls):

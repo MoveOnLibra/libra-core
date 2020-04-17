@@ -4,6 +4,7 @@ from libra.crypto.x25519 import X25519_PUBLIC_KEY_LENGTH
 
 Multiaddr = BytesT()
 
+
 class DiscoveryInfo(Struct):
     """
     # A validator's discovery information, which describes how to dial the

@@ -5,6 +5,7 @@ import random
 ADDRESS_LENGTH = 16
 HEX_ADDRESS_LENGTH = ADDRESS_LENGTH * 2
 
+
 class Address(DelegateT):
     delegate_type = BytesT(ADDRESS_LENGTH, encode_len=False)
 
@@ -47,14 +48,13 @@ class Address(DelegateT):
             return bytes(address)
         raise TypeError(f"Address: {address} has unknown type.")
 
-
     @staticmethod
     def from_hex_literal(literal):
         from libra.rustlib import ensure, bail
         ensure(literal.startswith("0x"), "literal must start with 0x.")
         bys = literal[2:]
         if len(bys) % 2 != 0:
-            bys = bytes.fromhex('0'+bys)
+            bys = bytes.fromhex('0' + bys)
         else:
             bys = bytes.fromhex(bys)
 
@@ -64,7 +64,6 @@ class Address(DelegateT):
             return bys.rjust(ADDRESS_LENGTH, b'\x00')
         else:
             return bys
-
 
     @staticmethod
     def equal_address(addr1, addr2):
@@ -80,6 +79,7 @@ def parse_address(s: str) -> bytes:
         return bytes.fromhex(s)
     return None
 
+
 def strict_parse_address(s: str) -> bytes:
     def strict_parse_address(s: str, orig_str: str) -> bytes:
         if len(s) < HEX_ADDRESS_LENGTH:
@@ -88,9 +88,9 @@ def strict_parse_address(s: str) -> bytes:
             return bytes.fromhex(s)
         elif s[0:2] == '0x':
             return strict_parse_address(s[2:], orig_str)
-        elif s[0]=="'" and s[-1]=="'":
+        elif s[0] == "'" and s[-1] == "'":
             return strict_parse_address(s[1:-1], orig_str)
-        elif s[0]=='"' and s[-1]=='"':
+        elif s[0] == '"' and s[-1] == '"':
             return strict_parse_address(s[1:-1], orig_str)
         else:
             raise ValueError(f"{orig_str} is not a valid address.")

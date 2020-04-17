@@ -50,30 +50,23 @@ class AccountState(Struct):
             amap["decoded_account_resource"] = ar.to_json_serializable()
         return amap
 
-
     def get_account_resource(self) -> Optional[AccountResource]:
         return self.get_move_resource(AccountResource)
-
 
     def get_balance_resource(self) -> Optional[BalanceResource]:
         return self.get_move_resource(BalanceResource)
 
-
     def get_configuration_resource(self) -> Optional[ConfigurationResource]:
         return self.get_move_resource(ConfigurationResource)
-
 
     def get_discovery_set_resource(self) -> Optional[DiscoverySetResource]:
         return self.get_move_resource(DiscoverySetResource)
 
-
     def get_libra_timestamp_resource(self) -> Optional[LibraTimestampResource]:
         return self.get_move_resource(LibraTimestampResource)
 
-
     def get_validator_config_resource(self) -> Optional[ValidatorConfigResource]:
         return self.get_move_resource(ValidatorConfigResource)
-
 
     def get_validator_set(self) -> Optional[ValidatorSet]:
         return self.get_resource(
@@ -81,10 +74,8 @@ class AccountState(Struct):
             ValidatorSet,
         )
 
-
     def get_libra_block_resource(self) -> Optional[LibraBlockResource]:
         return self.get_move_resource(LibraBlockResource)
-
 
     def get_event_handle_by_query_path(self, query_path: bytes) -> EventHandle:
         if AccountConfig.account_received_event_path() == query_path:
@@ -102,23 +93,20 @@ class AccountState(Struct):
         else:
             bail("Unrecognized query path: {}", query_path)
 
-
     def insert(self, key: bytes, value: bytes) -> None:
         self.ordered_map[key] = value
 
-
     def remove(self, key: bytes) -> Optional[bytes]:
         return self.ordered_map.pop(key)
-
 
     def is_empty(self) -> bool:
         return not self.ordered_map
 
     @classmethod
     def try_from(cls,
-        account_resource: AccountResource,
-        balance_resource:BalanceResource,
-    ) -> AccountState:
+                 account_resource: AccountResource,
+                 balance_resource: BalanceResource,
+                 ) -> AccountState:
         btree_map = {}
         btree_map[AccountResource.resource_path()] = account_resource.serialize()
         btree_map[BalanceResource.resource_path()] = balance_resource.serialize()

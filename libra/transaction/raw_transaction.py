@@ -10,6 +10,7 @@ from libra.transaction.authenticator import TransactionAuthenticator
 
 MAX_GAS_AMOUNT = 400_000
 
+
 class RawTransaction(Struct):
     """RawTransaction is the portion of a transaction that a client signs.
     It can be either to publish a module, to execute a script, or to issue a writeset transaction.
@@ -43,18 +44,17 @@ class RawTransaction(Struct):
 
     @classmethod
     def new_script_tx(cls, sender_address, sequence_number, script, max_gas_amount=MAX_GAS_AMOUNT,
-            gas_unit_price=0, txn_expiration=100):
+                      gas_unit_price=0, txn_expiration=100):
         """Create a new `RawTransaction` with a script.
         A script transaction contains only code to execute. No publishing is allowed in scripts.
         """
         payload = TransactionPayload('Script', script)
         return cls.new_tx(sender_address, sequence_number, payload, max_gas_amount,
-            gas_unit_price, txn_expiration)
-
+                          gas_unit_price, txn_expiration)
 
     @classmethod
     def new_tx(cls, sender_address, sequence_number, payload, max_gas_amount=MAX_GAS_AMOUNT,
-            gas_unit_price=0, txn_expiration=100):
+               gas_unit_price=0, txn_expiration=100):
         sender_address = Address.normalize_to_bytes(sender_address)
         return RawTransaction(
             sender_address,
@@ -68,7 +68,7 @@ class RawTransaction(Struct):
 
     @classmethod
     def _gen_transfer_transaction(cls, sender_address, sequence_number, receiver_address,
-        micro_libra, max_gas_amount=MAX_GAS_AMOUNT, gas_unit_price=0, txn_expiration=100, metadata=None):
+                                  micro_libra, max_gas_amount=MAX_GAS_AMOUNT, gas_unit_price=0, txn_expiration=100, metadata=None):
         script = Script.gen_transfer_script(receiver_address, micro_libra, metadata)
         return RawTransaction.new_script_tx(
             sender_address,
@@ -88,4 +88,3 @@ class RawTransaction(Struct):
         return SignatureCheckedTransaction(
             SignedTransaction(self, authenticator)
         )
-

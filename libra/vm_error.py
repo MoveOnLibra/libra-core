@@ -84,33 +84,29 @@ class VMStatus:
             ret.message = None
         return ret
 
-
     # Return the status type for this VMStatus. This is solely determined by the `major_status`
     # field.
+
     def status_type(self) -> StatusType:
         major_status_number = self.major_status
         if major_status_number >= VALIDATION_STATUS_MIN_CODE\
-            and major_status_number <= VALIDATION_STATUS_MAX_CODE:
+                and major_status_number <= VALIDATION_STATUS_MAX_CODE:
             return StatusType.Validation
 
-
         if major_status_number >= VERIFICATION_STATUS_MIN_CODE\
-            and major_status_number <= VERIFICATION_STATUS_MAX_CODE:
+                and major_status_number <= VERIFICATION_STATUS_MAX_CODE:
             return StatusType.Verification
 
-
         if major_status_number >= INVARIANT_VIOLATION_STATUS_MIN_CODE\
-            and major_status_number <= INVARIANT_VIOLATION_STATUS_MAX_CODE:
+                and major_status_number <= INVARIANT_VIOLATION_STATUS_MAX_CODE:
             return StatusType.InvariantViolation
 
-
         if major_status_number >= DESERIALIZATION_STATUS_MIN_CODE\
-            and major_status_number <= DESERIALIZATION_STATUS_MAX_CODE:
+                and major_status_number <= DESERIALIZATION_STATUS_MAX_CODE:
             return StatusType.Deserialization
 
-
         if major_status_number >= EXECUTION_STATUS_MIN_CODE\
-            and major_status_number <= EXECUTION_STATUS_MAX_CODE:
+                and major_status_number <= EXECUTION_STATUS_MAX_CODE:
             return StatusType.Execution
 
         return StatusType.Unknown
@@ -340,7 +336,6 @@ class StatusCode(IntEnum):
     UNKNOWN_STATUS = Uint64.max_value
 
 
-
 class SubStatus:
     # Arithmetic sub status sub-codes
     AEU_UNKNOWN_ARITHMETIC_ERROR = 0
@@ -363,4 +358,3 @@ class SubStatus:
     GSE_UNABLE_TO_LOAD_MODULE = 0
     GSE_UNABLE_TO_LOAD_RESOURCE = 1
     GSE_UNABLE_TO_DESERIALIZE = 2
-

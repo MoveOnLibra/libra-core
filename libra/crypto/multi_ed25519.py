@@ -10,8 +10,9 @@ from libra.rustlib import flatten, usize
 from typing import List, Tuple, Optional
 from nacl.signing import VerifyKey
 
+
 class CryptoMaterialError(Exception):
-    def __init__(self, t:str, message:str = None):
+    def __init__(self, t: str, message: str = None):
         self.t = t
         self.message = message
 
@@ -22,10 +23,13 @@ class CryptoMaterialError(Exception):
 
 # from libra_crypto_derive.{DeserializeKey, SerializeKey, SilentDebug, SilentDisplay}
 
+
 MAX_NUM_OF_KEYS = 32
 BITMAP_NUM_OF_BYTES = 4
 
 # Vector of private keys in the multi-key Ed25519 structure along with the threshold.
+
+
 class MultiEd25519PrivateKey(Struct):
     _fields = [
         ('private_keys', [Ed25519PrivateKey]),
@@ -35,9 +39,9 @@ class MultiEd25519PrivateKey(Struct):
     # Construct a new MultiEd25519PrivateKey.
     @classmethod
     def new(cls,
-        private_keys: List[Ed25519PrivateKey],
-        threshold: Uint8,
-    ) -> MultiEd25519PrivateKey:
+            private_keys: List[Ed25519PrivateKey],
+            threshold: Uint8,
+            ) -> MultiEd25519PrivateKey:
         num_of_keys = private_keys.__len__()
         if threshold == 0 or num_of_keys < threshold:
             raise CryptoMaterialError('ValidationError')
@@ -53,8 +57,8 @@ class MultiEd25519PrivateKey(Struct):
     def fromEd25519PrivateKey(ed_private_key: Ed25519PrivateKey) -> MultiEd25519PrivateKey:
         return MultiEd25519PrivateKey([ed_private_key], 1)
 
-
     # Sign a message with the minimum amount of keys to meet threshold (starting from left-most keys).
+
     def sign_message(self, message: HashValue) -> MultiEd25519Signature:
         signatures: List[Ed25519Signature] = []
         bitmap = [0] * BITMAP_NUM_OF_BYTES
@@ -64,18 +68,16 @@ class MultiEd25519PrivateKey(Struct):
 
         return MultiEd25519Signature(signatures, bitmap)
 
-
     def length(self) -> usize:
         self.private_keys.__len__() * ED25519_PRIVATE_KEY_LENGTH + 1
-
 
     @classmethod
     def genesis(cls) -> MultiEd25519PrivateKey:
         buf = [0] * ED25519_PRIVATE_KEY_LENGTH
         buf[ED25519_PRIVATE_KEY_LENGTH - 1] = 1
         return MultiEd25519PrivateKey(
-            private_keys= [bytes(buf)],
-            threshold= 1,
+            private_keys=[bytes(buf)],
+            threshold=1,
         )
 
 
@@ -86,18 +88,18 @@ class MultiEd25519PublicKey(Struct):
         ('threshold', Uint8)
     ]
 
-
     # Construct a new MultiEd25519PublicKey.
     # --- Rules ---
     # a) threshold cannot be zero.
     # b) public_keys.__len__() should be equal to or larger than threshold.
     # c) support up to MAX_NUM_OF_KEYS public keys.
+
     def new(
         public_keys: List[Ed25519PublicKey],
         threshold: Uint8,
     ) -> MultiEd25519PublicKey:
         num_of_keys = public_keys.__len__()
-        #TODO: check the same rules when deserialize
+        # TODO: check the same rules when deserialize
         if threshold == 0 or num_of_keys < threshold:
             raise CryptoMaterialError('ValidationError')
         elif num_of_keys > MAX_NUM_OF_KEYS:
@@ -112,8 +114,8 @@ class MultiEd25519PublicKey(Struct):
     @classmethod
     def fromEd25519PublicKey(cls, ed_public_key: Ed25519PublicKey) -> MultiEd25519PublicKey:
         return MultiEd25519PublicKey(
-            public_keys= [ed_public_key],
-            threshold= 1,
+            public_keys=[ed_public_key],
+            threshold=1,
         )
 
     @classmethod
@@ -142,13 +144,13 @@ class MultiEd25519Signature(Struct):
     # This method will also sort signatures based on index.
     @classmethod
     def new(cls,
-        signatures: List[Tuple[Ed25519Signature, Uint8]],
-    ) -> MultiEd25519Signature:
+            signatures: List[Tuple[Ed25519Signature, Uint8]],
+            ) -> MultiEd25519Signature:
         num_of_sigs = signatures.__len__()
         if num_of_sigs == 0 or num_of_sigs > MAX_NUM_OF_KEYS:
             raise CryptoMaterialError('ValidationError')
 
-        sorted_signatures = signatures.sort(key = lambda x: x[1])
+        sorted_signatures = signatures.sort(key=lambda x: x[1])
         bitmap = [0] * BITMAP_NUM_OF_BYTES
 
         # Check if all indexes are unique and < MAX_NUM_OF_KEYS
@@ -161,21 +163,21 @@ class MultiEd25519Signature(Struct):
                 # if an index has been set already (thus, there is a duplicate).
                 if bitmap_get_bit(bitmap, i):
                     raise CryptoMaterialError('BitVecError',
-                        "Duplicate signature index",
-                    )
+                                              "Duplicate signature index",
+                                              )
                 else:
                     bitmap_set_bit(bitmap, i)
             else:
                 raise CryptoMaterialError('BitVecError',
-                    "Signature index is out of range",
-                )
+                                          "Signature index is out of range",
+                                          )
 
         return MultiEd25519Signature(sigs, bitmap)
 
-
     # Serialize a MultiEd25519Signature in the form of sig0||sig1||..sigN||bitmap.
+
     def to_bytes(self) -> bytes:
-        pass #TODO: why not use lcs
+        pass  # TODO: why not use lcs
         # bytes: List[Uint8] = self
         #     .signatures
         #     .iter()
@@ -186,15 +188,15 @@ class MultiEd25519Signature(Struct):
     def length(self) -> usize:
         return self.signatures.__len__() * ED25519_SIGNATURE_LENGTH + BITMAP_NUM_OF_BYTES
 
-
     # Checks that `self` is valid for `message` using `public_key`.
+
     def verify(self, message: HashValue, public_key: MultiEd25519PublicKey) -> None:
         self.verify_arbitrary_msg(message, public_key)
-
 
     # Checks that `self` is valid for an arbitrary bytes `message` using `public_key`.
     # Outside of this crate, this particular function should only be used for native signature
     # verification in Move.
+
     def verify_arbitrary_msg(
         self,
         message: bytes,
@@ -206,8 +208,8 @@ class MultiEd25519Signature(Struct):
 
         if bitmap_count_ones(self.bitmap) < public_key.threshold:
             raise CryptoMaterialError('BitVecError',
-                    "Not enough signatures to meet the threshold"
-                )
+                                      "Not enough signatures to meet the threshold"
+                                      )
 
         bitmap_index = 0
         # TODO use deterministic batch verification when gets available.
@@ -219,13 +221,12 @@ class MultiEd25519Signature(Struct):
             pk.verify(message, sig)
             bitmap_index += 1
 
-
     @classmethod
     def fromEd25519Signature(cls, ed_signature: Ed25519Signature) -> MultiEd25519Signature:
         return MultiEd25519Signature(
             [ed_signature],
             # "1000_0000 0000_0000 0000_0000 0000_0000"
-            [0b1000_0000 , 0 , 0 , 0 ],
+            [0b1000_0000, 0, 0, 0],
         )
 
 
@@ -254,6 +255,8 @@ def bitmap_count_ones(bitmap: List[Uint8]) -> Uint32:
     return ret
 
 # Find the last set bit.
+
+
 def bitmap_last_set_bit(bitmap: List[Uint8]) -> Optional[Uint8]:
     bitvec = flatten([bin(x)[2:].rjust(8, '0') for x in bitmap])
     ret = None

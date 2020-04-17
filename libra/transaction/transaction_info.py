@@ -27,5 +27,5 @@ class TransactionInfo(Struct):
         ret.event_root_hash = proto.event_root_hash
         ret.gas_used = proto.gas_used
         ret.major_status = proto.major_status
-        #TODO: StatusCode::try_from(proto_txn_info.major_status).unwrap_or(StatusCode::UNKNOWN_STATUS)
+        # TODO: StatusCode::try_from(proto_txn_info.major_status).unwrap_or(StatusCode::UNKNOWN_STATUS)
         return ret

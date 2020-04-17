@@ -6,6 +6,7 @@ from libra.rustlib import ensure
 from dataclasses import dataclass
 from typing import Optional
 
+
 @dataclass
 class AccountStateWithProof:
     # The transaction version at which this account state is seen.
@@ -26,11 +27,11 @@ class AccountStateWithProof:
         return cls(proto.version, blob, proof)
 
     def verify(
-            self,
-            ledger_info,
-            version,
-            address
-        ):
+        self,
+        ledger_info,
+        version,
+        address
+    ):
         ensure(
             self.version == version,
             "State version ({}) is not expected ({}).",

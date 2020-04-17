@@ -12,6 +12,8 @@ from typing import Optional
 # To register an on-chain config in Rust:
 # 1. Implement the `OnChainConfig` trait for the Rust representation of the config
 # 2. Add the config's `ConfigID` to `ON_CHAIN_CONFIG_REGISTRY`
+
+
 class ConfigID(Struct):
     _fields = [
         ('v0', str),
@@ -31,14 +33,12 @@ class OnChainConfigPayload(Struct):
         ('configs', {ConfigID: bytes}),
     ]
 
-
     def get(self, T: OnChainConfig) -> OnChainConfig:
         if T.CONFIG_ID not in self.configs:
             bail("[on-chain cfg] config not in payload")
 
         bytes = self.configs[T.CONFIG_ID]
         return T.deserialize_into_config(bytes)
-
 
 
 # Trait to be implemented by a storage type from which to read on-chain configs
@@ -69,7 +69,6 @@ class OnChainConfig:
     def deserialize_default_impl(cls, v: bytes) -> OnChainConfig:
         return cls.deserialize(v)
 
-
     # Function for deserializing bytes to `Self`
     # It will by default try one round of LCS deserialization directly to `Self`
     # The implementation for the concrete type should override this function if this
@@ -83,7 +82,6 @@ class OnChainConfig:
         path = cls.get_config_id().access_path()
         v = storage.fetch_config(path)
         return cls.deserialize_into_config(v)
-
 
 
 def access_path_for_config(address: Address, config_name: str) -> AccessPath:
@@ -114,4 +112,3 @@ class ConfigurationResource(Struct, MoveResource):
 
     MODULE_NAME: str = "LibraConfig"
     STRUCT_NAME: str = "Configuration"
-

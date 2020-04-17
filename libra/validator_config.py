@@ -6,6 +6,7 @@ from canoser import Struct, BytesT
 
 Multiaddr = BytesT()
 
+
 class ValidatorConfig(Struct):
     _fields = [
         ('consensus_public_key', Ed25519PublicKey),
@@ -24,5 +25,3 @@ class ValidatorConfigResource(Struct, MoveResource):
 
     MODULE_NAME: str = "ValidatorConfig"
     STRUCT_NAME: str = "T"
-
-

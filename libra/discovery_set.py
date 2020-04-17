@@ -5,6 +5,7 @@ from libra.discovery_info import DiscoveryInfo
 from libra.access_path import AccessPath
 from libra.move_resource import MoveResource
 
+
 class DiscoverySet(DelegateT):
     delegate_type = [DiscoveryInfo]
 

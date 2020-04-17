@@ -20,9 +20,10 @@ from dataclasses import dataclass
 import libra.proto.get_with_proof_pb2 as get_with_proof_pb2
 from libra.proto_helper import ProtoHelper
 
+
 @dataclass
 class UpdateToLatestLedgerRequest:
-    #TODO: defined here, but not used in client. client directly use the proto's type.
+    # TODO: defined here, but not used in client. client directly use the proto's type.
     client_known_version: Uint64
     requested_items: List[RequestItem]
 
@@ -48,7 +49,6 @@ class UpdateToLatestLedgerResponse:
         ret.validator_change_proof.MergeFrom(ProtoHelper.to_proto(self.validator_change_proof))
         ret.ledger_consistency_proof.MergeFrom(ProtoHelper.to_proto(self.ledger_consistency_proof))
         return ret
-
 
 
 class RequestItem:
@@ -126,6 +126,7 @@ class GetTransactionsRequest(RequestItem):
 class ResponseItem:
     pass
 
+
 @dataclass
 class GetAccountTransactionBySequenceNumberResponse(ResponseItem):
     transaction_with_proof: Optional[TransactionWithProof]
@@ -151,7 +152,6 @@ class GetEventsByEventAccessPathResponse(ResponseItem):
     proof_of_latest_event: AccountStateWithProof
     # TODO: Rename this field to proof_of_event_handle.
 
-
     def to_proto_oneof(self, proto_item: ResponseItem) -> None:
         proto_item.get_events_by_event_access_path_response\
             .MergeFrom(ProtoHelper.to_proto(self))
@@ -166,7 +166,6 @@ class GetTransactionsResponse(ResponseItem):
             .MergeFrom(ProtoHelper.to_proto(self))
 
 
-
 def verify(verifier_type, request, response) -> Optional[EpochInfo]:
     return verify_update_to_latest_ledger_response(
         verifier_type,
@@ -177,6 +176,7 @@ def verify(verifier_type, request, response) -> Optional[EpochInfo]:
         ValidatorChangeProof.from_proto(response.validator_change_proof),
     )
 
+
 def verify_update_to_latest_ledger_response(
     verifier_type,
     req_client_known_version,
@@ -184,7 +184,7 @@ def verify_update_to_latest_ledger_response(
     response_items,
     ledger_info_with_sigs,
     validator_change_proof
-    ) -> Optional[EpochInfo]:
+) -> Optional[EpochInfo]:
     ledger_info = ledger_info_with_sigs.ledger_info
     signatures = ledger_info_with_sigs.signatures
     if ledger_info.version < req_client_known_version:
@@ -212,6 +212,7 @@ def verify_update_to_latest_ledger_response(
         verifier_type.verify(ledger_info_with_sigs)
         return None
 
+
 def verify_response_item(ledger_info, requested_item, response_item):
     req_type = requested_item.WhichOneof('requested_items')
     if not req_type.endswith("_request"):
@@ -223,7 +224,7 @@ def verify_response_item(ledger_info, requested_item, response_item):
     if resp_type == "get_account_state_response":
         asp = response_item.get_account_state_response.account_state_with_proof
         AccountStateWithProof.from_proto(asp).verify(ledger_info, ledger_info.version,
-            requested_item.get_account_state_request.address)
+                                                     requested_item.get_account_state_request.address)
     elif resp_type == "get_account_transaction_by_sequence_number_response":
         atreq = requested_item.get_account_transaction_by_sequence_number_request
         atresp = response_item.get_account_transaction_by_sequence_number_response
@@ -260,13 +261,13 @@ def verify_response_item(ledger_info, requested_item, response_item):
 
 
 def verify_get_txn_by_seq_num_resp(
-        ledger_info,
-        account,
-        sequence_number,
-        fetch_events,
-        transaction_with_proof,
-        proof_of_current_sequence_number
-    ):
+    ledger_info,
+    account,
+    sequence_number,
+    fetch_events,
+    transaction_with_proof,
+    proof_of_current_sequence_number
+):
     has_stx = len(transaction_with_proof.__str__()) > 0
     has_cur = len(proof_of_current_sequence_number.__str__()) > 0
     if has_stx and not has_cur:
@@ -292,7 +293,7 @@ def verify_get_txn_by_seq_num_resp(
             sequence_number_in_ledger
         )
         AccountStateWithProof.from_proto(proof_of_current_sequence_number).verify(ledger_info,
-            ledger_info.version, account)
+                                                                                  ledger_info.version, account)
     else:
         bail(
             "Bad GetAccountTxnBySeqNum response. txn_proof.is_none():{}, cur_seq_num_proof.is_none():{}",
@@ -301,23 +302,21 @@ def verify_get_txn_by_seq_num_resp(
         )
 
 
-
-
 def verify_get_events_by_access_path_resp(
-        ledger_info: LedgerInfo,
-        req_access_path: AccessPath,
-        req_start_seq_num: Uint64,
-        req_ascending: bool,
-        req_limit: Uint64,
-        events_with_proof: List[EventWithProof],
-        proof_of_latest_event: AccountStateWithProof
-    ):
+    ledger_info: LedgerInfo,
+    req_access_path: AccessPath,
+    req_start_seq_num: Uint64,
+    req_ascending: bool,
+    req_limit: Uint64,
+    events_with_proof: List[EventWithProof],
+    proof_of_latest_event: AccountStateWithProof
+):
     proof_of_latest_event.verify(ledger_info, ledger_info.version, req_access_path.address)
     account_resource = AccountResource.get_account_resource_or_default(proof_of_latest_event.blob)
     event_handle = account_resource.get_event_handle_by_query_path(req_access_path.path)
     expected_event_key = event_handle.key
     expected_seq_nums = gen_events_resp_idxs(event_handle.count,
-        req_start_seq_num, req_ascending, req_limit)
+                                             req_start_seq_num, req_ascending, req_limit)
     ensure(
         len(expected_seq_nums) == len(events_with_proof),
         "Expecting {} events, got {}.",
@@ -341,16 +340,16 @@ def gen_events_resp_idxs(seq_num_upper_bound, req_start_seq_num, req_ascending, 
     else:
         cursor = req_start_seq_num
     if cursor >= seq_num_upper_bound:
-        return [] #Unreachable, so empty.
+        return []  # Unreachable, so empty.
     elif req_ascending:
-        #Ascending, from start to upper bound or limit.
+        # Ascending, from start to upper bound or limit.
         realupper = min(cursor + req_limit, seq_num_upper_bound)
         return [x for x in range(cursor, realupper)]
     elif cursor + 1 < req_limit:
-        return [x for x in range(cursor, -1, -1)] # Descending and hitting 0.
+        return [x for x in range(cursor, -1, -1)]  # Descending and hitting 0.
     else:
         bottom = cursor + 1 - req_limit
-        return [x for x in range(cursor, bottom-1, -1)] #Descending and hitting limit.
+        return [x for x in range(cursor, bottom - 1, -1)]  # Descending and hitting limit.
 
 
 def verify_get_txns_resp(ledger_info, start_version, limit, fetch_events, txn_list_with_proof):
@@ -364,4 +363,3 @@ def verify_get_txns_resp(ledger_info, start_version, limit, fetch_events, txn_li
     if num_txns != ret_num:
         raise VerifyError(f"transaction number expected:{ret_num}, returned:{num_txns}.")
     TransactionListWithProof.from_proto(txn_list_with_proof).verify(ledger_info, start_version)
-

@@ -7,6 +7,7 @@ from libra.proto_helper import ProtoHelper
 
 Version = Uint64
 
+
 class Transaction(RustEnum):
     _enums = [
         ('UserTransaction', SignedTransaction),

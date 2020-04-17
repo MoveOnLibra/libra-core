@@ -15,7 +15,6 @@ class ValidatorInfo(Struct):
     ]
 
 
-
 class ValidatorVerifier(Struct):
     _fields = [
         ('address_to_validator_info', {Address: ValidatorInfo}),
@@ -25,7 +24,7 @@ class ValidatorVerifier(Struct):
 
     def __init__(self, address_to_validator_info):
         super().__init__(address_to_validator_info)
-        self.total_voting_power = sum([v.voting_power for k,v in address_to_validator_info.items()])
+        self.total_voting_power = sum([v.voting_power for k, v in address_to_validator_info.items()])
         if len(address_to_validator_info) == 0:
             self.quorum_voting_power = 0
         else:
@@ -39,13 +38,12 @@ class ValidatorVerifier(Struct):
             address_to_validator_info[bytes(vpkeys.account_address)] = vinfo
         return cls(address_to_validator_info)
 
-
     def batch_verify_aggregated_signature(self, ledger_info_hash, signatures):
         self.check_num_of_signatures(signatures)
         self.check_keys(signatures)
         self.check_voting_power(signatures)
-        #TODO: PublicKey::batch_verify_signatures(&hash, keys_and_signatures)
-        self.verify_aggregated_signature(ledger_info_hash, signatures);
+        # TODO: PublicKey::batch_verify_signatures(&hash, keys_and_signatures)
+        self.verify_aggregated_signature(ledger_info_hash, signatures)
 
     def check_num_of_signatures(self, signatures):
         num = len(signatures)

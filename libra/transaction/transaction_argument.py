@@ -2,6 +2,7 @@ from canoser import RustEnum, Uint64
 from libra.account_address import Address, parse_address
 from libra.crypto.ed25519 import ED25519_PUBLIC_KEY_LENGTH
 
+
 def normalize_public_key(public_key):
     if isinstance(public_key, list):
         if len(public_key) != ED25519_PUBLIC_KEY_LENGTH:
@@ -12,7 +13,7 @@ def normalize_public_key(public_key):
             raise ValueError(f"{public_key} is not a valid public_key.")
         return public_key
     if isinstance(public_key, str):
-        if len(public_key) != ED25519_PUBLIC_KEY_LENGTH*2:
+        if len(public_key) != ED25519_PUBLIC_KEY_LENGTH * 2:
             raise ValueError(f"{public_key} is not a valid public_key.")
         return bytes.fromhex(public_key)
 
@@ -26,7 +27,7 @@ class TransactionArgument(RustEnum):
     ]
 
     @classmethod
-    #Parses the given string as any transaction argument type.
+    # Parses the given string as any transaction argument type.
     def parse_as_transaction_argument(cls, s):
         address = parse_address(s)
         if address is not None:
@@ -45,4 +46,3 @@ class TransactionArgument(RustEnum):
             except Exception:
                 pass
         raise TypeError(f"cannot parse {s} as transaction argument")
-

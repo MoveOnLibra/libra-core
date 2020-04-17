@@ -6,6 +6,7 @@ from libra.access_path import AccessPath
 from libra.event import EventKey
 from libra.on_chain_config.on_chain_config import OnChainConfig
 
+
 class ConsensusScheme(RustEnum):
     _enums = [
         ('Ed25519', None),
@@ -22,10 +23,8 @@ class ValidatorSet(Struct, OnChainConfig):
     ADDRESS: str = "0x1D8"
     IDENTIFIER: str = "LibraSystem"
 
-
     LIBRA_SYSTEM_MODULE_NAME = "LibraSystem"
     VALIDATOR_SET_STRUCT_NAME = "ValidatorSet"
-
 
     VALIDATOR_SET_MODULE_NAME = LIBRA_SYSTEM_MODULE_NAME
 

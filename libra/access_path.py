@@ -4,12 +4,13 @@ from libra.account_address import Address
 from libra.language_storage import ModuleId, StructTag, ResourceKey
 from typing import List
 
-#SEPARATOR is used as a delimiter between fields. It should not be a legal part of any identifier
-#in the language
+# SEPARATOR is used as a delimiter between fields. It should not be a legal part of any identifier
+# in the language
 SEPARATOR = '/'
 
+
 class Field(DelegateT):
-    delegate_type = str #Identifier
+    delegate_type = str  # Identifier
 
 
 class Access(RustEnum):
@@ -66,8 +67,8 @@ class AccessPath(Struct):
     def resource_access_vec(cls, tag: StructTag, accesses: List[Access]) -> bytes:
         ret = bytes([cls.RESOURCE_TAG])
         ret += tag.hash()
-        #We don't need accesses in production right now. Accesses are appended here just for
-        #passing the old tests.
+        # We don't need accesses in production right now. Accesses are appended here just for
+        # passing the old tests.
         astr = Accesses.as_separated_string(accesses)
         ret += str.encode(astr)
         cls.RESOURCE_MAP[ret] = tag
@@ -78,7 +79,6 @@ class AccessPath(Struct):
     def resource_access_path(key: ResourceKey, accesses: List[Access]) -> AccessPath:
         path = AccessPath.resource_access_vec(key.type_, accesses)
         return AccessPath(key.address, path)
-
 
     @classmethod
     def code_access_path_vec(cls, key: ModuleId) -> bytes:
@@ -103,7 +103,7 @@ class AccessPath(Struct):
         try:
             obj = self.parse_path()
             amap["parsed_path"] = {
-                obj.__class__.__qualname__  : obj.to_json_serializable()
+                obj.__class__.__qualname__: obj.to_json_serializable()
             }
         except Exception:
             pass

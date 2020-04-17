@@ -5,12 +5,12 @@ from libra.hasher import (
 from dataclasses import dataclass, field
 from typing import Callable
 
+
 @dataclass
 class MerkleTreeInternalNode:
     left_child: HashValue
     right_child: HashValue
-    hasher: Callable[[], object]# = field(init=False)
-
+    hasher: Callable[[], object]  # = field(init=False)
 
     def hash(self):
         shazer = self.hasher()
@@ -18,20 +18,24 @@ class MerkleTreeInternalNode:
         shazer.update(bytes(self.right_child))
         return shazer.digest()
 
+
 @dataclass
 class SparseMerkleInternalNode(MerkleTreeInternalNode):
     #hasher = SparseMerkleInternalHasher
     hasher: Callable[[], object] = field(default=SparseMerkleInternalHasher)
+
 
 @dataclass
 class TransactionAccumulatorInternalNode(MerkleTreeInternalNode):
     #hasher = TransactionAccumulatorHasher
     hasher: Callable[[], object] = field(default=TransactionAccumulatorHasher)
 
+
 @dataclass
 class EventAccumulatorInternalNode(MerkleTreeInternalNode):
     #hasher = EventAccumulatorHasher
     hasher: Callable[[], object] = field(default=EventAccumulatorHasher)
+
 
 @dataclass
 class TstAccumulatorInternalNode(MerkleTreeInternalNode):

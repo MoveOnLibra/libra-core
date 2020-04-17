@@ -25,10 +25,9 @@ class AccountResource(Struct, MoveResource):
     MODULE_NAME: str = AccountConfig.ACCOUNT_MODULE_NAME
     STRUCT_NAME: str = "T"
 
-
     @classmethod
     def get_account_resource_or_default(cls, blob):
-        #TODO: remove this method
+        # TODO: remove this method
         from libra.account_state import AccountState
         if blob:
             try:
@@ -46,8 +45,7 @@ class AccountResource(Struct, MoveResource):
         elif AccountConfig.account_sent_event_path() == query_path:
             return self.sent_events
         else:
-            bail("Unrecognized query path: {}", query_path);
-
+            bail("Unrecognized query path: {}", query_path)
 
 
 # The balance resource held under an account.
@@ -59,7 +57,6 @@ class BalanceResource(Struct, MoveResource):
     @classmethod
     def type_params(cls) -> List[TypeTag]:
         return [AccountConfig.lbr_type_tag()]
-
 
     MODULE_NAME: str = AccountConfig.ACCOUNT_MODULE_NAME
     STRUCT_NAME: str = "Balance"

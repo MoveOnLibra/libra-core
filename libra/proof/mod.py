@@ -8,7 +8,7 @@ def verify_transaction_info(
     ledger_info: LedgerInfo,
     transaction_version: Version,
     transaction_info: TransactionInfo,
-    ledger_info_to_transaction_info_proof#: TransactionAccumulatorProof
+    ledger_info_to_transaction_info_proof  # : TransactionAccumulatorProof
 ):
     ensure(
         transaction_version <= ledger_info.version,
@@ -22,4 +22,3 @@ def verify_transaction_info(
         transaction_info_hash,
         transaction_version
     )
-

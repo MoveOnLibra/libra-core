@@ -10,7 +10,7 @@ from dataclasses import dataclass
 
 @dataclass
 class EventWithProof:
-    transaction_version: Uint64 # Should be `Version`
+    transaction_version: Uint64  # Should be `Version`
     event_index: Uint64
     event: ContractEvent
     proof: EventProof
@@ -64,10 +64,8 @@ class EventWithProof:
             event_index,
         )
 
-
     @classmethod
     def from_proto(cls, event_with_proof):
         ce = ContractEvent.from_proto(event_with_proof.event)
         proof = EventProof.from_proto(event_with_proof.proof)
         return cls(event_with_proof.transaction_version, event_with_proof.event_index, ce, proof)
-

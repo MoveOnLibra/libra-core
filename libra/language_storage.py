@@ -4,6 +4,7 @@ from libra.identifier import Identifier
 from libra.hasher import gen_hasher
 import libra
 
+
 class StructTag(Struct):
     _fields = [
         ('address', Address),
@@ -19,8 +20,8 @@ class StructTag(Struct):
 
     def is_pay_tag(self):
         return self.address == libra.AccountConfig.core_code_address_bytes() and\
-                self.module == libra.AccountConfig.ACCOUNT_MODULE_NAME and\
-                (self.name == "SentPaymentEvent" or self.name == "ReceivedPaymentEvent")
+            self.module == libra.AccountConfig.ACCOUNT_MODULE_NAME and\
+            (self.name == "SentPaymentEvent" or self.name == "ReceivedPaymentEvent")
 
 
 class TypeTag(RustEnum):
@@ -33,7 +34,6 @@ class TypeTag(RustEnum):
         ('Vector', 'libra.language_storage.TypeTag'),
         ('Struct', StructTag)
     ]
-
 
 
 class ResourceKey(Struct):

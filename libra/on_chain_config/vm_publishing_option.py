@@ -10,6 +10,8 @@ from canoser import RustEnum, BytesT, Cursor
 # 3. Both module publishing and custom scripts are allowed.
 # We represent these as an enum instead of a struct since whitelisting and module/script
 # publishing are mutually exclusive options.
+
+
 class VMPublishingOption(RustEnum, OnChainConfig):
     _enums = [
         # Only allow scripts on a whitelist to be run
@@ -25,7 +27,6 @@ class VMPublishingOption(RustEnum, OnChainConfig):
     def deserialize_into_config(cls, v: bytes) -> VMPublishingOption:
         deser = BytesT.decode(Cursor(v))
         return cls.deserialize_default_impl(deser)
-
 
     def is_open(self) -> bool:
         return self.Open

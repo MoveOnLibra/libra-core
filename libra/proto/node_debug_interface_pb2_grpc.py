@@ -14,15 +14,15 @@ class NodeDebugInterfaceStub(object):
             channel: A grpc.Channel.
         """
         self.GetNodeDetails = channel.unary_unary(
-                '/debug.NodeDebugInterface/GetNodeDetails',
-                request_serializer=node__debug__interface__pb2.GetNodeDetailsRequest.SerializeToString,
-                response_deserializer=node__debug__interface__pb2.GetNodeDetailsResponse.FromString,
-                )
+            '/debug.NodeDebugInterface/GetNodeDetails',
+            request_serializer=node__debug__interface__pb2.GetNodeDetailsRequest.SerializeToString,
+            response_deserializer=node__debug__interface__pb2.GetNodeDetailsResponse.FromString,
+        )
         self.GetEvents = channel.unary_unary(
-                '/debug.NodeDebugInterface/GetEvents',
-                request_serializer=node__debug__interface__pb2.GetEventsRequest.SerializeToString,
-                response_deserializer=node__debug__interface__pb2.GetEventsResponse.FromString,
-                )
+            '/debug.NodeDebugInterface/GetEvents',
+            request_serializer=node__debug__interface__pb2.GetEventsRequest.SerializeToString,
+            response_deserializer=node__debug__interface__pb2.GetEventsResponse.FromString,
+        )
 
 
 class NodeDebugInterfaceServicer(object):
@@ -45,54 +45,55 @@ class NodeDebugInterfaceServicer(object):
 
 def add_NodeDebugInterfaceServicer_to_server(servicer, server):
     rpc_method_handlers = {
-            'GetNodeDetails': grpc.unary_unary_rpc_method_handler(
-                    servicer.GetNodeDetails,
-                    request_deserializer=node__debug__interface__pb2.GetNodeDetailsRequest.FromString,
-                    response_serializer=node__debug__interface__pb2.GetNodeDetailsResponse.SerializeToString,
-            ),
-            'GetEvents': grpc.unary_unary_rpc_method_handler(
-                    servicer.GetEvents,
-                    request_deserializer=node__debug__interface__pb2.GetEventsRequest.FromString,
-                    response_serializer=node__debug__interface__pb2.GetEventsResponse.SerializeToString,
-            ),
+        'GetNodeDetails': grpc.unary_unary_rpc_method_handler(
+            servicer.GetNodeDetails,
+            request_deserializer=node__debug__interface__pb2.GetNodeDetailsRequest.FromString,
+            response_serializer=node__debug__interface__pb2.GetNodeDetailsResponse.SerializeToString,
+        ),
+        'GetEvents': grpc.unary_unary_rpc_method_handler(
+            servicer.GetEvents,
+            request_deserializer=node__debug__interface__pb2.GetEventsRequest.FromString,
+            response_serializer=node__debug__interface__pb2.GetEventsResponse.SerializeToString,
+        ),
     }
     generic_handler = grpc.method_handlers_generic_handler(
-            'debug.NodeDebugInterface', rpc_method_handlers)
+        'debug.NodeDebugInterface', rpc_method_handlers)
     server.add_generic_rpc_handlers((generic_handler,))
 
-
  # This class is part of an EXPERIMENTAL API.
+
+
 class NodeDebugInterface(object):
     """Missing associated documentation comment in .proto file"""
 
     @staticmethod
     def GetNodeDetails(request,
-            target,
-            options=(),
-            channel_credentials=None,
-            call_credentials=None,
-            compression=None,
-            wait_for_ready=None,
-            timeout=None,
-            metadata=None):
+                       target,
+                       options=(),
+                       channel_credentials=None,
+                       call_credentials=None,
+                       compression=None,
+                       wait_for_ready=None,
+                       timeout=None,
+                       metadata=None):
         return grpc.experimental.unary_unary(request, target, '/debug.NodeDebugInterface/GetNodeDetails',
-            node__debug__interface__pb2.GetNodeDetailsRequest.SerializeToString,
-            node__debug__interface__pb2.GetNodeDetailsResponse.FromString,
-            options, channel_credentials,
-            call_credentials, compression, wait_for_ready, timeout, metadata)
+                                             node__debug__interface__pb2.GetNodeDetailsRequest.SerializeToString,
+                                             node__debug__interface__pb2.GetNodeDetailsResponse.FromString,
+                                             options, channel_credentials,
+                                             call_credentials, compression, wait_for_ready, timeout, metadata)
 
     @staticmethod
     def GetEvents(request,
-            target,
-            options=(),
-            channel_credentials=None,
-            call_credentials=None,
-            compression=None,
-            wait_for_ready=None,
-            timeout=None,
-            metadata=None):
+                  target,
+                  options=(),
+                  channel_credentials=None,
+                  call_credentials=None,
+                  compression=None,
+                  wait_for_ready=None,
+                  timeout=None,
+                  metadata=None):
         return grpc.experimental.unary_unary(request, target, '/debug.NodeDebugInterface/GetEvents',
-            node__debug__interface__pb2.GetEventsRequest.SerializeToString,
-            node__debug__interface__pb2.GetEventsResponse.FromString,
-            options, channel_credentials,
-            call_credentials, compression, wait_for_ready, timeout, metadata)
+                                             node__debug__interface__pb2.GetEventsRequest.SerializeToString,
+                                             node__debug__interface__pb2.GetEventsResponse.FromString,
+                                             options, channel_credentials,
+                                             call_credentials, compression, wait_for_ready, timeout, metadata)

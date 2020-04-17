@@ -3,8 +3,10 @@ from libra.account_address import Address
 
 EVENT_KEY_LENGTH = Address.LENGTH + 8
 
+
 def random_eventkey():
     return bytes([Uint8.random() for _x in range(EVENT_KEY_LENGTH)])
+
 
 class EventKey(DelegateT):
     delegate_type = BytesT(EVENT_KEY_LENGTH)
@@ -24,14 +26,12 @@ class EventKey(DelegateT):
         return bytes([Uint8.random() for _x in range(EVENT_KEY_LENGTH)])
 
 
-
 class EventHandle(Struct):
     _fields = [
-        ('count', Uint64),#Number of events in the event stream.
-        ('key', EventKey) #The associated globally unique key that is used as the key to the EventStore.
+        ('count', Uint64),  # Number of events in the event stream.
+        ('key', EventKey)  # The associated globally unique key that is used as the key to the EventStore.
     ]
 
     @classmethod
     def random_handle(cls, count):
         return cls(count, EventKey.random())
-

@@ -9,6 +9,7 @@ from canoser import Uint64
 from typing import List, Mapping
 from enum import IntEnum
 
+
 class TransactionStatusTag(IntEnum):
     Discard = 0  # Discard the transaction output
     Keep = 1
@@ -36,19 +37,19 @@ class TransactionStatus:
     def from_vm_status(cls, vm_status: VMStatus):
         mapping = {
             # Any unknown error should be discarded
-            StatusType.Unknown :True,
+            StatusType.Unknown: True,
             # Any error that is a validation status (i.e. an error arising from the prologue)
             # causes the transaction to not be included.
-            StatusType.Validation :True,
+            StatusType.Validation: True,
             # If the VM encountered an invalid internal state, we should discard the transaction.
-            StatusType.InvariantViolation :True,
+            StatusType.InvariantViolation: True,
             # A transaction that publishes code that cannot be verified will be charged.
-            StatusType.Verification :False,
+            StatusType.Verification: False,
             # Even if we are unable to decode the transaction, there should be a charge made to
             # that user's account for the gas fees related to decoding, running the prologue etc.
-            StatusType.Deserialization :False,
+            StatusType.Deserialization: False,
             # Any error encountered during the execution of the transaction will charge gas.
-            StatusType.Execution :False,
+            StatusType.Execution: False,
         }
 
         should_discard = mapping[vm_status.status_type()]
@@ -57,7 +58,6 @@ class TransactionStatus:
             return TransactionStatus(TransactionStatus.Discard, vm_status)
         else:
             return TransactionStatus(TransactionStatus.Keep, vm_status)
-
 
 
 # The output of executing a transaction.
@@ -83,8 +83,6 @@ class TransactionToCommit:
     events: List[ContractEvent]
     gas_used: Uint64
     major_status: StatusCode
-
-
 
 
 # impl TryFrom<crate.proto.types.TransactionToCommit> for TransactionToCommit {
@@ -147,4 +145,3 @@ class TransactionToCommit:
 #         }
 #     }
 # }
-

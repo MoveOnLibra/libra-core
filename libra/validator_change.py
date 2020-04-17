@@ -6,6 +6,7 @@ from libra.crypto_proxies import EpochInfo
 from libra.validator_verifier import VerifyError, ValidatorVerifier
 from dataclasses import dataclass
 
+
 class VerifierType(RustEnum):
     """
     # The verification of the validator change proof starts with some verifier that is trusted by the
@@ -24,7 +25,7 @@ class VerifierType(RustEnum):
                 raise VerifyError("LedgerInfo has unexpected epoch: {} - {}".format(
                     self.value.epoch,
                     ledger_info_with_sigs.ledger_info.epoch
-                    ))
+                ))
             ledger_info_with_sigs.verify_signatures(self.value.verifier)
 
     #  Returns true in case the given epoch is larger than the existing verifier can support.
@@ -40,8 +41,8 @@ class VerifierType(RustEnum):
 # validator changes from the first LedgerInfo's epoch.
 @dataclass
 class ValidatorChangeProof:
-    ledger_info_with_sigs : List[LedgerInfoWithSignatures] #better name is ledger_info_with_sigss
-    more : bool
+    ledger_info_with_sigs: List[LedgerInfoWithSignatures]  # better name is ledger_info_with_sigss
+    more: bool
 
     #  Verify the proof is correctly chained with known epoch and validator verifier
     #  and return the LedgerInfo to start target epoch
@@ -51,7 +52,7 @@ class ValidatorChangeProof:
         if not self.ledger_info_with_sigs:
             raise VerifyError("Empty ValidatorChangeProof")
         for x in self.ledger_info_with_sigs:
-            #TODO: skip stale ledger, is_ledger_info_stale
+            # TODO: skip stale ledger, is_ledger_info_stale
             verifier.verify(x)
             # While the original verification could've been via waypoints, all the next epoch
             # changes are verified using the (already trusted) validator sets.
@@ -60,7 +61,7 @@ class ValidatorChangeProof:
             if not ledger_info.has_next_validator_set():
                 raise VerifyError("LedgerInfo doesn't carry ValidatorSet")
             vv = ValidatorVerifier.from_validator_set(validator_set.value)
-            epoch_info = EpochInfo(ledger_info.epoch+1, vv)
+            epoch_info = EpochInfo(ledger_info.epoch + 1, vv)
             verifier = VerifierType('TrustedVerifier', epoch_info)
         return self.ledger_info_with_sigs[-1]
 
@@ -68,4 +69,3 @@ class ValidatorChangeProof:
     def from_proto(cls, proto):
         sigss = [LedgerInfoWithSignatures.from_proto(x) for x in proto.ledger_info_with_sigs]
         return cls(sigss, proto.more)
-
