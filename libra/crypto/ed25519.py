@@ -1,4 +1,4 @@
-from canoser import Struct, Uint64, BytesT, DelegateT
+from canoser import BytesT, DelegateT
 from nacl.signing import SigningKey
 from nacl.public import PrivateKey
 from typing import Tuple

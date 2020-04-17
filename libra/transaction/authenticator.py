@@ -7,6 +7,7 @@ from libra.rustlib import ensure
 from canoser import Uint8, Struct, RustEnum
 from enum import IntEnum
 from nacl.signing import VerifyKey
+from typing import Union
 
 
 # A `TransactionAuthenticator` is an an abstraction of a signature scheme. It must know:
@@ -55,7 +56,7 @@ class TransactionAuthenticator(RustEnum):
         elif self.MultiEd25519:
             return Scheme.MultiEd25519
         else:
-            raise AssertsionError("unreachable!")
+            raise AssertionError("unreachable!")
 
 
     # Create a single-signature ed25519 authenticator
@@ -87,7 +88,7 @@ class TransactionAuthenticator(RustEnum):
         elif self.MultiEd25519:
             self.value.signature.verify(message, self.value.public_key)
         else:
-            raise AssertsionError("unreachable!")
+            raise AssertionError("unreachable!")
 
 
     # Return the raw bytes of `self.public_key`

@@ -1,5 +1,4 @@
 from nacl.signing import SigningKey
-from libra.hasher import new_sha3_256
 from enum import Enum
 from libra.account_config import AccountConfig
 from libra.account_address import Address
@@ -38,7 +37,7 @@ class Account:
             assert 32 == data[0]
             assert 32 == data[33]
             private_key = data[1:33]
-            public_key = data[34:]
+            # public_key = data[34:]
             return cls.faucet_account(private_key)
 
     @classmethod

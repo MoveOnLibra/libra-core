@@ -1,5 +1,5 @@
 from __future__ import annotations
-from canoser import Struct, Uint8, RustEnum
+from canoser import Struct, RustEnum
 from libra.access_path import AccessPath
 
 

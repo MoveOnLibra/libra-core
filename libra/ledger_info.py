@@ -1,4 +1,4 @@
-from canoser import Struct, Uint8, BytesT, RustEnum
+from canoser import Struct, BytesT, RustEnum
 from libra.account_address import Address
 from libra.block_info import BlockInfo, OptionValidatorSet
 from libra.hasher import HashValue, gen_hasher

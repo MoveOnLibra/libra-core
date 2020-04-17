@@ -1,8 +1,7 @@
 from __future__ import annotations
-from libra.hasher import HashValue
 from libra.proof.definition import LeafCount, MAX_ACCUMULATOR_LEAVES, MAX_ACCUMULATOR_PROOF_DEPTH
 from libra.proof.mod import ensure
-from canoser import DelegateT, Uint64, Uint32
+from canoser import Uint64, Uint32
 from enum import Enum
 from dataclasses import dataclass
 from libra.rustlib import trailing_zeros, leading_zeros, count_ones
@@ -481,7 +480,7 @@ def smear_ones_for_u64(v: Uint64) -> Uint64:
 #     00010010100 n=1
 #     00010010000 n=3
 # ```
-def turn_off_right_most_n_bits(v: Uint64, n: u32) -> Uint64:
+def turn_off_right_most_n_bits(v: Uint64, n: Uint32) -> Uint64:
     assert n < 64
     return (v >> n) << n
 

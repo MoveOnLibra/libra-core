@@ -1,4 +1,4 @@
-from canoser import Struct, Uint64, Uint8, RustEnum
+from canoser import Struct, Uint64, RustEnum
 from libra.hasher import gen_hasher
 from libra.language_storage import TypeTag
 from libra.account_config import SentPaymentEvent, ReceivedPaymentEvent

@@ -2,7 +2,6 @@ from canoser import DelegateT, Struct
 from libra.account_config import AccountConfig
 from libra.event import EventKey, EventHandle
 from libra.discovery_info import DiscoveryInfo
-from libra.on_chain_config.validator_set import ValidatorSet
 from libra.access_path import AccessPath
 from libra.move_resource import MoveResource
 

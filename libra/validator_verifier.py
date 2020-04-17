@@ -1,4 +1,4 @@
-from canoser import Struct, Uint64, Uint8, BytesT
+from canoser import Struct, Uint64, BytesT
 from libra.crypto.ed25519 import ED25519_PUBLIC_KEY_LENGTH
 from libra.account_address import Address
 from nacl.signing import VerifyKey

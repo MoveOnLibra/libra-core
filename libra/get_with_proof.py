@@ -1,3 +1,4 @@
+# flake8: noqa
 from __future__ import annotations
 from libra.ledger_info import LedgerInfo, LedgerInfoWithSignatures
 from libra.crypto_proxies import EpochInfo
@@ -200,7 +201,7 @@ def verify_update_to_latest_ledger_response(
         epoch_change_li = validator_change_proof.verify(verifier_type)
         if not epoch_change_li.ledger_info.has_next_validator_set():
             raise VerifyError("No ValidatorSet in EpochProof")
-        
+
         vset = epoch_change_li.ledger_info.next_validator_set.value
         vv = ValidatorVerifier.from_validator_set(vset)
         new_epoch_info = EpochInfo(epoch_change_li.ledger_info.epoch + 1, vv)

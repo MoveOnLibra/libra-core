@@ -9,9 +9,9 @@ from libra.proof.mod import verify_transaction_info
 from libra.account_state_blob import AccountStateBlob
 from libra.transaction import TransactionInfo, Version
 from libra.ledger_info import LedgerInfo
-from canoser import Uint64, Uint8
-from dataclasses import dataclass, field
-from typing import List, Optional, Callable, Tuple
+from canoser import Uint64
+from dataclasses import dataclass
+from typing import List, Optional, Tuple
 import more_itertools
 from libra.proto_helper import ProtoHelper
 

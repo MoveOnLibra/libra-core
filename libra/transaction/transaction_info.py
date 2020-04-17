@@ -1,6 +1,5 @@
 from canoser import Struct, Uint64
 from libra.hasher import gen_hasher, HashValue
-from libra.access_path import AccessPath
 
 
 class TransactionInfo(Struct):

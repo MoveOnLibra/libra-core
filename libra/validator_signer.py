@@ -3,7 +3,6 @@ from libra.account_address import Address
 from libra.crypto.ed25519 import Ed25519PrivateKey, Ed25519PublicKey, Ed25519Signature
 from libra.hasher import HashValue
 from nacl.signing import SigningKey
-from nacl.public import PrivateKey
 from dataclasses import dataclass
 
 # ValidatorSigner associates an author with public and private keys with helpers for signing and

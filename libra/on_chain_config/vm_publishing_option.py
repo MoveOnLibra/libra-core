@@ -2,7 +2,7 @@ from __future__ import annotations
 from libra.on_chain_config.on_chain_config import OnChainConfig
 from libra.hasher import HashValue
 from libra.transaction import SCRIPT_HASH_LENGTH
-from canoser import RustEnum, Struct, Uint64, BytesT
+from canoser import RustEnum, BytesT, Cursor
 
 # Defines and holds the publishing policies for the VM. There are three possible configurations:
 # 1. No module publishing, only whitelisted scripts are allowed.

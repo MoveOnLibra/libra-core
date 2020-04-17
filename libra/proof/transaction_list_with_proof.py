@@ -1,12 +1,11 @@
 from libra.proof.definition import TransactionListProof
 from libra.proof.accumulator import InMemoryAccumulator
 from libra.hasher import EventAccumulatorHasher
-from libra.rustlib import ensure, bail
+from libra.rustlib import ensure
 from libra.transaction import Transaction, Version
 from libra.contract_event import ContractEvent
 from libra.ledger_info import LedgerInfo
-from canoser import Uint64
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 from typing import List, Optional
 from libra.proto_helper import ProtoHelper
 

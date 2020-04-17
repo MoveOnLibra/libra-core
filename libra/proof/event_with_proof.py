@@ -1,7 +1,6 @@
-from libra.rustlib import ensure, bail
+from libra.rustlib import ensure
 from libra.proof.definition import EventProof
 from libra.contract_event import ContractEvent
-from libra.hasher import EventAccumulatorHasher
 from libra.ledger_info import LedgerInfo
 from libra.event import EventKey
 from libra.transaction import Version

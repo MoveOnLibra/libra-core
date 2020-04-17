@@ -2,9 +2,9 @@ from libra.account_address import Address
 from libra.account_state_blob import AccountStateBlob
 from libra.transaction import Version
 from libra.proof.definition import AccountStateProof
-from libra.rustlib import ensure, bail
-from dataclasses import dataclass, field
-from typing import List, Optional
+from libra.rustlib import ensure
+from dataclasses import dataclass
+from typing import Optional
 
 @dataclass
 class AccountStateWithProof:

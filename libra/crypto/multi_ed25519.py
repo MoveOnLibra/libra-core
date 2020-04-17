@@ -1,11 +1,19 @@
 from __future__ import annotations
 from libra.crypto.ed25519 import (
     Ed25519PrivateKey, Ed25519PublicKey, Ed25519Signature, ED25519_PRIVATE_KEY_LENGTH,
-    ED25519_PUBLIC_KEY_LENGTH, ED25519_SIGNATURE_LENGTH
+    ED25519_PUBLIC_KEY_LENGTH, ED25519_SIGNATURE_LENGTH,
+    _generate_keypair_by_private_key
 )
 from libra.hasher import HashValue
 from canoser import Uint8, Uint32, Struct
-from libra.rustlib import flatten
+from libra.rustlib import flatten, usize
+from typing import List, Tuple, Optional
+from nacl.signing import VerifyKey
+
+class CryptoMaterialError(Exception):
+    def __init__(self, t:str, message:str = None):
+        self.t = t
+        self.message = message
 
 # This module provides an API for the accountable threshold multi-sig PureEdDSA signature scheme
 # over the ed25519 twisted Edwards curve as defined in [RFC8032](https://tools.ietf.org/html/rfc8032).
@@ -32,9 +40,9 @@ class MultiEd25519PrivateKey(Struct):
     ) -> MultiEd25519PrivateKey:
         num_of_keys = private_keys.__len__()
         if threshold == 0 or num_of_keys < threshold:
-            raise CryptoMaterialError.ValidationError()
+            raise CryptoMaterialError('ValidationError')
         elif num_of_keys > MAX_NUM_OF_KEYS:
-            raise CryptoMaterialError.WrongLengthError()
+            raise CryptoMaterialError('WrongLengthError')
         else:
             return MultiEd25519PrivateKey(
                 private_keys,
@@ -91,9 +99,9 @@ class MultiEd25519PublicKey(Struct):
         num_of_keys = public_keys.__len__()
         #TODO: check the same rules when deserialize
         if threshold == 0 or num_of_keys < threshold:
-            raise CryptoMaterialError.ValidationError()
+            raise CryptoMaterialError('ValidationError')
         elif num_of_keys > MAX_NUM_OF_KEYS:
-            raise CryptoMaterialError.WrongLengthError()
+            raise CryptoMaterialError('WrongLengthError')
         else:
             return MultiEd25519PublicKey(
                 public_keys,
@@ -138,7 +146,7 @@ class MultiEd25519Signature(Struct):
     ) -> MultiEd25519Signature:
         num_of_sigs = signatures.__len__()
         if num_of_sigs == 0 or num_of_sigs > MAX_NUM_OF_KEYS:
-            raise CryptoMaterialError.ValidationError()
+            raise CryptoMaterialError('ValidationError')
 
         sorted_signatures = signatures.sort(key = lambda x: x[1])
         bitmap = [0] * BITMAP_NUM_OF_BYTES
@@ -152,13 +160,13 @@ class MultiEd25519Signature(Struct):
             if i < MAX_NUM_OF_KEYS:
                 # if an index has been set already (thus, there is a duplicate).
                 if bitmap_get_bit(bitmap, i):
-                    raise CryptoMaterialError.BitVecError(
+                    raise CryptoMaterialError('BitVecError',
                         "Duplicate signature index",
                     )
                 else:
                     bitmap_set_bit(bitmap, i)
             else:
-                raise CryptoMaterialError.BitVecError(
+                raise CryptoMaterialError('BitVecError',
                     "Signature index is out of range",
                 )
 
@@ -194,10 +202,10 @@ class MultiEd25519Signature(Struct):
     ) -> None:
         last_bit = bitmap_last_set_bit(self.bitmap)
         if last_bit == None or last_bit > public_key.length():
-            raise CryptoMaterialError.BitVecError("Signature index is out of range")
+            raise CryptoMaterialError('BitVecError', "Signature index is out of range")
 
         if bitmap_count_ones(self.bitmap) < public_key.threshold:
-            raise CryptoMaterialError.BitVecError(
+            raise CryptoMaterialError('BitVecError',
                     "Not enough signatures to meet the threshold"
                 )
 

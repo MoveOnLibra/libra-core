@@ -1,11 +1,13 @@
 from __future__ import annotations
 from libra.access_path import AccessPath, Accesses
 from libra.account_address import Address
-from libra.account_config import AccountConfig, CORE_CODE_ADDRESS
-from libra.event import EventHandle, EventKey
+from libra.account_config import CORE_CODE_ADDRESS
+from libra.event import EventHandle
 from libra.language_storage import StructTag, TypeTag
 from libra.move_resource import MoveResource
-from canoser import Struct, Uint64, Uint8
+from libra.rustlib import bail
+from canoser import Struct, Uint64
+from typing import Optional
 
 # To register an on-chain config in Rust:
 # 1. Implement the `OnChainConfig` trait for the Rust representation of the config
@@ -32,7 +34,7 @@ class OnChainConfigPayload(Struct):
 
     def get(self, T: OnChainConfig) -> OnChainConfig:
         if T.CONFIG_ID not in self.configs:
-            format_err("[on-chain cfg] config not in payload")
+            bail("[on-chain cfg] config not in payload")
 
         bytes = self.configs[T.CONFIG_ID]
         return T.deserialize_into_config(bytes)

@@ -1,4 +1,4 @@
-from canoser import Struct, Uint8, Uint64
+from canoser import Struct, Uint64
 from libra.account_address import Address
 
 class ValidatorInfo(Struct):

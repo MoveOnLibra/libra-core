@@ -1,6 +1,6 @@
-from canoser import RustEnum, Uint64, Uint8
+from canoser import RustEnum, Uint64
 from libra.account_address import Address, parse_address
-from libra.crypto.ed25519 import ED25519_PUBLIC_KEY_LENGTH, ED25519_SIGNATURE_LENGTH
+from libra.crypto.ed25519 import ED25519_PUBLIC_KEY_LENGTH
 
 def normalize_public_key(public_key):
     if isinstance(public_key, list):

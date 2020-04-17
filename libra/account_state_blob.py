@@ -1,5 +1,5 @@
 from libra.hasher import gen_hasher
-from canoser import Struct, Uint8
+from canoser import Struct
 
 
 class AccountStateBlob(Struct):

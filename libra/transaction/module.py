@@ -1,4 +1,4 @@
-from canoser import Struct, Uint8
+from canoser import Struct
 
 class Module(Struct):
     _fields = [

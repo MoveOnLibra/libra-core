@@ -1,4 +1,4 @@
-from canoser import Struct, Uint64, Uint8
+from canoser import Struct, Uint64
 from libra.language_storage import StructTag, TypeTag
 from libra.account_address import ADDRESS_LENGTH, HEX_ADDRESS_LENGTH, Address
 
@@ -87,6 +87,7 @@ class AccountConfig:
 
     @classmethod
     def all_config(cls):
+        from libra.account_resource import AccountResource
         return {
             "core_code_address" : AccountConfig.core_code_address(),
             "association_address" : AccountConfig.association_address(),

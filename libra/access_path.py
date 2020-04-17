@@ -1,7 +1,6 @@
 from __future__ import annotations
-from canoser import Struct, Uint8, Uint64, RustEnum, DelegateT
+from canoser import Struct, Uint64, RustEnum, DelegateT
 from libra.account_address import Address
-from libra.account_config import AccountConfig
 from libra.language_storage import ModuleId, StructTag, ResourceKey
 from typing import List
 

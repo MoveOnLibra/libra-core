@@ -1,7 +1,6 @@
 from __future__ import annotations
-from canoser import Struct, Uint8, Uint64
+from canoser import Struct
 from libra.event import EventHandle
-import libra
 from libra.account_config import AccountConfig
 from libra.account_resource import AccountResource, BalanceResource
 from libra.block_metadata import NEW_BLOCK_EVENT_PATH
@@ -11,9 +10,8 @@ from libra.on_chain_config import ConfigurationResource, ValidatorSet
 from libra.validator_config import ValidatorConfigResource
 from libra.libra_timestamp import LibraTimestampResource
 from libra.block_metadata import LibraBlockResource
-
-from io import StringIO
-from typing import Optional
+from libra.rustlib import bail
+from typing import Optional, Any
 
 
 class AccountState(Struct):
@@ -34,7 +32,7 @@ class AccountState(Struct):
         else:
             return None
 
-    def get_resource(self, path: bytes, T) -> Optional[obj]:
+    def get_resource(self, path: bytes, T: Any) -> Optional[Any]:
         resource = self.get(path)
         if resource:
             return T.deserialize(resource)
@@ -95,7 +93,7 @@ class AccountState(Struct):
         elif AccountConfig.account_sent_event_path() == query_path:
             return self.get_account_resource().sent_events
 
-        elif DISCOVERY_SET_CHANGE_EVENT_PATH == query_path:
+        elif DiscoverySet.change_event_path() == query_path:
             return self.get_discovery_set_resource().change_events
 
         elif NEW_BLOCK_EVENT_PATH == query_path:
@@ -116,12 +114,12 @@ class AccountState(Struct):
     def is_empty(self) -> bool:
         return not self.ordered_map
 
-
-    def try_from(
+    @classmethod
+    def try_from(cls,
         account_resource: AccountResource,
         balance_resource:BalanceResource,
     ) -> AccountState:
         btree_map = {}
-        btree_map[ACCOUNT_RESOURCE_PATH] = account_resource.serialize()
-        btree_map[BALANCE_RESOURCE_PATH] = balance_resource.serialize()
+        btree_map[AccountResource.resource_path()] = account_resource.serialize()
+        btree_map[BalanceResource.resource_path()] = balance_resource.serialize()
         return cls(btree_map)

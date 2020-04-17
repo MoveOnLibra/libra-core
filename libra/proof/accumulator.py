@@ -3,8 +3,8 @@ from libra.proof.definition import LeafCount, MAX_ACCUMULATOR_LEAVES
 from libra.rustlib import ensure
 from libra.proof.position import count_ones, trailing_zeros
 from libra.hasher import HashValue, ACCUMULATOR_PLACEHOLDER_HASH
-from dataclasses import dataclass, field
-from typing import List, Optional
+from dataclasses import dataclass
+from typing import List
 
 # This module implements an in-memory Merkle Accumulator that is similar to what we use in
 # storage. This accumulator will only store a small portion of the tree -- for any subtree that

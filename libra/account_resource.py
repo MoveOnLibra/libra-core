@@ -1,10 +1,9 @@
-from canoser import Struct, Uint8, Uint64
+from canoser import Struct, Uint64
 from libra.event import EventHandle
 from libra.account_config import AccountConfig
 from libra.move_resource import MoveResource
 from libra.language_storage import TypeTag
 from libra.rustlib import bail
-from io import StringIO
 from typing import List
 
 

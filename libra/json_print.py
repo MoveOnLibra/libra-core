@@ -24,7 +24,7 @@ def to_json_serializable(obj):
                 if isinstance(value, list):
                     value = [getattr(x, components[1]) for x in value]
                 else:
-                    value = getattr(x, components[1])
+                    value = getattr(value, components[1])
             maps[name] = value
         return maps
     elif hasattr(obj, "ListFields"):

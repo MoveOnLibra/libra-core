@@ -1,8 +1,6 @@
 from canoser import DelegateT, Uint8, BytesT
-from libra.hasher import gen_hasher, HashValue
-
-import hashlib, random
-from datetime import datetime
+from libra.hasher import gen_hasher
+import random
 
 ADDRESS_LENGTH = 16
 HEX_ADDRESS_LENGTH = ADDRESS_LENGTH * 2
@@ -18,6 +16,7 @@ class Address(DelegateT):
 
     @classmethod
     def from_public_key(cls, pubkey):
+        from libra.transaction.authenticator import AuthenticationKey
         return AuthenticationKey.ed25519(pubkey).derived_address()
 
     @classmethod

@@ -5,6 +5,8 @@ from libra.language_storage import StructTag, TypeTag
 # from move_core_types.identifier import IdentStr, Identifier
 from typing import List
 
+Identifier = str
+
 class MoveResource:
     MODULE_NAME: str
     STRUCT_NAME: str

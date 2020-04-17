@@ -1,3 +1,4 @@
+# flake8: noqa
 from libra.proof.merkle_tree import (
     MerkleTreeInternalNode, SparseMerkleInternalNode, SparseMerkleLeafNode)
 from libra.proof.definition import (

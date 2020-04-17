@@ -1,9 +1,8 @@
 from __future__ import annotations
-from canoser import Struct, Uint8, BytesT
-from libra.hasher import gen_hasher, HashValue
+from canoser import Struct
+from libra.hasher import gen_hasher
 from libra.transaction.raw_transaction import RawTransaction
 from libra.transaction.authenticator import TransactionAuthenticator
-from libra.crypto.ed25519 import ED25519_PUBLIC_KEY_LENGTH, ED25519_SIGNATURE_LENGTH
 from dataclasses import dataclass
 
 class SignedTransaction(Struct):

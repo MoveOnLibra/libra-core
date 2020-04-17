@@ -1,10 +1,9 @@
-from canoser import Struct, RustOptional, ArrayT, MapT
+from canoser import Struct, ArrayT, MapT
 from canoser.struct import TypedProperty
 from dataclasses import fields, is_dataclass
 import importlib
 import typing
-import libra
-from libra.proto import *
+#from libra.proto import *
 
 
 proto_files = [
@@ -81,7 +80,7 @@ class ProtoHelper:
                 continue
             dest = getattr(proto, fname)
             if isinstance(ftype, ArrayT):
-                dest.append(ProtoHelper.to_proto(x))
+                dest.append(ProtoHelper.to_proto(value))
             elif isinstance(ftype, MapT):
                 breakpoint()
             else:

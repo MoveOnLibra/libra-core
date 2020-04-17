@@ -1,4 +1,4 @@
-from canoser import Struct, Uint8
+from canoser import Struct
 from libra.transaction.transaction_argument import TransactionArgument, normalize_public_key
 from libra.bytecode import bytecodes
 from libra.account_address import Address

@@ -1,6 +1,6 @@
 from canoser import Struct, Uint64
 from libra.transaction import Version
-from libra.hasher import HashValue
+from libra.hasher import HashValue, gen_hasher
 from libra.on_chain_config.validator_set import ValidatorSet
 
 # The delimiter between the version and the hash.

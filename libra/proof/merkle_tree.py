@@ -2,8 +2,6 @@ from libra.hasher import (
     HashValue, gen_hasher,
     SparseMerkleInternalHasher, TransactionAccumulatorHasher,
     EventAccumulatorHasher, TestOnlyHasher)
-from libra.contract_event import ContractEvent
-import more_itertools
 from dataclasses import dataclass, field
 from typing import Callable
 

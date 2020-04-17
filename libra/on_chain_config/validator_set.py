@@ -1,10 +1,9 @@
-from canoser import RustEnum, Struct, Uint64
+from canoser import RustEnum, Struct
 from libra.validator_info import ValidatorInfo
 from libra.account_config import AccountConfig
-from libra.account_address import Address
 from libra.language_storage import StructTag
 from libra.access_path import AccessPath
-from libra.event import EventKey, EventHandle
+from libra.event import EventKey
 from libra.on_chain_config.on_chain_config import OnChainConfig
 
 class ConsensusScheme(RustEnum):

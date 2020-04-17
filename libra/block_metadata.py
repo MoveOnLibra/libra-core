@@ -1,12 +1,9 @@
-from canoser import Struct, Uint64, Uint8, BytesT
+from canoser import Struct, Uint64
 from libra.hasher import HashValue
 from libra.account_address import Address
 from libra.account_config import AccountConfig
 from libra.event import EventKey, EventHandle
-from libra.access_path import AccessPath, Accesses
-from libra.language_storage import StructTag
 from libra.move_resource import MoveResource
-from libra.crypto.ed25519 import ED25519_SIGNATURE_LENGTH
 from typing import List
 
 
