@@ -13,6 +13,10 @@ class MoveResource:
     STRUCT_NAME: str
 
     @classmethod
+    def module_identifier(cls) -> Identifier:
+        return cls.MODULE_NAME
+
+    @classmethod
     def struct_identifier(cls) -> Identifier:
         return cls.STRUCT_NAME
 

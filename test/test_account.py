@@ -12,8 +12,8 @@ def test_faucet_account(capsys):
     json_print(faucet_account)
     assert capsys.readouterr().out == """{
     "address": "0000000000000000000000000a550c18",
-    "private_key": "99622b3e626182ca29cc0c759d4f639b97ad1cee5ec12cab2c9c0d1120c6f8e7",
-    "public_key": "78153472e480e0222ce49ac048e9c915bcfb4e469cb3888d69da30f653a911b9",
-    "auth_key": "5ce7f497ed9d5959fede6f73c4a5b53144a8a4a631a7faf6fdfe390f55688f2e"
+    "private_key": "48942ab2b0b2d4a671bbb5a579b3dde8a2b303a548185899dd2ae4accdbd809d",
+    "public_key": "340db4a117a835557b11c6f41962dc118df9b84d4ef78757614d77f4265ca210",
+    "auth_key": "99d62d1c5bb90cee62c7eee5a6027bf0010054b89da104ab1c52b29f4eb60ab9"
 }
 """

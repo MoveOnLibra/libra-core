@@ -54,7 +54,15 @@ class AccountState(Struct):
         return self.get_move_resource(AccountResource)
 
     def get_balance_resource(self) -> Optional[BalanceResource]:
-        return self.get_move_resource(BalanceResource)
+        account_resource = self.get_account_resource()
+        if account_resource is None:
+            return None
+
+        code = account_resource.balance_currency_code
+        currency_type_tag = AccountConfig.type_tag_for_currency_code(code)
+        # TODO: update this to use BalanceResource::resource_path once that takes type
+        # parameters
+        return self.get_resource(BalanceResource.access_path_for(currency_type_tag), BalanceResource)
 
     def get_configuration_resource(self) -> Optional[ConfigurationResource]:
         return self.get_move_resource(ConfigurationResource)

@@ -53,7 +53,7 @@ class Script(Struct):
             TransactionArgument('U8Vector', auth_key_prefix),
             TransactionArgument('U64', micro_libra)
         ]
-        return Script(code, [], args)
+        return Script(code, [AccountConfig.lbr_type_tag()], args)
 
     @classmethod
     def gen_create_account_script(cls, fresh_address, auth_key_prefix, initial_balance=0):
@@ -64,7 +64,7 @@ class Script(Struct):
             TransactionArgument('U8Vector', auth_key_prefix),
             TransactionArgument('U64', initial_balance)
         ]
-        return Script(code, [], args)
+        return Script(code, [AccountConfig.lbr_type_tag()], args)
 
     @classmethod
     def gen_rotate_auth_key_script(cls, public_key):
