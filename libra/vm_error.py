@@ -176,6 +176,16 @@ class StatusCode(IntEnum):
     # gas price set in the VM.
     GAS_UNIT_PRICE_ABOVE_MAX_BOUND = 16
 
+    # Gas specifier submitted is either malformed (not a valid identifier),
+    # or does not refer to an accepted gas specifier
+    INVALID_GAS_SPECIFIER = 17
+    # The sending account is frozen
+    SENDING_ACCOUNT_FROZEN = 18
+    # Unable to deserialize the account blob
+    UNABLE_TO_DESERIALIZE_ACCOUNT = 19
+    # The currency info was unable to be found
+    CURRENCY_INFO_DOES_NOT_EXIST = 20
+
     # When a code module/script is published it is verified. These are the
     # possible errors that can arise from the verification process.
     # Verification Errors: 1000-1999
@@ -264,6 +274,9 @@ class StatusCode(IntEnum):
     UNUSED_TYPE_SIGNATURE = 1079
     ZERO_SIZED_STRUCT = 1080
     LINKER_ERROR = 1081
+    # Constant's verification errors
+    INVALID_CONSTANT_TYPE = 1082
+    MALFORMED_CONSTANT_DATA = 1083
 
     # These are errors that the VM might raise if a violation of internal
     # invariants takes place.
@@ -281,6 +294,7 @@ class StatusCode(IntEnum):
     EVENT_KEY_MISMATCH = 2010
     UNREACHABLE = 2011
     VM_STARTUP_FAILURE = 2012
+    NATIVE_FUNCTION_INTERNAL_INCONSISTENCY = 2013
 
     # Errors that can arise from binary decoding (deserialization)
     # Deserializtion Errors: 3000-3999
@@ -296,6 +310,15 @@ class StatusCode(IntEnum):
     UNEXPECTED_SIGNATURE_TYPE = 3009
     DUPLICATE_TABLE = 3010
     VERIFIER_INVARIANT_VIOLATION = 3011
+    UNKNOWN_NOMINAL_RESOURCE = 3012
+    UNKNOWN_KIND = 3013
+    UNKNOWN_NATIVE_STRUCT_FLAG = 3014
+    BAD_ULEB_U16 = 3015
+    BAD_ULEB_U32 = 3016
+    BAD_U16 = 3017
+    BAD_U32 = 3018
+    BAD_U64 = 3019
+    BAD_U128 = 3020
 
     # Errors that can arise at runtime
     # Runtime Errors: 4000-4999
