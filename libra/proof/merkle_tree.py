@@ -4,7 +4,7 @@ from libra.hasher import (
     EventAccumulatorHasher, TestOnlyHasher)
 from dataclasses import dataclass, field
 from typing import Callable
-
+from canoser import Struct
 
 @dataclass
 class MerkleTreeInternalNode:
@@ -43,10 +43,11 @@ class TstAccumulatorInternalNode(MerkleTreeInternalNode):
     hasher: Callable[[], object] = field(default=TestOnlyHasher)
 
 
-@dataclass
-class SparseMerkleLeafNode:
-    key: HashValue
-    value_hash: HashValue
+class SparseMerkleLeafNode(Struct):
+    _fields = [
+        ('key', HashValue),
+        ('value_hash', HashValue)
+    ]
 
     def hash(self):
         shazer = gen_hasher(b"SparseMerkleLeafNode::libra_types::proof")

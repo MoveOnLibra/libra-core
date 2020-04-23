@@ -34,14 +34,13 @@ class AccountResource(Struct, MoveResource):
         # TODO: remove this method
         from libra.account_state import AccountState
         if blob:
-            try:
-                omap = AccountState.deserialize(blob.blob).ordered_map
-                resource = omap[AccountResource.resource_path()]
+            omap = AccountState.deserialize(blob.blob).ordered_map
+            path = AccountResource.resource_path()
+            if path in omap:
+                resource = omap[path]
                 return cls.deserialize(resource)
-            except Exception:
-                return cls()
-        else:
-            return cls()
+
+        return cls()
 
     def get_event_handle_by_query_path(self, query_path):
         if AccountConfig.account_received_event_path() == query_path:

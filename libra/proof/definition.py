@@ -135,7 +135,7 @@ class SparseMerkleProof:
     #           corresponding account blob.
     #     - If this is `None`, this is also a non-inclusion proof which indicates the subtree is
     #       empty.
-    leaf: Optional[Tuple[HashValue, HashValue]]
+    leaf: Optional[SparseMerkleLeafNode]
 
     # All siblings in this proof, including the default ones. Siblings are ordered from the bottom
     # level to the root level.
@@ -157,7 +157,7 @@ class SparseMerkleProof:
             if len(proto_leaf) == HashValue.LENGTH * 2:
                 key = proto_leaf[0:HashValue.LENGTH]
                 value_hash = proto_leaf[HashValue.LENGTH:HashValue.LENGTH * 2]
-                leaf = (key, value_hash)
+                leaf = SparseMerkleLeafNode(key, value_hash)
             else:
                 bail(
                     "Mailformed proof. Leaf has {} bytes. Expect 0 or {} bytes.",
@@ -188,7 +188,8 @@ class SparseMerkleProof:
         )
         if self.leaf is not None:
             if element_blob is not None:
-                proof_key, proof_value_hash = self.leaf
+                proof_key = self.leaf.key
+                proof_value_hash = self.leaf.value_hash
                 # This is an inclusion proof, so the key and value hash provided in the proof should
                 # match element_key and element_value_hash.
                 # `siblings` should prove the route from the leaf node to the root.
@@ -206,7 +207,7 @@ class SparseMerkleProof:
                     hashv
                 )
             else:
-                proof_key, _proof_value_hash = self.leaf
+                proof_key = self.leaf.key
                 # This is a non-inclusion proof.
                 # The proof intends to show that if a leaf node representing `element_key` is inserted,
                 # it will break a currently existing leaf node represented by `proof_key` into a
@@ -230,7 +231,8 @@ class SparseMerkleProof:
                 # position. `sibling` should prove the route from this empty position to the root.
                 pass
         if self.leaf is not None:
-            key, value_hash = self.leaf
+            key = self.leaf.key
+            value_hash = self.leaf.value_hash
             current_hash = SparseMerkleLeafNode(key, value_hash).hash()
         else:
             current_hash = bytes(SPARSE_MERKLE_PLACEHOLDER_HASH)
