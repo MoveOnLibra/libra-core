@@ -21,7 +21,6 @@ class RawTransaction(Struct):
         ('payload', TransactionPayload),
         ('max_gas_amount', Uint64),
         ('gas_unit_price', Uint64),
-        ('gas_specifier', str),
         ('expiration_time', Uint64)
     ]
 
@@ -38,7 +37,6 @@ class RawTransaction(Struct):
             # Since write-set transactions bypass the VM, these fields aren't relevant.
             0, 0,
             # Write-set transactions are special and important and shouldn't expire.
-            AccountConfig.LBR_NAME,
             Uint64.max_value
         )
 
@@ -62,7 +60,6 @@ class RawTransaction(Struct):
             payload,
             max_gas_amount,
             gas_unit_price,
-            AccountConfig.LBR_NAME,
             int(datetime.now().timestamp()) + txn_expiration
         )
 
