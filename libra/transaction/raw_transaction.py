@@ -1,6 +1,5 @@
 from canoser import Struct, Uint64
 from datetime import datetime
-from libra.account_config import AccountConfig
 from libra.account_address import Address
 from libra.hasher import gen_hasher
 from libra.transaction.transaction_payload import TransactionPayload

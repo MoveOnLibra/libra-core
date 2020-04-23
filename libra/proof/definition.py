@@ -11,7 +11,7 @@ from libra.transaction import TransactionInfo, Version
 from libra.ledger_info import LedgerInfo
 from canoser import Uint64
 from dataclasses import dataclass
-from typing import List, Optional, Tuple
+from typing import List, Optional
 import more_itertools
 from libra.proto_helper import ProtoHelper
 
