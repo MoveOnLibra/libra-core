@@ -28,7 +28,7 @@ class MoveResource:
     def struct_tag(cls) -> StructTag:
         return StructTag(
             AccountConfig.core_code_address_bytes(),
-            cls.MODULE_NAME,
+            cls.module_identifier(),
             cls.struct_identifier(),
             cls.type_params()
         )

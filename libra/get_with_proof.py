@@ -312,10 +312,9 @@ def verify_get_events_by_access_path_resp(
     proof_of_latest_event: AccountStateWithProof
 ):
     proof_of_latest_event.verify(ledger_info, ledger_info.version, req_access_path.address)
-    account_resource = AccountResource.get_account_resource_or_default(proof_of_latest_event.blob)
-    event_handle = account_resource.get_event_handle_by_query_path(req_access_path.path)
-    expected_event_key = event_handle.key
-    expected_seq_nums = gen_events_resp_idxs(event_handle.count,
+    (expected_event_key_opt, seq_num_upper_bound) =\
+            proof_of_latest_event.get_event_key_and_count_by_query_path(req_access_path.path)
+    expected_seq_nums = gen_events_resp_idxs(seq_num_upper_bound,
                                              req_start_seq_num, req_ascending, req_limit)
     ensure(
         len(expected_seq_nums) == len(events_with_proof),
@@ -323,15 +322,18 @@ def verify_get_events_by_access_path_resp(
         len(expected_seq_nums),
         len(events_with_proof)
     )
-    zipped = zip(events_with_proof, expected_seq_nums)
-    for event_with_proof, seq_num in zipped:
-        event_with_proof.verify(
-            ledger_info,
-            expected_event_key,
-            seq_num,
-            event_with_proof.transaction_version,
-            event_with_proof.event_index
-        )
+    if expected_event_key_opt is not None:
+        zipped = zip(events_with_proof, expected_seq_nums)
+        for event_with_proof, seq_num in zipped:
+            event_with_proof.verify(
+                ledger_info,
+                expected_event_key_opt,
+                seq_num,
+                event_with_proof.transaction_version,
+                event_with_proof.event_index
+            )
+    elif events_with_proof:
+        bail("Bad events_with_proof: nonempty event list for nonexistent account")
 
 
 def gen_events_resp_idxs(seq_num_upper_bound, req_start_seq_num, req_ascending, req_limit):

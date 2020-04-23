@@ -2,7 +2,7 @@ from __future__ import annotations
 from canoser import Struct, Uint64, RustEnum, DelegateT
 from libra.account_address import Address
 from libra.language_storage import ModuleId, StructTag, ResourceKey
-from typing import List
+from typing import List, Mapping, Optional
 
 # SEPARATOR is used as a delimiter between fields. It should not be a legal part of any identifier
 # in the language
@@ -50,17 +50,24 @@ class AccessPath(Struct):
     CODE_TAG = 0
     RESOURCE_TAG = 1
 
-    CODE_MAP = {}
-    RESOURCE_MAP = {}
+    CODE_MAP: Mapping[bytes, StructTag] = {}
+    RESOURCE_MAP: Mapping[bytes, StructTag] = {}
 
     @classmethod
-    def parse_access_path(cls, path: bytes):
+    def parse_access_path(cls, path: bytes) -> StructTag:
         if path[0] == cls.CODE_TAG:
             return cls.CODE_MAP[path]
         else:
             return cls.RESOURCE_MAP[path]
 
-    def parse_path(self):
+    @classmethod
+    def try_parse_access_path(cls, path: bytes) -> Optional[StructTag]:
+        try:
+            return cls.parse_access_path(path)
+        except KeyError:
+            return None
+
+    def parse_path(self) -> StructTag:
         return AccessPath.parse_access_path(self.path)
 
     @classmethod
