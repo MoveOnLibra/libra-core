@@ -5,7 +5,7 @@ from libra.crypto.ed25519 import (
     _generate_keypair_by_private_key
 )
 from libra.hasher import HashValue
-from canoser import Uint8, Uint32, Struct
+from canoser import Uint8, Uint32, Struct, bytes_to_int_list
 from libra.rustlib import flatten, usize
 from typing import List, Tuple, Optional
 from nacl.signing import VerifyKey
@@ -88,6 +88,29 @@ class MultiEd25519PublicKey(Struct):
         ('threshold', Uint8)
     ]
 
+    @classmethod
+    def encode(cls, obj):
+        output = b''
+        for key in obj.public_keys:
+            output += key
+        output += Uint8.encode(obj.threshold)
+        return Uint32.serialize_uint32_as_uleb128(len(output)) + output
+
+    @classmethod
+    def decode(cls, cursor):
+        buffer_size = Uint32.parse_uint32_from_uleb128(cursor)
+        buffer = cursor.buffer[cursor.offset: cursor.offset+buffer_size]
+        size = (buffer_size - 1) // ED25519_PUBLIC_KEY_LENGTH
+        assert (buffer_size - 1) % ED25519_PUBLIC_KEY_LENGTH == 0
+        public_keys = []
+        for i in range(size):
+            key = buffer[i*ED25519_PUBLIC_KEY_LENGTH:(i+1)*ED25519_PUBLIC_KEY_LENGTH]
+            public_keys.append(key)
+        threshold = buffer[-1]
+        cursor.offset += buffer_size
+        return cls(public_keys, threshold)
+
+
     # Construct a new MultiEd25519PublicKey.
     # --- Rules ---
     # a) threshold cannot be zero.
@@ -140,6 +163,30 @@ class MultiEd25519Signature(Struct):
         ('signatures', [Ed25519Signature]),
         ('bitmap', [Uint8, BITMAP_NUM_OF_BYTES])
     ]
+
+    @classmethod
+    def encode(cls, obj):
+        output = b''
+        for key in obj.signatures:
+            output += key
+        output += bytes(obj.bitmap)
+        return Uint32.serialize_uint32_as_uleb128(len(output)) + output
+
+    @classmethod
+    def decode(cls, cursor):
+        buffer_size = Uint32.parse_uint32_from_uleb128(cursor)
+        buffer = cursor.buffer[cursor.offset: cursor.offset+buffer_size]
+        size = (buffer_size - 4) // ED25519_SIGNATURE_LENGTH
+        assert (buffer_size - 4) % ED25519_SIGNATURE_LENGTH == 0
+        signatures = []
+        for i in range(size):
+            key = buffer[i*ED25519_SIGNATURE_LENGTH:(i+1)*ED25519_SIGNATURE_LENGTH]
+            signatures.append(key)
+        bitmap = bytes_to_int_list(buffer[-4:])
+        cursor.offset += buffer_size
+        return cls(signatures, bitmap)
+
+
 
     # This method will also sort signatures based on index.
     @classmethod
