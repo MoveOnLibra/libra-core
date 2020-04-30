@@ -2,7 +2,7 @@ from canoser import Struct, Uint64
 from libra.validator_verifier import ValidatorVerifier
 
 # EpochInfo represents a trusted validator set to validate messages from the specific epoch,
-# it could be updated with ValidatorChangeProof.
+# it could be updated with EpochChangeProof.
 
 
 class EpochInfo(Struct):

@@ -29,7 +29,7 @@ class VerifierType(RustEnum):
             ledger_info_with_sigs.verify_signatures(self.value.verifier)
 
     #  Returns true in case the given epoch is larger than the existing verifier can support.
-    #  In this case the ValidatorChangeProof should be verified and the verifier updated.
+    #  In this case the EpochChangeProof should be verified and the verifier updated.
     def epoch_change_verification_required(self, epoch):
         if self.enum_name == 'Waypoint':
             return True
@@ -40,7 +40,7 @@ class VerifierType(RustEnum):
 # A vector of LedgerInfo with contiguous increasing epoch numbers to prove a sequence of
 # validator changes from the first LedgerInfo's epoch.
 @dataclass
-class ValidatorChangeProof:
+class EpochChangeProof:
     ledger_info_with_sigs: List[LedgerInfoWithSignatures]  # better name is ledger_info_with_sigss
     more: bool
 
@@ -50,7 +50,7 @@ class ValidatorChangeProof:
     #  (it's the responsibility of the caller to not pass waypoint in case it's not needed).
     def verify(self, verifier: VerifierType) -> LedgerInfoWithSignatures:
         if not self.ledger_info_with_sigs:
-            raise VerifyError("Empty ValidatorChangeProof")
+            raise VerifyError("Empty EpochChangeProof")
         for x in self.ledger_info_with_sigs:
             # TODO: skip stale ledger, is_ledger_info_stale
             verifier.verify(x)

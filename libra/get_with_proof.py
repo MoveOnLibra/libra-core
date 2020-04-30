@@ -3,7 +3,7 @@ from __future__ import annotations
 from libra.ledger_info import LedgerInfo, LedgerInfoWithSignatures
 from libra.crypto_proxies import EpochInfo
 from libra.validator_verifier import VerifyError, ValidatorVerifier
-from libra.validator_change import ValidatorChangeProof, VerifierType
+from libra.epoch_change import EpochChangeProof, VerifierType
 from libra.hasher import *
 from libra.proof.transaction_with_proof import TransactionWithProof
 from libra.proof.transaction_list_with_proof import TransactionListWithProof
@@ -37,7 +37,7 @@ class UpdateToLatestLedgerRequest:
 class UpdateToLatestLedgerResponse:
     response_items: List[ResponseItem]
     ledger_info_with_sigs: LedgerInfoWithSignatures
-    validator_change_proof: ValidatorChangeProof
+    epoch_change_proof: EpochChangeProof
     ledger_consistency_proof: AccumulatorConsistencyProof
 
     def to_proto(self):
@@ -46,7 +46,7 @@ class UpdateToLatestLedgerResponse:
             item = ret.response_items.add()
             x.to_proto_oneof(item)
         ret.ledger_info_with_sigs.MergeFrom(ProtoHelper.to_proto(self.ledger_info_with_sigs))
-        ret.validator_change_proof.MergeFrom(ProtoHelper.to_proto(self.validator_change_proof))
+        ret.epoch_change_proof.MergeFrom(ProtoHelper.to_proto(self.epoch_change_proof))
         ret.ledger_consistency_proof.MergeFrom(ProtoHelper.to_proto(self.ledger_consistency_proof))
         return ret
 
@@ -173,7 +173,7 @@ def verify(verifier_type, request, response) -> Optional[EpochInfo]:
         request.requested_items,
         response.response_items,
         LedgerInfoWithSignatures.from_proto(response.ledger_info_with_sigs),
-        ValidatorChangeProof.from_proto(response.validator_change_proof),
+        EpochChangeProof.from_proto(response.epoch_change_proof),
     )
 
 
@@ -183,7 +183,7 @@ def verify_update_to_latest_ledger_response(
     requested_items,
     response_items,
     ledger_info_with_sigs,
-    validator_change_proof
+    epoch_change_proof
 ) -> Optional[EpochInfo]:
     ledger_info = ledger_info_with_sigs.ledger_info
     signatures = ledger_info_with_sigs.signatures
@@ -198,7 +198,7 @@ def verify_update_to_latest_ledger_response(
         verify_response_item(ledger_info, req_item, resp_item)
 
     if verifier_type.epoch_change_verification_required(ledger_info.epoch):
-        epoch_change_li = validator_change_proof.verify(verifier_type)
+        epoch_change_li = epoch_change_proof.verify(verifier_type)
         if not epoch_change_li.ledger_info.has_next_validator_set():
             raise VerifyError("No ValidatorSet in EpochProof")
 
