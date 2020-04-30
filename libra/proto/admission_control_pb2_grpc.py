@@ -18,15 +18,15 @@ class AdmissionControlStub(object):
             channel: A grpc.Channel.
         """
         self.SubmitTransaction = channel.unary_unary(
-            '/admission_control.AdmissionControl/SubmitTransaction',
-            request_serializer=admission__control__pb2.SubmitTransactionRequest.SerializeToString,
-            response_deserializer=admission__control__pb2.SubmitTransactionResponse.FromString,
-        )
+                '/admission_control.AdmissionControl/SubmitTransaction',
+                request_serializer=admission__control__pb2.SubmitTransactionRequest.SerializeToString,
+                response_deserializer=admission__control__pb2.SubmitTransactionResponse.FromString,
+                )
         self.UpdateToLatestLedger = channel.unary_unary(
-            '/admission_control.AdmissionControl/UpdateToLatestLedger',
-            request_serializer=get__with__proof__pb2.UpdateToLatestLedgerRequest.SerializeToString,
-            response_deserializer=get__with__proof__pb2.UpdateToLatestLedgerResponse.FromString,
-        )
+                '/admission_control.AdmissionControl/UpdateToLatestLedger',
+                request_serializer=get__with__proof__pb2.UpdateToLatestLedgerRequest.SerializeToString,
+                response_deserializer=get__with__proof__pb2.UpdateToLatestLedgerResponse.FromString,
+                )
 
 
 class AdmissionControlServicer(object):
@@ -57,24 +57,23 @@ class AdmissionControlServicer(object):
 
 def add_AdmissionControlServicer_to_server(servicer, server):
     rpc_method_handlers = {
-        'SubmitTransaction': grpc.unary_unary_rpc_method_handler(
-            servicer.SubmitTransaction,
-            request_deserializer=admission__control__pb2.SubmitTransactionRequest.FromString,
-            response_serializer=admission__control__pb2.SubmitTransactionResponse.SerializeToString,
-        ),
-        'UpdateToLatestLedger': grpc.unary_unary_rpc_method_handler(
-            servicer.UpdateToLatestLedger,
-            request_deserializer=get__with__proof__pb2.UpdateToLatestLedgerRequest.FromString,
-            response_serializer=get__with__proof__pb2.UpdateToLatestLedgerResponse.SerializeToString,
-        ),
+            'SubmitTransaction': grpc.unary_unary_rpc_method_handler(
+                    servicer.SubmitTransaction,
+                    request_deserializer=admission__control__pb2.SubmitTransactionRequest.FromString,
+                    response_serializer=admission__control__pb2.SubmitTransactionResponse.SerializeToString,
+            ),
+            'UpdateToLatestLedger': grpc.unary_unary_rpc_method_handler(
+                    servicer.UpdateToLatestLedger,
+                    request_deserializer=get__with__proof__pb2.UpdateToLatestLedgerRequest.FromString,
+                    response_serializer=get__with__proof__pb2.UpdateToLatestLedgerResponse.SerializeToString,
+            ),
     }
     generic_handler = grpc.method_handlers_generic_handler(
-        'admission_control.AdmissionControl', rpc_method_handlers)
+            'admission_control.AdmissionControl', rpc_method_handlers)
     server.add_generic_rpc_handlers((generic_handler,))
 
+
  # This class is part of an EXPERIMENTAL API.
-
-
 class AdmissionControl(object):
     """-----------------------------------------------------------------------------
     ---------------- Service definition
@@ -83,32 +82,32 @@ class AdmissionControl(object):
 
     @staticmethod
     def SubmitTransaction(request,
-                          target,
-                          options=(),
-                          channel_credentials=None,
-                          call_credentials=None,
-                          compression=None,
-                          wait_for_ready=None,
-                          timeout=None,
-                          metadata=None):
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
         return grpc.experimental.unary_unary(request, target, '/admission_control.AdmissionControl/SubmitTransaction',
-                                             admission__control__pb2.SubmitTransactionRequest.SerializeToString,
-                                             admission__control__pb2.SubmitTransactionResponse.FromString,
-                                             options, channel_credentials,
-                                             call_credentials, compression, wait_for_ready, timeout, metadata)
+            admission__control__pb2.SubmitTransactionRequest.SerializeToString,
+            admission__control__pb2.SubmitTransactionResponse.FromString,
+            options, channel_credentials,
+            call_credentials, compression, wait_for_ready, timeout, metadata)
 
     @staticmethod
     def UpdateToLatestLedger(request,
-                             target,
-                             options=(),
-                             channel_credentials=None,
-                             call_credentials=None,
-                             compression=None,
-                             wait_for_ready=None,
-                             timeout=None,
-                             metadata=None):
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
         return grpc.experimental.unary_unary(request, target, '/admission_control.AdmissionControl/UpdateToLatestLedger',
-                                             get__with__proof__pb2.UpdateToLatestLedgerRequest.SerializeToString,
-                                             get__with__proof__pb2.UpdateToLatestLedgerResponse.FromString,
-                                             options, channel_credentials,
-                                             call_credentials, compression, wait_for_ready, timeout, metadata)
+            get__with__proof__pb2.UpdateToLatestLedgerRequest.SerializeToString,
+            get__with__proof__pb2.UpdateToLatestLedgerResponse.FromString,
+            options, channel_credentials,
+            call_credentials, compression, wait_for_ready, timeout, metadata)
