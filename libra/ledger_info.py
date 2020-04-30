@@ -1,6 +1,6 @@
 from canoser import Struct, BytesT, RustEnum
 from libra.account_address import Address
-from libra.block_info import BlockInfo, OptionValidatorSet
+from libra.block_info import BlockInfo, OptionEpochInfo
 from libra.hasher import HashValue, gen_hasher
 from libra.crypto.ed25519 import ED25519_SIGNATURE_LENGTH
 from libra.on_chain_config.validator_set import ValidatorSet
@@ -32,11 +32,11 @@ class LedgerInfo(Struct):
         block_info.epoch = proto.epoch
         block_info.round = proto.round
         block_info.timestamp_usecs = proto.timestamp_usecs
-        if proto.HasField("next_validator_set"):
-            vset = ValidatorSet.from_proto(proto.next_validator_set)
-            block_info.next_validator_set = OptionValidatorSet(vset)
+        if proto.HasField("next_epoch_info"):
+            einfo = EpochInfo.from_proto(proto.next_epoch_info)
+            block_info.next_epoch_info = OptionEpochInfo(einfo)
         else:
-            block_info.next_validator_set = OptionValidatorSet(None)
+            block_info.next_epoch_info = OptionEpochInfo(None)
         ret.commit_info = block_info
         ret.consensus_data_hash = proto.consensus_data_hash
         return ret
@@ -50,8 +50,8 @@ class LedgerInfo(Struct):
         proto.epoch = self.epoch
         proto.round = self.round
         proto.timestamp_usecs = self.timestamp_usecs
-        if self.has_next_validator_set():
-            proto.next_validator_set.MergeFrom(ProtoHelper.to_proto(self.next_validator_set))
+        if self.has_next_epoch_info():
+            proto.next_epoch_info.MergeFrom(ProtoHelper.to_proto(self.next_epoch_info))
         return proto
 
     @property
@@ -79,11 +79,11 @@ class LedgerInfo(Struct):
         return self.commit_info.timestamp_usecs
 
     @property
-    def next_validator_set(self):
-        return self.commit_info.next_validator_set
+    def next_epoch_info(self):
+        return self.commit_info.next_epoch_info
 
-    def has_next_validator_set(self):
-        return self.commit_info.next_validator_set.value is not None
+    def has_next_epoch_info(self):
+        return self.commit_info.next_epoch_info.value is not None
 
 
 # The validator node returns this structure which includes signatures

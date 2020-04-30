@@ -38,19 +38,19 @@ class Ledger2WaypointConverter(Struct):
         ("root_hash", HashValue),
         ("version", Version),
         ("timestamp_usecs", Uint64),
-        ("next_validator_set", ValidatorSet)
+        ("next_epoch_info", EpochInfo)
     ]
 
     @classmethod
     def new(cls, ledger_info):
-        if ledger_info.next_validator_set is None:
+        if ledger_info.next_epoch_info is None:
             raise ValueError("Cannot create a waypoint without validator set")
         ret = cls()
         ret.epoch = ledger_info.epoch
         ret.root_hash = ledger_info.transaction_accumulator_hash
         ret.version = ledger_info.version
         ret.timestamp_usecs = ledger_info.timestamp_usecs
-        ret.next_validator_set = ledger_info.next_validator_set
+        ret.next_epoch_info = ledger_info.next_epoch_info
         return ret
 
     def hash(self):

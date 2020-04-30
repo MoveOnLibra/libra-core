@@ -1,5 +1,6 @@
 from canoser import Struct, RustOptional, Uint64
 from libra.transaction import Version
+from libra.epoch_info import EpochInfo
 from libra.hasher import HashValue
 from libra.on_chain_config.validator_set import ValidatorSet
 from libra.proto_helper import ProtoHelper
@@ -9,15 +10,11 @@ from libra.proto_helper import ProtoHelper
 Round = Uint64
 
 
-class OptionValidatorSet(RustOptional):
-    _type = ValidatorSet
+class OptionEpochInfo(RustOptional):
+    _type = EpochInfo
 
     def to_proto(self):
-        proto = ProtoHelper.new_proto_by_name('ValidatorSet')
-        for vpks in self.value:
-            item = proto.validator_info.add()
-            item.MergeFrom(ProtoHelper.to_proto(vpks))
-        return proto
+        return self.serialize()
 
 
 class BlockInfo(Struct):
@@ -40,5 +37,5 @@ class BlockInfo(Struct):
         # The timestamp this block was proposed by a proposer.
         ("timestamp_usecs", Uint64),
         # An optional field containing the set of validators for the start of the next epoch
-        ("next_validator_set", OptionValidatorSet)
+        ("next_epoch_info", OptionEpochInfo)
     ]

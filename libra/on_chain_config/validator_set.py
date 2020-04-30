@@ -52,7 +52,3 @@ class ValidatorSet(Struct, OnChainConfig):
     @classmethod
     def from_proto(cls, proto):
         return ValidatorSet.deserialize(proto.bytes)
-        # ret = []
-        # for keys in next_validator_set_proto.validator_info:
-        #     ret.append(ValidatorInfo.from_proto(keys))
-        # return ret

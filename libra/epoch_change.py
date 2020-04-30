@@ -2,7 +2,7 @@ from canoser import RustEnum
 from typing import List
 from libra.ledger_info import LedgerInfoWithSignatures
 from libra.waypoint import Waypoint
-from libra.crypto_proxies import EpochInfo
+from libra.epoch_info import EpochInfo
 from libra.validator_verifier import VerifyError, ValidatorVerifier
 from dataclasses import dataclass
 
@@ -57,8 +57,8 @@ class EpochChangeProof:
             # While the original verification could've been via waypoints, all the next epoch
             # changes are verified using the (already trusted) validator sets.
             ledger_info = x.ledger_info
-            validator_set = ledger_info.next_validator_set
-            if not ledger_info.has_next_validator_set():
+            validator_set = ledger_info.next_epoch_info
+            if not ledger_info.has_next_epoch_info():
                 raise VerifyError("LedgerInfo doesn't carry ValidatorSet")
             vv = ValidatorVerifier.from_validator_set(validator_set.value)
             epoch_info = EpochInfo(ledger_info.epoch + 1, vv)
