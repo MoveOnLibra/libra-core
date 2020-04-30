@@ -13,5 +13,5 @@ class EpochInfo(Struct):
 
     @classmethod
     def empty(cls):
-        ret = cls(0, ValidatorVerifier({}))
+        ret = cls(0, ValidatorVerifier.new({}))
         return ret

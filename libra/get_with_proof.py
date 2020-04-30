@@ -202,9 +202,7 @@ def verify_update_to_latest_ledger_response(
         if not epoch_change_li.ledger_info.has_next_epoch_info():
             raise VerifyError("No ValidatorSet in EpochProof")
 
-        vset = epoch_change_li.ledger_info.next_epoch_info.value
-        vv = ValidatorVerifier.from_validator_set(vset)
-        new_epoch_info = EpochInfo(epoch_change_li.ledger_info.epoch + 1, vv)
+        new_epoch_info = epoch_change_li.ledger_info.next_epoch_info.value
         new_verifier = VerifierType('TrustedVerifier', new_epoch_info)
         new_verifier.verify(ledger_info_with_sigs)
         return new_epoch_info

@@ -57,11 +57,11 @@ class EpochChangeProof:
             # While the original verification could've been via waypoints, all the next epoch
             # changes are verified using the (already trusted) validator sets.
             ledger_info = x.ledger_info
-            validator_set = ledger_info.next_epoch_info
             if not ledger_info.has_next_epoch_info():
                 raise VerifyError("LedgerInfo doesn't carry ValidatorSet")
-            vv = ValidatorVerifier.from_validator_set(validator_set.value)
-            epoch_info = EpochInfo(ledger_info.epoch + 1, vv)
+            epoch_info = ledger_info.next_epoch_info.value
+            # vv = ValidatorVerifier.from_validator_set(validator_set.value)
+            # epoch_info = EpochInfo(ledger_info.epoch + 1, vv)
             verifier = VerifierType('TrustedVerifier', epoch_info)
         return self.ledger_info_with_sigs[-1]
 

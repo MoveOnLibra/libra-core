@@ -8,7 +8,7 @@ class VerifyError(Exception):
     pass
 
 
-class ValidatorInfo(Struct):
+class ValidatorConsensusInfo(Struct):
     _fields = [
         ('public_key', BytesT(ED25519_PUBLIC_KEY_LENGTH)),
         ('voting_power', Uint64)
@@ -17,18 +17,21 @@ class ValidatorInfo(Struct):
 
 class ValidatorVerifier(Struct):
     _fields = [
-        ('address_to_validator_info', {Address: ValidatorInfo}),
+        ('address_to_validator_info', {Address: ValidatorConsensusInfo}),
         ('quorum_voting_power', Uint64),
         ('total_voting_power', Uint64)
     ]
 
-    def __init__(self, address_to_validator_info):
-        super().__init__(address_to_validator_info)
-        self.total_voting_power = sum([v.voting_power for k, v in address_to_validator_info.items()])
+    @classmethod
+    def new(cls, address_to_validator_info):
+        ret = cls()
+        ret.address_to_validator_info = address_to_validator_info
+        ret.total_voting_power = sum([v.voting_power for k, v in address_to_validator_info.items()])
         if len(address_to_validator_info) == 0:
-            self.quorum_voting_power = 0
+            ret.quorum_voting_power = 0
         else:
-            self.quorum_voting_power = self.total_voting_power * 2 // 3 + 1
+            ret.quorum_voting_power = ret.total_voting_power * 2 // 3 + 1
+        return ret
 
     @classmethod
     def from_validator_set(cls, vset):
