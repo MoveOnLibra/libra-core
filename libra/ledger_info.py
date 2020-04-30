@@ -1,9 +1,9 @@
 from canoser import Struct, BytesT, RustEnum
 from libra.account_address import Address
 from libra.block_info import BlockInfo, OptionEpochInfo
+from libra.epoch_info import EpochInfo
 from libra.hasher import HashValue, gen_hasher
 from libra.crypto.ed25519 import ED25519_SIGNATURE_LENGTH
-from libra.on_chain_config.validator_set import ValidatorSet
 from libra.validator_verifier import ValidatorVerifier
 from libra.proto_helper import ProtoHelper
 
