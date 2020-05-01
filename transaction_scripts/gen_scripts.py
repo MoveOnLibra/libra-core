@@ -1,4 +1,6 @@
 import os, json
+from os import listdir
+from os.path import dirname
 
 whitelists = [
     "add_validator",
@@ -12,35 +14,22 @@ whitelists = [
     "rotate_consensus_pubkey",
 ]
 
-def compile(script):
-    cmds = [
-        "cd ../libra",
-        f"cargo run -p compiler --  ./language/stdlib/transaction_scripts/{script}.mvir",
-        f"mv ./language/stdlib/transaction_scripts/{script}.mv ../libra-core/transaction_scripts/"
-    ]
-    cmd = " && ".join(cmds)
-    print(cmd)
-    os.system(cmd)
-
-
-# for script in whitelists:
-#     compile(script)
-
-# def get_code_by_filename(script_file):
-#     with open(script_file) as f:
-#         amap = json.load(f)
-#         return amap['code']
+def all_scripts():
+    curdir = dirname(__file__)
+    return [f for f in listdir(curdir) if f.endswith(".mv")]
 
 def get_code_by_filename(script_file):
     with open(script_file, 'rb') as f:
         code = f.read()
         return code
 
-bytecodes = {}
 
-for script in whitelists:
-    code = get_code_by_filename(f"transaction_scripts/{script}.mv")
-    bytecodes[script] = code
-    print(f"'{script}' : {code},\n")
+print("bytecodes = {")
 
-#print(json.dumps(bytecodes))
+for script in all_scripts():
+    code = get_code_by_filename(f"transaction_scripts/{script}")
+    script_name = script[0:0-len(".mv")]
+    print(f"  '{script_name}' : {code},")
+
+print("}")
+

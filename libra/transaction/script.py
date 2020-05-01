@@ -1,6 +1,6 @@
 from canoser import Struct
 from libra.transaction.transaction_argument import TransactionArgument, normalize_public_key
-from libra.bytecode import bytecodes
+from libra.transaction_scripts import bytecodes
 from libra.account_address import Address
 from libra.account_config import AccountConfig
 from libra.language_storage import TypeTag
