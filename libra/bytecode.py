@@ -1,4 +1,3 @@
-import json
 from libra.transaction_scripts import bytecodes
 
 
@@ -13,7 +12,7 @@ def get_script_name(code):
     for k, v in bytecodes.items():
         if code == v:
             return k
-    return "unknown"
+    return "script"
 
 
 def get_code_by_filename(script_file):
