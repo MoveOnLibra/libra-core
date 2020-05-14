@@ -64,6 +64,17 @@ class AccountState(Struct):
         # parameters
         return self.get_resource(BalanceResource.access_path_for(currency_type_tag), BalanceResource)
 
+    def get_balance_resources(self, currency_codes: List[str]) -> List[BalanceResource]:
+        currency_type_tags = [AccountConfig.type_tag_for_currency_code(code) \
+            for code in currency_codes]
+        # TODO: update this to use BalanceResource::resource_path once that takes type
+        # parameters
+        return [self.get_resource(BalanceResource.access_path_for(tag), BalanceResource) \
+            for tag in currency_type_tags]
+
+
+
+
     def get_configuration_resource(self) -> Optional[ConfigurationResource]:
         return self.get_move_resource(ConfigurationResource)
 
