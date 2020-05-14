@@ -7,4 +7,4 @@ def test_move_resource():
     assert LibraTimestampResource.type_params() == []
     assert LibraTimestampResource.struct_tag().module == LibraTimestampResource.MODULE_NAME
     assert LibraTimestampResource.struct_tag().name == LibraTimestampResource.STRUCT_NAME
-    assert LibraTimestampResource.resource_path().hex() == '0103a7b565bec64084d5c1ed57668b5869af3bbe0a63f3079502763205fd646206'
+    assert LibraTimestampResource.resource_path().hex() == '01b832dd9d67b6dc21295b85cb8da484e4d96775d39aee264202d585801c9453e9'
