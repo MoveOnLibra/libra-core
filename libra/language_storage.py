@@ -14,7 +14,7 @@ class StructTag(Struct):
     ]
 
     def hash(self):
-        shazer = gen_hasher(b"StructTag::libra_types::language_storage")
+        shazer = gen_hasher(b"libra_types::language_storage::StructTag")
         shazer.update(self.serialize())
         return shazer.digest()
 
@@ -51,7 +51,7 @@ class ModuleId(Struct):
     ]
 
     def hash(self):
-        shazer = gen_hasher(b"ModuleId::libra_types::language_storage")
+        shazer = gen_hasher(b"libra_types::language_storage::ModuleId")
         shazer.update(self.serialize())
         return shazer.digest()
 

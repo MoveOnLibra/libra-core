@@ -16,7 +16,7 @@ class Transaction(RustEnum):
     ]
 
     def hash(self):
-        shazer = gen_hasher(b"Transaction::libra_types::transaction")
+        shazer = gen_hasher(b"libra_types::transaction::Transaction")
         shazer.update(self.serialize())
         return shazer.digest()
 

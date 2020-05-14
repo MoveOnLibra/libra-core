@@ -18,7 +18,7 @@ class LedgerInfo(Struct):
     ]
 
     def hash(self):
-        shazer = gen_hasher(b"LedgerInfo::libra_types::ledger_info")
+        shazer = gen_hasher(b"libra_types::ledger_info::LedgerInfo")
         shazer.update(self.serialize())
         return shazer.digest()
 

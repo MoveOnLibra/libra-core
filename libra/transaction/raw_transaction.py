@@ -24,7 +24,7 @@ class RawTransaction(Struct):
     ]
 
     def hash(self):
-        shazer = gen_hasher(b"RawTransaction::libra_types::transaction")
+        shazer = gen_hasher(b"libra_types::transaction::RawTransaction")
         shazer.update(self.serialize())
         return shazer.digest()
 

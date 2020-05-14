@@ -50,7 +50,7 @@ class SparseMerkleLeafNode(Struct):
     ]
 
     def hash(self):
-        shazer = gen_hasher(b"SparseMerkleLeafNode::libra_types::proof")
+        shazer = gen_hasher(b"libra_types::proof::SparseMerkleLeafNode")
         shazer.update(bytes(self.key))
         shazer.update(bytes(self.value_hash))
         return shazer.digest()

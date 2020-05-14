@@ -39,7 +39,7 @@ class SignedTransaction(Struct):
         return SignedTransaction(raw_tx, authenticator)
 
     def hash(self):
-        shazer = gen_hasher(b"SignedTransaction::libra_types::transaction")
+        shazer = gen_hasher(b"libra_types::transaction::SignedTransaction")
         shazer.update(self.serialize())
         return shazer.digest()
 
