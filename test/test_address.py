@@ -55,3 +55,7 @@ def test_strict_parse_address():
 def test_from_hex_literal():
     addr = Address.from_hex_literal("0xa550c18")
     assert addr == AccountConfig.association_address_bytes()
+
+def test_address_hash():
+    addr = Address.from_hex_literal("0xca843279e3427144cead5e4d5999a3d0")
+    assert Address.hash(addr).hex() == "c965dfb50b4ebcf000d256a4b23d36ca49f0b05a905e8124ba2f8ff3112bf662"
