@@ -11,7 +11,7 @@ from libra.validator_config import ValidatorConfigResource
 from libra.libra_timestamp import LibraTimestampResource
 from libra.block_metadata import LibraBlockResource
 from libra.rustlib import bail
-from typing import Optional, Any
+from typing import Optional, Any, List
 
 
 class AccountState(Struct):
