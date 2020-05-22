@@ -31,6 +31,7 @@ class TypeTag(RustEnum):
         ('U64', None),
         ('U128', None),
         ('Address', None),
+        ('Signer', None),
         ('Vector', 'libra.language_storage.TypeTag'),
         ('Struct', StructTag)
     ]

@@ -61,7 +61,7 @@ class AccountState(Struct):
     def get_balance_resources(self, currency_codes: List[str]) -> Mapping[str, BalanceResource]:
         # TODO: update this to use BalanceResource::resource_path once that takes type
         # parameters
-        return {code: self._get_balance_resource(code) for code in currency_codes}
+        return {code: self.get_balance_resource(code) for code in currency_codes}
 
 
 
