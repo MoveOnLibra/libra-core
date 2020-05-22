@@ -11,7 +11,7 @@ from libra.validator_config import ValidatorConfigResource
 from libra.libra_timestamp import LibraTimestampResource
 from libra.block_metadata import LibraBlockResource
 from libra.rustlib import bail
-from typing import Optional, Any, List
+from typing import Optional, Any, List, Mapping
 
 
 class AccountState(Struct):
@@ -53,24 +53,15 @@ class AccountState(Struct):
     def get_account_resource(self) -> Optional[AccountResource]:
         return self.get_move_resource(AccountResource)
 
-    def get_balance_resource(self) -> Optional[BalanceResource]:
-        account_resource = self.get_account_resource()
-        if account_resource is None:
-            return None
+    def get_balance_resource(self, code: str) -> Optional[BalanceResource]:
+        tag = AccountConfig.type_tag_for_currency_code(code)
+        path = BalanceResource.access_path_for(tag)
+        return self.get_resource(path, BalanceResource)
 
-        code = account_resource.balance_currency_code
-        currency_type_tag = AccountConfig.type_tag_for_currency_code(code)
+    def get_balance_resources(self, currency_codes: List[str]) -> Mapping[str, BalanceResource]:
         # TODO: update this to use BalanceResource::resource_path once that takes type
         # parameters
-        return self.get_resource(BalanceResource.access_path_for(currency_type_tag), BalanceResource)
-
-    def get_balance_resources(self, currency_codes: List[str]) -> List[BalanceResource]:
-        currency_type_tags = [AccountConfig.type_tag_for_currency_code(code) \
-            for code in currency_codes]
-        # TODO: update this to use BalanceResource::resource_path once that takes type
-        # parameters
-        return [self.get_resource(BalanceResource.access_path_for(tag), BalanceResource) \
-            for tag in currency_type_tags]
+        return {code: self._get_balance_resource(code) for code in currency_codes}
 
 
 

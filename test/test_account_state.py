@@ -13,7 +13,7 @@ def test_state():
 def test_parse_resource():
     state1 = AccountState.from_blob_or_default(b'\0')
     state1.get_account_resource()
-    state1.get_balance_resource()
+    state1.get_balance_resource("LBR")
     state1.get_configuration_resource()
     state1.get_discovery_set_resource()
     state1.get_libra_timestamp_resource()
