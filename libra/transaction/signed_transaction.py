@@ -73,6 +73,10 @@ class SignedTransaction(Struct):
         return self.raw_txn.gas_unit_price
 
     @property
+    def gas_currency_code(self):
+        return self.raw_txn.gas_currency_code
+
+    @property
     def expiration_time(self):
         return self.raw_txn.expiration_time
 
