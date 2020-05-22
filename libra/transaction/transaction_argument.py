@@ -1,4 +1,4 @@
-from canoser import RustEnum, Uint64
+from canoser import RustEnum, Uint8, Uint64, Uint128
 from libra.account_address import Address, parse_address
 from libra.crypto.ed25519 import ED25519_PUBLIC_KEY_LENGTH
 
@@ -20,7 +20,9 @@ def normalize_public_key(public_key):
 
 class TransactionArgument(RustEnum):
     _enums = [
+        ('U8', Uint8),
         ('U64', Uint64),
+        ('U128', Uint128),
         ('Address', Address),
         ('U8Vector', bytes),
         ('Bool', bool)
