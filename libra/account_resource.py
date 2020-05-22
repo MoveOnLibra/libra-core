@@ -22,7 +22,6 @@ class AccountResource(Struct, MoveResource):
         ('sent_events', EventHandle),
         ('sequence_number', Uint64),
         ('is_frozen', bool),
-        ('balance_currency_code', Identifier),
     ]
 
 
