@@ -3,7 +3,6 @@ from libra import Address
 from libra.crypto.ed25519 import ED25519_PRIVATE_KEY_LENGTH, ED25519_SIGNATURE_LENGTH
 from libra.transaction import *
 from canoser import Uint64
-from libra.proto.get_with_proof_pb2 import UpdateToLatestLedgerRequest
 import pytest
 import nacl
 import pdb
@@ -79,7 +78,6 @@ def test_signed_txn():
         stx.authenticator = authenticator
         stx.check_signature()
     tx = Transaction('UserTransaction', stx)
-    assert tx.to_proto().transaction == tx.serialize()
     jstr = tx.to_json()
     print(jstr)
 
