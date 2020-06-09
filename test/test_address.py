@@ -58,4 +58,4 @@ def test_from_hex_literal():
 
 def test_address_hash():
     addr = Address.from_hex_literal("0xca843279e3427144cead5e4d5999a3d0")
-    assert Address.hash(addr).hex() == "c965dfb50b4ebcf000d256a4b23d36ca49f0b05a905e8124ba2f8ff3112bf662"
+    assert Address.hash(addr).hex() == "c44c0a209ec51c8077b0007334988e11867842e152e05316f062a589ed6b606d"
