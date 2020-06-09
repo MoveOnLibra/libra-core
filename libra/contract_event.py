@@ -37,7 +37,7 @@ class ContractEvent(RustEnum):
         return self.value.event_data
 
     def hash(self):
-        shazer = gen_hasher(b"libra_types::contract_event::ContractEvent")
+        shazer = gen_hasher(b"ContractEvent")
         shazer.update(self.serialize())
         return shazer.digest()
 

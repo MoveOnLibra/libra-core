@@ -54,6 +54,6 @@ class Ledger2WaypointConverter(Struct):
         return ret
 
     def hash(self):
-        shazer = gen_hasher(b"libra_types::waypoint::Ledger2WaypointConverter")
+        shazer = gen_hasher(b"Ledger2WaypointConverter")
         shazer.update(self.serialize())
         return shazer.digest()

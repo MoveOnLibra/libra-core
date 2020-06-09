@@ -15,7 +15,7 @@ class TransactionInfo(Struct):
     ]
 
     def hash(self):
-        shazer = gen_hasher(b"libra_types::transaction::TransactionInfo")
+        shazer = gen_hasher(b"TransactionInfo")
         shazer.update(self.serialize())
         return shazer.digest()
 

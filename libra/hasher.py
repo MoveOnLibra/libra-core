@@ -26,7 +26,7 @@ def new_sha3_256():
     return sha3_256_mod()()
 
 
-LIBRA_HASH_SUFFIX = b"@@$$LIBRA$$@@"
+LIBRA_HASH_PREFIX = b"LIBRA::"
 
 
 class HashValue(DelegateT):
@@ -78,7 +78,7 @@ def common_prefix_bits_len(bytes1, bytes2):
 
 def hash_seed(clazz_name):
     sha3 = new_sha3_256()
-    sha3.update(clazz_name + LIBRA_HASH_SUFFIX)
+    sha3.update(LIBRA_HASH_PREFIX + clazz_name)
     return sha3.digest()
 
 

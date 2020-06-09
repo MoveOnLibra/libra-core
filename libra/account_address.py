@@ -22,7 +22,7 @@ class Address(DelegateT):
 
     @classmethod
     def hash(cls, address):
-        shazer = gen_hasher(b"move_core_types::account_address::AccountAddress")
+        shazer = gen_hasher(b"AccountAddress")
         shazer.update(address)
         return shazer.digest()
 
