@@ -35,7 +35,7 @@ def test_raw_txn():
     assert raw_tx.payload.index == 2
     assert raw_tx.payload.value_type == Script
     script = raw_tx.payload.value
-    assert script.code == Script.get_script_bytecode("peer_to_peer")
+    assert script.code == Script.get_script_bytecode("peer_to_peer_with_metadata")
     assert script.args[0].index == 3
     assert script.args[0].Address == True
     assert script.args[0].enum_name == 'Address'

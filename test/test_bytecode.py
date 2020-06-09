@@ -9,7 +9,7 @@ def check_bytecode(name):
 
 def test_get_code_by_filename():
     check_bytecode("mint")
-    check_bytecode("peer_to_peer")
+    check_bytecode("peer_to_peer_with_metadata")
     check_bytecode("create_account")
     check_bytecode("rotate_authentication_key")
 
