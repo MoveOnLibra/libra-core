@@ -7,7 +7,7 @@ from libra.transaction.script import Script
 from nacl.signing import SigningKey
 from libra.transaction.authenticator import TransactionAuthenticator
 
-MAX_GAS_AMOUNT = 400_000
+MAX_GAS_AMOUNT = 1_000_000
 
 
 class RawTransaction(Struct):
@@ -41,42 +41,42 @@ class RawTransaction(Struct):
         )
 
     @classmethod
-    def new_script_tx(cls, sender_address, sequence_number, script, max_gas_amount=MAX_GAS_AMOUNT,
-                      gas_unit_price=0, gas_currency_code="LBR", txn_expiration=100):
+    def new_script_tx(cls, sender_address, sequence_number, script, **kwargs):
         """Create a new `RawTransaction` with a script.
         A script transaction contains only code to execute. No publishing is allowed in scripts.
         """
         payload = TransactionPayload('Script', script)
-        return cls.new_tx(sender_address, sequence_number, payload, max_gas_amount,
-                          gas_unit_price, gas_currency_code, txn_expiration)
+        return cls.new_tx(sender_address, sequence_number, payload, **kwargs)
 
     @classmethod
-    def new_tx(cls, sender_address, sequence_number, payload, max_gas_amount=MAX_GAS_AMOUNT,
-               gas_unit_price=0, gas_currency_code="LBR", txn_expiration=100):
+    def new_tx(cls, sender_address, sequence_number, payload, **kwargs):
         sender_address = Address.normalize_to_bytes(sender_address)
+        default_args = {
+            "max_gas_amount":MAX_GAS_AMOUNT,
+            "gas_unit_price":0,
+            "gas_currency_code":"LBR",
+            "txn_expiration":100,
+        }
+        default_args.update(kwargs)
         return RawTransaction(
             sender_address,
             sequence_number,
             payload,
-            max_gas_amount,
-            gas_unit_price,
-            gas_currency_code,
-            int(datetime.now().timestamp()) + txn_expiration
+            default_args['max_gas_amount'],
+            default_args['gas_unit_price'],
+            default_args['gas_currency_code'],
+            int(datetime.now().timestamp()) + default_args['txn_expiration']
         )
 
     @classmethod
     def _gen_transfer_transaction(cls, sender_address, sequence_number, receiver_address,
-                                  micro_libra, max_gas_amount=MAX_GAS_AMOUNT,
-                                  gas_unit_price=0, gas_currency_code="LBR", txn_expiration=100, metadata=None):
-        script = Script.gen_transfer_script(receiver_address, micro_libra, metadata)
+                                  micro_libra, **kwargs):
+        script = Script.gen_transfer_script(receiver_address, micro_libra, **kwargs)
         return RawTransaction.new_script_tx(
             sender_address,
             sequence_number,
             script,
-            max_gas_amount,
-            gas_unit_price,
-            gas_currency_code,
-            txn_expiration
+            **kwargs
         )
 
     def sign(self, private_key, public_key):

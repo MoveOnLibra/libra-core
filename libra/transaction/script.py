@@ -17,28 +17,28 @@ class Script(Struct):
     def gen_transfer_script(cls,
                             receiver_address,
                             micro_libra,
-                            metadata=None,
-                            auth_key_prefix=None,
+                            **kwargs,
                             ):
         if isinstance(receiver_address, list):
             receiver_address = bytes(receiver_address)
         if isinstance(receiver_address, str):
             receiver_address = bytes.fromhex(receiver_address)
-        if auth_key_prefix is None:
-            auth_key_prefix = b''
-        if metadata is None:
-            metadata = b''
-            metadata_signature = b''
-        else:
-            metadata_signature = b''
+
+        default_args = {
+            "metadata": b'',
+            "metadata_signature": b'',
+            "auth_key_prefix": b'',
+        }
+        default_args.update(kwargs)
+
         code = bytecodes["peer_to_peer_with_metadata"]
         # TODO: how to generate metadata_signature?
         args = [
             TransactionArgument('Address', receiver_address),
-            TransactionArgument('U8Vector', auth_key_prefix),
+            TransactionArgument('U8Vector', default_args['auth_key_prefix']),
             TransactionArgument('U64', micro_libra),
-            TransactionArgument('U8Vector', metadata),
-            TransactionArgument('U8Vector', metadata_signature)
+            TransactionArgument('U8Vector', default_args['metadata']),
+            TransactionArgument('U8Vector', default_args['metadata_signature'])
         ]
         ty_args = [AccountConfig.lbr_type_tag()]
         return Script(code, ty_args, args)
@@ -46,13 +46,13 @@ class Script(Struct):
     @classmethod
     def gen_mint_script(cls, receiver_address, auth_key_prefix, micro_libra):
         receiver_address = Address.normalize_to_bytes(receiver_address)
-        code = bytecodes["mint"]
+        code = bytecodes["mint_lbr_to_address"]
         args = [
             TransactionArgument('Address', receiver_address),
             TransactionArgument('U8Vector', auth_key_prefix),
             TransactionArgument('U64', micro_libra)
         ]
-        return Script(code, [AccountConfig.lbr_type_tag()], args)
+        return Script(code, [], args)
 
     @classmethod
     def gen_create_account_script(cls, fresh_address, auth_key_prefix, initial_balance=0):
