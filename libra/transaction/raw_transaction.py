@@ -1,7 +1,7 @@
 from canoser import Struct, Uint64
 from datetime import datetime
 from libra.account_address import Address
-from libra.hasher import gen_hasher
+from libra.hasher import LCSCryptoHash
 from libra.transaction.transaction_payload import TransactionPayload
 from libra.transaction.script import Script
 from nacl.signing import SigningKey
@@ -10,7 +10,7 @@ from libra.transaction.authenticator import TransactionAuthenticator
 MAX_GAS_AMOUNT = 1_000_000
 
 
-class RawTransaction(Struct):
+class RawTransaction(Struct, LCSCryptoHash):
     """RawTransaction is the portion of a transaction that a client signs.
     It can be either to publish a module, to execute a script, or to issue a writeset transaction.
     """
@@ -23,11 +23,6 @@ class RawTransaction(Struct):
         ('gas_currency_code', str),
         ('expiration_time', Uint64),
     ]
-
-    def hash(self):
-        shazer = gen_hasher(b"RawTransaction")
-        shazer.update(self.serialize())
-        return shazer.digest()
 
     @classmethod
     def new_change_set(cls, sender_address, sequence_number, change_set):

@@ -1,12 +1,12 @@
 from __future__ import annotations
 from canoser import Struct
-from libra.hasher import gen_hasher
+from libra.hasher import LCSCryptoHash
 from libra.transaction.raw_transaction import RawTransaction
 from libra.transaction.authenticator import TransactionAuthenticator
 from dataclasses import dataclass
 
 
-class SignedTransaction(Struct):
+class SignedTransaction(Struct, LCSCryptoHash):
     """A transaction that has been signed.
     A `SignedTransaction` is a single transaction that can be atomically executed. Clients submit
     these to validator nodes, and the validator and executor submits these to the VM.
@@ -37,11 +37,6 @@ class SignedTransaction(Struct):
         signature = sender_account.sign(tx_hash)[:64]
         authenticator = TransactionAuthenticator.ed25519(sender_account.public_key, signature)
         return SignedTransaction(raw_tx, authenticator)
-
-    def hash(self):
-        shazer = gen_hasher(b"SignedTransaction")
-        shazer.update(self.serialize())
-        return shazer.digest()
 
     @classmethod
     def from_proto(cls, proto):

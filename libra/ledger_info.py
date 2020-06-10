@@ -2,13 +2,13 @@ from canoser import Struct, BytesT, RustEnum
 from libra.account_address import Address
 from libra.block_info import BlockInfo, OptionEpochInfo
 from libra.epoch_info import EpochInfo
-from libra.hasher import HashValue, gen_hasher
+from libra.hasher import HashValue, LCSCryptoHash
 from libra.crypto.ed25519 import ED25519_SIGNATURE_LENGTH
 from libra.validator_verifier import ValidatorVerifier
 from libra.proto_helper import ProtoHelper
 
 
-class LedgerInfo(Struct):
+class LedgerInfo(Struct, LCSCryptoHash):
 
     _fields = [
         ('commit_info', BlockInfo),
@@ -16,11 +16,6 @@ class LedgerInfo(Struct):
         # consensus.
         ('consensus_data_hash', HashValue)
     ]
-
-    def hash(self):
-        shazer = gen_hasher(b"LedgerInfo")
-        shazer.update(self.serialize())
-        return shazer.digest()
 
     @classmethod
     def from_proto(cls, proto):

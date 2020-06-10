@@ -1,8 +1,8 @@
 from canoser import Struct, Uint64
-from libra.hasher import gen_hasher, HashValue
+from libra.hasher import HashValue, LCSCryptoHash
 
 
-class TransactionInfo(Struct):
+class TransactionInfo(Struct, LCSCryptoHash):
     """`TransactionInfo` is the object we store in the transaction accumulator.
     It consists of the transaction as well as the execution result of this transaction.
     """
@@ -13,11 +13,6 @@ class TransactionInfo(Struct):
         ('gas_used', Uint64),
         ('major_status', Uint64)
     ]
-
-    def hash(self):
-        shazer = gen_hasher(b"TransactionInfo")
-        shazer.update(self.serialize())
-        return shazer.digest()
 
     @classmethod
     def from_proto(cls, proto):

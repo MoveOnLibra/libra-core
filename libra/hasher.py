@@ -47,6 +47,14 @@ class HashValue(DelegateT):
         return sha3.digest()
 
 
+class LCSCryptoHash:
+    def hash(self):
+        name = bytes(self.__class__.__name__, 'ascii')
+        shazer = gen_hasher(name)
+        shazer.update(self.serialize())
+        return shazer.digest()
+
+
 def uint8_to_bits(uint8):
     return format(uint8, '8b').replace(' ', '0')
 

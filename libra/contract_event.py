@@ -1,5 +1,5 @@
 from canoser import Struct, Uint64, RustEnum
-from libra.hasher import gen_hasher
+from libra.hasher import LCSCryptoHash
 from libra.language_storage import TypeTag
 from libra.account_config import SentPaymentEvent, ReceivedPaymentEvent
 from libra.event import EventKey
@@ -15,7 +15,7 @@ class ContractEventV0(Struct):
     ]
 
 
-class ContractEvent(RustEnum):
+class ContractEvent(RustEnum, LCSCryptoHash):
     _enums = [
         ('V0', ContractEventV0),
     ]
@@ -35,11 +35,6 @@ class ContractEvent(RustEnum):
     @property
     def event_data(self):
         return self.value.event_data
-
-    def hash(self):
-        shazer = gen_hasher(b"ContractEvent")
-        shazer.update(self.serialize())
-        return shazer.digest()
 
     def to_proto(self):
         proto = ProtoHelper.new_proto_by_name("Event")

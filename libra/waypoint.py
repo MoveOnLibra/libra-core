@@ -1,7 +1,7 @@
 from canoser import Struct, Uint64
 from libra.transaction import Version
 from libra.epoch_info import EpochInfo
-from libra.hasher import HashValue, gen_hasher
+from libra.hasher import HashValue, LCSCryptoHash
 
 # The delimiter between the version and the hash.
 WAYPOINT_DELIMITER = ':'
@@ -27,7 +27,7 @@ class Waypoint(Struct):
         return cls(ledger_info.version, converter.hash())
 
 
-class Ledger2WaypointConverter(Struct):
+class Ledger2WaypointConverter(Struct, LCSCryptoHash):
     """
     # Keeps the fields of LedgerInfo that are hashed for generating a waypoint.
     # Note that not all the fields of LedgerInfo are included: some consensus-related fields
@@ -52,8 +52,3 @@ class Ledger2WaypointConverter(Struct):
         ret.timestamp_usecs = ledger_info.timestamp_usecs
         ret.next_epoch_info = ledger_info.next_epoch_info
         return ret
-
-    def hash(self):
-        shazer = gen_hasher(b"Ledger2WaypointConverter")
-        shazer.update(self.serialize())
-        return shazer.digest()

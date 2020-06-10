@@ -1,22 +1,17 @@
 from canoser import Struct, RustEnum
 from libra.account_address import Address
 from libra.identifier import Identifier
-from libra.hasher import gen_hasher
+from libra.hasher import LCSCryptoHash
 import libra
 
 
-class StructTag(Struct):
+class StructTag(Struct, LCSCryptoHash):
     _fields = [
         ('address', Address),
         ('module', Identifier),
         ('name', Identifier),
         ('type_params', ['libra.language_storage.TypeTag'])
     ]
-
-    def hash(self):
-        shazer = gen_hasher(b"StructTag")
-        shazer.update(self.serialize())
-        return shazer.digest()
 
     def is_pay_tag(self):
         return self.address == libra.AccountConfig.core_code_address_bytes() and\
@@ -45,16 +40,11 @@ class ResourceKey(Struct):
     ]
 
 
-class ModuleId(Struct):
+class ModuleId(Struct, LCSCryptoHash):
     _fields = [
         ('address', Address),
         ('name', Identifier)
     ]
-
-    def hash(self):
-        shazer = gen_hasher(b"ModuleId")
-        shazer.update(self.serialize())
-        return shazer.digest()
 
     def __hash__(self):
         return (self.address, self.name).__hash__()
