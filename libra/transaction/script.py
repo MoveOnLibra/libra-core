@@ -46,13 +46,14 @@ class Script(Struct):
     @classmethod
     def gen_mint_script(cls, receiver_address, auth_key_prefix, micro_libra):
         receiver_address = Address.normalize_to_bytes(receiver_address)
-        code = bytecodes["mint_lbr_to_address"]
+        code = bytecodes["mint"]
         args = [
             TransactionArgument('Address', receiver_address),
             TransactionArgument('U8Vector', auth_key_prefix),
             TransactionArgument('U64', micro_libra)
         ]
-        return Script(code, [], args)
+        ty_args = [AccountConfig.lbr_type_tag()]
+        return Script(code, ty_args, args)
 
     @classmethod
     def gen_create_account_script(cls, fresh_address, auth_key_prefix, initial_balance=0):
