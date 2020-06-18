@@ -24,4 +24,4 @@ class ValidatorConfigResource(Struct, MoveResource):
     ]
 
     MODULE_NAME: str = "ValidatorConfig"
-    STRUCT_NAME: str = "T"
+    STRUCT_NAME: str = MODULE_NAME

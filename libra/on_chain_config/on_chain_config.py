@@ -88,13 +88,13 @@ def access_path_for_config(address: Address, config_name: str) -> AccessPath:
     ty = TypeTag('Struct', StructTag(
         CORE_CODE_ADDRESS,
         config_name,
-        "T",
+        config_name,
         [],
     ))
     tag = StructTag(
         CORE_CODE_ADDRESS,
         "LibraConfig",
-        "T",
+        "LibraConfig",
         [ty],
     )
     return AccessPath(

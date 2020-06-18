@@ -10,7 +10,7 @@ CORE_CODE_ADDRESS = b'\x00' * ADDRESS_LENGTH
 class AccountConfig:
     # LibraCoin
     COIN_MODULE_NAME = "Libra"
-    COIN_STRUCT_NAME = "T"
+    COIN_STRUCT_NAME = "Libra"
 
     LBR_NAME = "LBR"
 
@@ -87,10 +87,11 @@ class AccountConfig:
 
     @classmethod
     def lbr_struct_tag(cls):
+        breakpoint()
         return StructTag(
             cls.core_code_address_bytes(),
             cls.LBR_NAME,
-            cls.COIN_STRUCT_NAME,
+            cls.LBR_NAME,
             []
         )
 
@@ -100,21 +101,21 @@ class AccountConfig:
             inner_struct_tag = StructTag(
                 address= CORE_CODE_ADDRESS,
                 module= "Empty",
-                name= "T",
+                name= "Empty",
                 type_params= [],
             )
         else:
             inner_struct_tag = StructTag(
                 address= CORE_CODE_ADDRESS,
                 module= "Unhosted",
-                name= "T",
+                name= "Unhosted",
                 type_params= [],
             )
 
         return StructTag(
             address= CORE_CODE_ADDRESS,
             module= "AccountType",
-            name= "T",
+            name= "AccountType",
             type_params= [TypeTag('Struct', inner_struct_tag)],
         )
 
@@ -122,7 +123,7 @@ class AccountConfig:
     # TODO: This imposes a few implied restrictions:
     #   1) The currency module must be published under the core code address.
     #   2) The module name must be the same as the gas specifier.
-    #   3) The struct name must be "T"
+    #   3) The struct name must be the same as the module name.
     # We need to consider whether we want to switch to a more or fully qualified name.
     @classmethod
     def account_balance_struct_tag(cls) -> StructTag:

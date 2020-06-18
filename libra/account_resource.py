@@ -26,7 +26,7 @@ class AccountResource(Struct, MoveResource):
 
 
     MODULE_NAME: str = AccountConfig.ACCOUNT_MODULE_NAME
-    STRUCT_NAME: str = "T"
+    STRUCT_NAME: str = MODULE_NAME
 
     @classmethod
     def get_account_resource_or_default(cls, blob):
