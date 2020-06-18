@@ -32,7 +32,7 @@ def test_raw_txn():
     assert raw_tx.gas_currency_code == "LBR"
     assert bytes(raw_tx.sender) == a0.address
     assert raw_tx.payload.enum_name == "Script"
-    assert raw_tx.payload.index == 2
+    assert raw_tx.payload.index == 1
     assert raw_tx.payload.value_type == Script
     script = raw_tx.payload.value
     assert script.code == Script.get_script_bytecode("peer_to_peer_with_metadata")
