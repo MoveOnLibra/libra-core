@@ -57,6 +57,7 @@ class Script(Struct):
 
     @classmethod
     def gen_create_account_script(cls, fresh_address, auth_key_prefix, initial_balance=0):
+        raise AssertionError("create_account script no longer exsits.")
         fresh_address = Address.normalize_to_bytes(fresh_address)
         code = bytecodes["create_account"]
         args = [

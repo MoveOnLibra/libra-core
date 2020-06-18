@@ -35,11 +35,11 @@ class AccountConfig:
 
     @classmethod
     def core_code_address(cls):
-        return "0".rjust(HEX_ADDRESS_LENGTH, '0')
+        return "1".rjust(HEX_ADDRESS_LENGTH, '0')
 
     @classmethod
     def core_code_address_bytes(cls):
-        return b'\x00' * ADDRESS_LENGTH
+        return bytes.fromhex(cls.core_code_address())
 
     @classmethod
     def association_address(cls):
@@ -87,7 +87,6 @@ class AccountConfig:
 
     @classmethod
     def lbr_struct_tag(cls):
-        breakpoint()
         return StructTag(
             cls.core_code_address_bytes(),
             cls.LBR_NAME,
