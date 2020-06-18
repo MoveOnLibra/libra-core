@@ -26,7 +26,7 @@ class Account:
 
     @classmethod
     def faucet_account(cls, private_key):
-        return cls(private_key, AccountConfig.association_address())
+        return cls(private_key, AccountConfig.treasury_compliance_account_address())
 
     @classmethod
     def gen_faucet_account(cls, faucet_account_file):

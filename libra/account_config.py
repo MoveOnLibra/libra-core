@@ -50,6 +50,14 @@ class AccountConfig:
         return bytes.fromhex(cls.association_address())
 
     @classmethod
+    def treasury_compliance_account_address(cls):
+        return "b1e55ed".rjust(HEX_ADDRESS_LENGTH, '0')
+
+    @classmethod
+    def treasury_compliance_account_address_bytes(cls):
+        return bytes.fromhex(cls.treasury_compliance_account_address())
+
+    @classmethod
     def transaction_fee_address(cls):
         return "FEE".rjust(HEX_ADDRESS_LENGTH, '0')
 
