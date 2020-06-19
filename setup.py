@@ -19,7 +19,7 @@ with open("libra/version.py", "r") as fp:
 
 install_requires=[
     'canoser>=0.8.2',
-    'more-itertools',
+    # 'more-itertools', # only used in libra/proof/definition.py
     'PyNaCl',
 ]
 
