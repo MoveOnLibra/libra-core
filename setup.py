@@ -21,7 +21,6 @@ install_requires=[
     'canoser>=0.8.2',
     'more-itertools',
     'PyNaCl',
-    'pygments',
 ]
 
 tests_require = [

@@ -1,5 +1,4 @@
 import json
-from pygments import highlight, lexers, formatters
 from canoser.base import Base
 
 
@@ -53,6 +52,7 @@ def json_print(obj, sort_keys=False, color=False, bgcolor=None):
         if bgcolor is not None:
             jsonstr = bgcolor + jsonstr + '\033[0m'
         else:
-            term = formatters.Terminal256Formatter(style='fruity')
-            jsonstr = highlight(jsonstr, lexers.JsonLexer(), term)
+            pass
+            # term = formatters.Terminal256Formatter(style='fruity')
+            # jsonstr = highlight(jsonstr, lexers.JsonLexer(), term)
     print(jsonstr)
