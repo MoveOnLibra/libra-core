@@ -39,10 +39,9 @@ def test_raw_txn():
     assert script.args[0].index == 3
     assert script.args[0].Address == True
     assert script.args[0].enum_name == 'Address'
-    #script.args[1] is changed to auth_key_prefix, the design is odd.
-    assert script.args[2].index == 1
-    assert script.args[2].U64 == True
-    assert script.args[2].value == 123
+    assert script.args[1].index == 1
+    assert script.args[1].U64 == True
+    assert script.args[1].value == 123
 
 
 def test_raw_txn_with_metadata():
@@ -55,12 +54,12 @@ def test_raw_txn_with_metadata():
     assert script.args[0].index == 3
     assert script.args[0].Address == True
     assert script.args[0].enum_name == 'Address'
-    assert script.args[2].index == 1
-    assert script.args[2].U64 == True
-    assert script.args[2].value == 9
-    assert script.args[3].index == 4
-    assert script.args[3].U8Vector == True
-    assert script.args[3].value == bytes([2,3,4])
+    assert script.args[1].index == 1
+    assert script.args[1].U64 == True
+    assert script.args[1].value == 9
+    assert script.args[2].index == 4
+    assert script.args[2].U8Vector == True
+    assert script.args[2].value == bytes([2,3,4])
 
 
 def test_signed_txn():

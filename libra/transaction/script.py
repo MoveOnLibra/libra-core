@@ -27,7 +27,6 @@ class Script(Struct):
         default_args = {
             "metadata": b'',
             "metadata_signature": b'',
-            "auth_key_prefix": b'',
         }
         default_args.update(kwargs)
 
@@ -35,7 +34,6 @@ class Script(Struct):
         # TODO: how to generate metadata_signature?
         args = [
             TransactionArgument('Address', receiver_address),
-            TransactionArgument('U8Vector', default_args['auth_key_prefix']),
             TransactionArgument('U64', micro_libra),
             TransactionArgument('U8Vector', default_args['metadata']),
             TransactionArgument('U8Vector', default_args['metadata_signature'])
