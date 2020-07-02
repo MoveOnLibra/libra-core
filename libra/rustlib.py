@@ -1,5 +1,6 @@
 from canoser import Uint64
-import collections
+from collections.abc import Iterable
+
 
 usize = Uint64
 
@@ -46,7 +47,7 @@ def flatten(ite):
     ret = []
     for sublist in ite:
         if sublist is not None:
-            if isinstance(sublist, collections.Iterable):
+            if isinstance(sublist, Iterable):
                 ret.extend([x for x in sublist if x is not None])
             else:
                 ret.append(sublist)
