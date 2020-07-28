@@ -8,7 +8,6 @@ def check_bytecode(name):
     assert get_transaction_name(code) == f"{name}_transaction"
 
 def test_get_code_by_filename():
-    check_bytecode("mint")
     check_bytecode("peer_to_peer_with_metadata")
     check_bytecode("rotate_authentication_key")
 
