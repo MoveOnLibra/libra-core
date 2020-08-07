@@ -58,6 +58,14 @@ class AccountConfig:
         return bytes.fromhex(cls.treasury_compliance_account_address())
 
     @classmethod
+    def testnet_dd_account_address(cls):
+        return "dd".rjust(HEX_ADDRESS_LENGTH, '0')
+
+    @classmethod
+    def testnet_dd_account_address_bytes(cls):
+        return bytes.fromhex(cls.testnet_dd_account_address())
+
+    @classmethod
     def transaction_fee_address(cls):
         return "FEE".rjust(HEX_ADDRESS_LENGTH, '0')
 
